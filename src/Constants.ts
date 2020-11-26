@@ -15,5 +15,19 @@ const Constants = Object.freeze({
     branch: child_process.execSync("git rev-parse --abbrev-ref HEAD").toString("utf8").trim(),
     commit: child_process.execSync("git rev-parse --short HEAD").toString("utf8").trim(),
   }),
+  stati: [
+    {
+      type: 2,
+      name: "e/help",
+    },
+    {
+      type: 1,
+      name: "with emojis | e/help",
+    },
+    {
+      type: 1,
+      name: "KEKW | e/help",
+    },
+  ] as eris.ActivityPartial<eris.BotActivityType>[],
 });
 export default Constants;

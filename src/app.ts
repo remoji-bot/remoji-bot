@@ -2,11 +2,11 @@ import eris from "eris";
 import logger from "./lib/logger";
 import dotenv from "dotenv-safe";
 import * as parser from "discord-command-parser";
-import { time } from "./lib/utils";
+import { time, randomChoice } from "./lib/utils";
 import { stripIndents } from "common-tags";
 import got from "got";
 import fetch from "node-fetch";
-import Constants from "./constants";
+import Constants from "./Constants";
 
 dotenv.config();
 
@@ -252,15 +252,30 @@ const commands: {
     let s = "";
     for (const emoji of msg.channel.guild.emojis.sort((a, b) => a.name.localeCompare(b.name))) {
       const line = ` <${emoji.animated ? "a" : ""}:${emoji.name}:${emoji.id}>`;
-      if (s.length + line.length > 2000) {
+      if (s.length + line.length > 2048) {
         descs.push(s);
         s = line.trim();
       } else {
         s += line;
       }
     }
-    descs.push(s);
-    for (const desc of descs) await client.createMessage(msg.channel.id, desc);
+    if (s) descs.push(s);
+    if (descs.length > 0) {
+      for (const desc of descs)
+        await client.createMessage(msg.channel.id, {
+          embed: {
+            color: 0xf5f5f5,
+            description: desc,
+          },
+        });
+    } else {
+      await client.createMessage(msg.channel.id, {
+        embed: {
+          color: 0xf5f5f5,
+          description: "No emotes exist in this server... *yet*",
+        },
+      });
+    }
   },
 };
 
@@ -284,7 +299,7 @@ client.on(
         logger.error(err);
         await client.createMessage(
           msg.channel.id,
-          ":no_entry: Something went wrong... Try making sure that the bot has appropriate permissions granted to it.",
+          ":no_entry: Something went wrong... Try making sure that the bot has appropriate permissions granted to it. You may also join our support server for more help. Click the support server link in the help command.",
         );
       }
     }
@@ -293,6 +308,14 @@ client.on(
 
 client.on("ready", () => {
   logger.info(`READY as ${client.user.username} in ${client.guilds.size} guild(s)`);
+  function editStatus() {
+    client.editStatus("online", randomChoice(Constants.stati));
+  }
+  setInterval(editStatus, 1000 * 60 * 5).unref();
+  editStatus();
 });
+
+process.on("unhandledRejection", e => logger.error(e));
+process.on("uncaughtException", e => logger.error(e));
 
 void client.connect();
