@@ -3,8 +3,11 @@
   "devDependencies": {
     "@commitlint/cli": "^11.0.0",
     "@commitlint/config-conventional": "^11.0.0",
+    "@types/common-tags": "^1.8.0",
+    "@types/dotenv-safe": "^8.1.1",
     "@types/jest": "^26.0.15",
     "@types/node": "^14.14.7",
+    "@types/node-fetch": "^2.5.7",
     "@typescript-eslint/eslint-plugin": "^4.8.0",
     "@typescript-eslint/parser": "^4.8.0",
     "eslint": "^7.13.0",
@@ -36,5 +39,15 @@
       "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
       "pre-commit": "npm-run-all --parallel lint test build"
     }
+  },
+  "dependencies": {
+    "chalk": "^4.1.0",
+    "common-tags": "^1.8.0",
+    "discord-command-parser": "^1.5.3",
+    "dotenv-safe": "^8.2.0",
+    "eris": "^0.14.0",
+    "got": "^11.8.0",
+    "moment": "^2.29.1",
+    "node-fetch": "^2.6.1"
   }
 }

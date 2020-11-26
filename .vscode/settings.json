@@ -18,5 +18,6 @@
   },
   "tsimporter.doubleQuotes": true,
   "typescript.enablePromptUseWorkspaceTsdk": true,
-  "typescript.tsdk": "node_modules/ttypescript/lib"
+  "typescript.tsdk": "node_modules/ttypescript/lib",
+  "discord.enabled": false
 }
