@@ -8,7 +8,7 @@ A Discord bot that re-uploads and provides tools for managing emojis in Discord.
 
 # [Support Server](https://discord.gg/WhbncjXPXN)
 
-![Help Screenshot](docs/help_screenshot.png)
+![Help Screenshot](https://i.imgur.com/2SNyBZo.png)
 
 To run your own instance of the bot:
 
