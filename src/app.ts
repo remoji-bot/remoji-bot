@@ -295,6 +295,9 @@ client.on(
     const handler = Object.entries(commands).find(c => c[0].toLowerCase() === parsed.command.toLowerCase());
     if (handler) {
       try {
+        logger.info(
+          `${msg.channel.guild.name} > #${msg.channel.name} > ${msg.author.username}#${msg.author.discriminator} used command ${handler[0]}`,
+        );
         await handler[1]({
           msg,
           parsed,
