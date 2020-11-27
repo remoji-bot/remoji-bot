@@ -44,6 +44,10 @@ const commands: {
   },
 
   help: async ({ msg }) => {
+    if (!msg.channel.guild.permissionsOf(client.user.id).has("embedLinks")) {
+      await client.createMessage(msg.channel.id, ":confused: The bot needs the **Embed Links** permission to send the help page.");
+      return;
+    }
     await client.createMessage(msg.channel.id, {
       embed: {
         color: 0xf5f5f5,
@@ -240,7 +244,7 @@ const commands: {
         image: `data:${fetched.headers.get("Content-Type") || "image/png"};base64,${(await fetched.buffer()).toString("base64")}`,
       });
 
-      await reply.edit(`:white_check_mark: Uploaded emoji \`${created.name}\``);
+      await reply.edit(`:white_check_mark: Uploaded emoji \`:${created.name}:\``);
     } catch (err) {
       logger.error(err);
       await reply.edit(":no_entry: Could not create the emoji. Make sure you specified a valid image under 256KB.");

@@ -2,7 +2,7 @@ import eris from "eris";
 import child_process from "child_process";
 
 const Constants = Object.freeze({
-  supportServerInvite: "https://discord.gg/WhbncjXPXN",
+  supportServerInvite: "https://discord.gg/ ",
   requiredPermissions:
     eris.Constants.Permissions.manageEmojis |
     eris.Constants.Permissions.readMessages |
@@ -21,11 +21,11 @@ const Constants = Object.freeze({
       name: "e/help",
     },
     {
-      type: 1,
+      type: 0,
       name: "with emojis | e/help",
     },
     {
-      type: 1,
+      type: 0,
       name: "KEKW | e/help",
     },
   ] as eris.ActivityPartial<eris.BotActivityType>[],
