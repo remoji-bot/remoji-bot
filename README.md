@@ -12,8 +12,8 @@ A Discord bot that re-uploads and provides tools for managing emojis in Discord.
 
 To run your own instance of the bot:
 
-0.  Install Node.js and Yarn
-1.  Clone or download this repository
+0.  Install Node.js, Yarn and Git
+1.  Clone this repository using Git
 2.  Run `yarn`
 3.  Fill-in `.env` based on `.env.example`
 4.  Run `yarn build`
