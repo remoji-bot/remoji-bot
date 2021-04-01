@@ -28,7 +28,7 @@ const Constants = Object.freeze({
     eris.Constants.Permissions.embedLinks |
     eris.Constants.Permissions.attachFiles |
     eris.Constants.Permissions.externalEmojis,
-  version: "1.1.0",
+  version: "1.1.1",
   git: Object.freeze({
     branch: child_process.execSync("git rev-parse --abbrev-ref HEAD").toString("utf8").trim(),
     commit: child_process.execSync("git rev-parse --short HEAD").toString("utf8").trim(),

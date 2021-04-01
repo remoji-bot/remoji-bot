@@ -91,7 +91,7 @@ export class HelpCommand extends Command {
           },
         ],
         footer: {
-          text: `Remoji version ${Constants.version} ${Constants.git.branch}-${Constants.git.commit}`,
+          text: `Remoji version ${Constants.version} ${Constants.git.branch}-${Constants.git.commit} - GNU AGPL 3.0`,
         },
       },
     });
