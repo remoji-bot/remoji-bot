@@ -5,10 +5,14 @@ import * as parser from "discord-command-parser";
 import { Bot } from "./bot";
 import { ErisPermissionKeys } from "./utils";
 
-type CommandCheck = (m: eris.Message<eris.GuildTextableChannel>) => boolean | Promise<boolean>;
+type CommandCheck = (m: eris.Message<eris.GuildTextableChannel>, b: Bot) => boolean | Promise<boolean>;
 
-export function permissionCheck(permissions: ErisPermissionKeys[]): CommandCheck {
-  return message => permissions.every(permission => message.member?.permissions.has(permission as string));
+export function userPermissionCheck(permissions: ErisPermissionKeys[]): CommandCheck {
+  return message => permissions.every(permission => message.member?.permissions.has(permission));
+}
+
+export function botPermissionCheck(permissions: ErisPermissionKeys[]): CommandCheck {
+  return (message, bot) => permissions.every(permission => message.channel.permissionsOf(bot.client.user.id).has(permission));
 }
 
 export type CommandResult = { success: true } | { success: false; error: Error } | { success: false; reason: string };
@@ -50,7 +54,7 @@ export abstract class Command {
   }
 
   async __execute(parsed: parser.SuccessfulParsedMessage<eris.Message<eris.GuildTextableChannel>>): Promise<CommandResult> {
-    for (const [name, check] of this.checks) if (!(await check(parsed.message))) return { success: false, reason: name };
+    for (const [name, check] of this.checks) if (!(await check(parsed.message, this.bot))) return { success: false, reason: name };
     try {
       const result = await this.run(parsed.message, parsed.reader, parsed);
       return result || { success: true };

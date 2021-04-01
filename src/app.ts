@@ -6,6 +6,7 @@ import dotenv from "dotenv-safe";
 import { HelpCommand } from "./commands/help.command";
 import { randomChoice } from "./lib/utils";
 import Constants from "./Constants";
+import { CopyCommand } from "./commands/copy.command";
 
 const { Intents } = ErisConstants;
 
@@ -23,7 +24,7 @@ const bot = new Bot({
   },
 });
 
-bot.addCommand(new PingCommand()).addCommand(new HelpCommand());
+bot.addCommand(new PingCommand()).addCommand(new HelpCommand()).addCommand(new CopyCommand());
 
 async function main() {
   await bot.login();
