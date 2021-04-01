@@ -2,7 +2,7 @@ import { Command, botPermissionCheck, userPermissionCheck, CommandResult } from 
 import eris from "eris";
 import { MessageArgumentReader } from "discord-command-parser";
 import fetch from "node-fetch";
-import logger from "../../dist/lib/logger";
+import logger from "../lib/logger";
 
 export class UploadCommand extends Command {
   constructor() {
