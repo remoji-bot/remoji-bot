@@ -41,32 +41,32 @@ export class HelpCommand extends Command {
         description: "Remoji provides a few, easy-to-use commands.",
         fields: [
           {
-            name: "`help`",
+            name: "`" + process.env.COMMAND_PREFIX + "help`",
             value: "You're looking at it :)",
             inline: false,
           },
           {
-            name: "`ping`",
+            name: "`" + process.env.COMMAND_PREFIX + "ping`",
             value: "Tests the bot's connection to Discord.",
             inline: false,
           },
           {
-            name: "`copy <emoji> <name>`",
+            name: "`" + process.env.COMMAND_PREFIX + "copy <emoji> <name>`",
             value: "Downloads the image source for `emoji` and uploads it to the current server as `:name:`.",
             inline: false,
           },
           {
-            name: "`download <emoji>`",
+            name: "`" + process.env.COMMAND_PREFIX + "download <emoji>`",
             value: "Posts the image source for `emoji`.",
             inline: false,
           },
           {
-            name: "`upload <name> {uploaded image OR image URL}`",
+            name: "`" + process.env.COMMAND_PREFIX + "upload <name> {uploaded image OR image URL}`",
             value:
               "Requries you to upload an image along with the command OR post a link to the image. Uploads the image to the current server as `:name:`.",
           },
           {
-            name: "`list`",
+            name: "`" + process.env.COMMAND_PREFIX + "list`",
             value: "Lists all emotes in the current server, sorted alphabetically.",
           },
           {

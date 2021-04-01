@@ -46,7 +46,7 @@ export class Bot {
 
   private async onMessage(message: eris.Message): Promise<void> {
     if (!this.ready || !(message.channel instanceof GuildChannel) || message.channel instanceof PrivateChannel) return;
-    const parsed = parser.parse(message as eris.Message<GuildTextableChannel>, "e/", {
+    const parsed = parser.parse(message as eris.Message<GuildTextableChannel>, process.env.COMMAND_PREFIX as string, {
       ignorePrefixCase: true,
       allowSpaceBeforeCommand: true,
     });

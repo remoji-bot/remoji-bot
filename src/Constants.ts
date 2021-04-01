@@ -36,64 +36,64 @@ const Constants = Object.freeze({
   stati: [
     {
       type: 5 as eris.BotActivityType,
-      name: "discord",
+      name: `discord | ${process.env.COMMAND_PREFIX}help`,
     },
     {
       type: 5 as eris.BotActivityType,
-      name: "emoji management",
+      name: `emoji management | ${process.env.COMMAND_PREFIX}help`,
     },
     {
       type: 2,
-      name: "e/help",
+      name: `${process.env.COMMAND_PREFIX}help`,
     },
     {
       type: 0,
-      name: "with emojis | e/help",
+      name: `with emojis | ${process.env.COMMAND_PREFIX}help`,
     },
     {
       type: 0,
-      name: "KEKW | e/help",
+      name: `KEKW | ${process.env.COMMAND_PREFIX}help`,
     },
     {
       type: 0,
-      name: "emoji management | e/help",
+      name: `emoji management | ${process.env.COMMAND_PREFIX}help`,
     },
     {
       type: 0,
-      name: "with Shino | e/help",
+      name: `with Shino | ${process.env.COMMAND_PREFIX}help`,
     },
     {
       type: 0,
-      name: "vote for Remoji on top.gg! | e/help",
+      name: `vote for Remoji on top.gg! | ${process.env.COMMAND_PREFIX}help`,
     },
     {
       type: 1,
-      name: "Shino | e/help",
+      name: `Shino | ${process.env.COMMAND_PREFIX}help`,
       url: "https://twitch.tv/shinotheshino",
     },
     {
       type: 0,
-      name: "What's ba-lug-na? | e/help",
+      name: `What's ba-lug-na? | ${process.env.COMMAND_PREFIX}help`,
     },
     {
       type: 0,
-      name: "Wait, you're a Redditor *and* a Discord mod??? omg :flushed: | e/help",
+      name: `Wait, you're a Redditor *and* a Discord mod??? omg :flushed: | ${process.env.COMMAND_PREFIX}help`,
     },
     {
       type: 0,
-      name: "not related to remoji.com | e/help",
+      name: `not related to remoji.com | ${process.env.COMMAND_PREFIX}help`,
     },
     {
       type: 0,
-      name: "Join the support server! | e/help",
+      name: `Join the support server! | ${process.env.COMMAND_PREFIX}help`,
     },
     {
       type: 0,
-      name: "How are you today? :) | e/help",
+      name: `How are you today? :) | ${process.env.COMMAND_PREFIX}help`,
     },
     {
       type: 0,
-      name: "Stealing emotes since November 2020 | e/help",
+      name: `Stealing emotes since November 2020 | ${process.env.COMMAND_PREFIX}help`,
     },
   ] as eris.ActivityPartial<eris.BotActivityType>[],
 });

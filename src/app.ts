@@ -15,11 +15,13 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
+import dotenv from "dotenv-safe";
+dotenv.config({ allowEmptyValues: true });
+
 import { Bot } from "./lib/bot";
 import { Constants as ErisConstants } from "eris";
 import { PingCommand } from "./commands/ping.command";
 import logger from "./lib/logger";
-import dotenv from "dotenv-safe";
 import { HelpCommand } from "./commands/help.command";
 import { randomChoice } from "./lib/utils";
 import Constants from "./Constants";
@@ -29,8 +31,6 @@ import { UploadCommand } from "./commands/upload.command";
 import { ListCommand } from "./commands/list.command";
 
 const { Intents } = ErisConstants;
-
-dotenv.config({ allowEmptyValues: true });
 
 const bot = new Bot({
   token: process.env.DISCORD_TOKEN as string,

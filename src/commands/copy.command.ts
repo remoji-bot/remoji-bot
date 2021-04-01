@@ -67,12 +67,24 @@ export class CopyCommand extends Command {
     content = content.split(":hourglass:").join(":white_check_mark:") + " Done!\n:hourglass: Uploading...";
     await reply.edit(content);
 
-    const created = await this.bot.client.createGuildEmoji(message.guildID as string, {
-      name,
-      image: `data:${fetched.headers["content-type"]};base64,${fetched.rawBody.toString("base64")}`,
-    });
+    try {
+      const created = await this.bot.client.createGuildEmoji(message.guildID as string, {
+        name,
+        image: `data:${fetched.headers["content-type"]};base64,${fetched.rawBody.toString("base64")}`,
+      });
 
-    content = content.split(":hourglass:").join(":white_check_mark:") + ` Done!\n:white_check_mark: Copied emoji! \`:${created.name}:\``;
-    await reply.edit(content);
+      content = content.split(":hourglass:").join(":white_check_mark:") + ` Done!\n:white_check_mark: Copied emoji! \`:${created.name}:\``;
+      await reply.edit(content);
+    } catch (error) {
+      if (error instanceof eris.DiscordRESTError && error.code === 30008) {
+        content = content.split(":hourglass:").join(":x:") + " Failed!";
+        await Promise.all([
+          reply.edit(content),
+          message.channel.createMessage(":no_entry: Your server has reached the maximum number of emojis allowed by Discord!"),
+        ]);
+      } else {
+        throw error;
+      }
+    }
   }
 }
