@@ -7,6 +7,8 @@ import { HelpCommand } from "./commands/help.command";
 import { randomChoice } from "./lib/utils";
 import Constants from "./Constants";
 import { CopyCommand } from "./commands/copy.command";
+import { DownloadCommand } from "./commands/download.command";
+import { UploadCommand } from "./commands/upload.command";
 
 const { Intents } = ErisConstants;
 
@@ -24,7 +26,12 @@ const bot = new Bot({
   },
 });
 
-bot.addCommand(new PingCommand()).addCommand(new HelpCommand()).addCommand(new CopyCommand());
+bot
+  .addCommand(new PingCommand())
+  .addCommand(new HelpCommand())
+  .addCommand(new CopyCommand())
+  .addCommand(new DownloadCommand())
+  .addCommand(new UploadCommand());
 
 async function main() {
   await bot.login();

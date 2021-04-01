@@ -1,4 +1,4 @@
-import { Command, permissionCheck } from "../lib/command";
+import { Command } from "../lib/command";
 import eris from "eris";
 import { stripIndents } from "common-tags";
 import { time } from "../lib/utils";
