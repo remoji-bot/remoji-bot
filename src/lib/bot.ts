@@ -18,6 +18,7 @@ export class Bot {
     this.client = new eris.Client(options.token, options.erisOptions);
     this.client.on("messageCreate", this.onMessage.bind(this));
     this.client.once("ready", this.onReady.bind(this));
+    this.client.on("error", this.onError.bind(this));
   }
 
   addCommand(command: Command): this {
@@ -64,6 +65,10 @@ export class Bot {
   private async onReady() {
     await Promise.all([...this.commands].map(command => command.__initialize(this)));
     this.ready = true;
+  }
+
+  private onError(error: Error): void {
+    logger.error(error);
   }
 
   async login(): Promise<void> {
