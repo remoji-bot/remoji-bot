@@ -21,6 +21,10 @@ To run your own instance of the bot:
 
 Optionally, you can use a tool such as `pm2` or `forever`, to monitor and restart the bot in the event of a crash.
 
-This project is licensed under the [GNU GPLv3](https://www.gnu.org/licenses/).
+This project is licensed under the [GNU AGPLv3](https://www.gnu.org/licenses/).
 
 See the [LICENSE](LICENSE) file for the full license text.
+
+[From _choosealicense.com_](https://choosealicense.com/licenses/agpl-3.0/):
+
+> ### Permissions of this strongest copyleft license are conditioned on **making available complete source code of licensed works and modifications**, which include larger works using a licensed work, under the same license. Copyright and license notices must be preserved. Contributors provide an express grant of patent rights. **When a modified version is used to provide a service over a network, the complete source code of the modified version must be made available.**
