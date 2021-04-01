@@ -9,6 +9,7 @@ import Constants from "./Constants";
 import { CopyCommand } from "./commands/copy.command";
 import { DownloadCommand } from "./commands/download.command";
 import { UploadCommand } from "./commands/upload.command";
+import { ListCommand } from "./commands/list.command";
 
 const { Intents } = ErisConstants;
 
@@ -31,7 +32,8 @@ bot
   .addCommand(new HelpCommand())
   .addCommand(new CopyCommand())
   .addCommand(new DownloadCommand())
-  .addCommand(new UploadCommand());
+  .addCommand(new UploadCommand())
+  .addCommand(new ListCommand());
 
 async function main() {
   await bot.login();

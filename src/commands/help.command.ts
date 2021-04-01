@@ -1,4 +1,4 @@
-import { Command } from "../lib/command";
+import { Command, botPermissionCheck } from "../lib/command";
 import eris from "eris";
 import Constants from "../Constants";
 
@@ -8,7 +8,7 @@ export class HelpCommand extends Command {
       name: "help",
       aliases: [],
       checks: {
-        "Bot must have 'Embed Links' permission.": message => message.channel.permissionsOf(this.bot.client.user.id).has("embedLinks"),
+        "Bot must have 'Embed Links' permission.": botPermissionCheck(["embedLinks"]),
       },
     });
   }
@@ -17,11 +17,11 @@ export class HelpCommand extends Command {
     await this.bot.client.createMessage(message.channel.id, {
       embed: {
         color: 0xf5f5f5,
-        title: `Remoji - Discord Emoji Manager`,
+        title: "Remoji - Discord Emoji Manager",
         thumbnail: {
           url: this.bot.client.user.dynamicAvatarURL("png"),
         },
-        description: `Remoji provides a few, easy-to-use commands.`,
+        description: "Remoji provides a few, easy-to-use commands.",
         fields: [
           {
             name: "`help`",

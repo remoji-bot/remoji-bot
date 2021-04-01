@@ -35,7 +35,9 @@ export class Bot {
     if (!parsed.success) return;
     for (const command of this.commands) {
       if (command.name.toLowerCase() === parsed.command.toLowerCase()) {
-        logger.info(`${message.author.username}#${message.author.discriminator} used command '${command.name}'`);
+        logger.info(
+          `*${message.guildID} > #${message.channel.id} > @${message.author.id} (${message.author.username}#${message.author.discriminator}) used command '${command.name}'`,
+        );
         const result = await command.__execute(parsed);
         if (!result.success) {
           if ("error" in result) {
