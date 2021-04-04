@@ -15,67 +15,71 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-import { Command, botPermissionCheck, userPermissionCheck, CommandResult } from "../lib/command";
-import eris from "eris";
-import { MessageArgumentReader } from "discord-command-parser";
+
+import { SlashCommand, SlashCreator, CommandContext, CommandOptionType } from "slash-create";
 import got from "got";
 import { stripIndents } from "common-tags";
 
-export class DownloadCommand extends Command {
-  constructor() {
-    super({
+import { getEmoteCDNLink } from "../lib/utils";
+import logger from "../lib/logger";
+
+class DownloadCommand extends SlashCommand {
+  constructor(creator: SlashCreator) {
+    super(creator, {
       name: "download",
-      aliases: [],
-      checks: {
-        "User must have 'Attach Files' permission.": userPermissionCheck(["attachFiles"]),
-        "Bot must have 'Attach Files' permission.": botPermissionCheck(["attachFiles"]),
-      },
+      description: "Downloads an emote (for permalinking) and shows info about it",
+      options: [
+        {
+          name: "emote",
+          description: "The emote to download (must be a custom emote)",
+          type: CommandOptionType.STRING,
+          required: true,
+        },
+      ],
     });
+    this.filePath = __filename;
   }
 
-  async run(message: eris.Message<eris.GuildTextableChannel>, args: MessageArgumentReader): Promise<CommandResult | void> {
-    const emoji = args.getString(false, v => /^<(a?):\w+:[0-9]+>$/.test(v));
+  async run(ctx: CommandContext): Promise<void | string> {
+    const emote = ctx.options.emote as string;
 
-    if (!emoji) {
-      return { success: false, reason: "Specify a valid (custom) emoji." };
+    const [, animatedFlag, name, id] = emote.match(/^<(a?):(\w+):([0-9]+)>$/) ?? [];
+
+    if (!/^<(a?):\w+:[0-9]+>$/.test(emote) || !id) {
+      await ctx.send(
+        ":x: That doesn't look like a valid custom emote. To download an existing emote, just select it from the emoji picker when prompted for the `emote` in the command.",
+        { ephemeral: true },
+      );
+      return;
     }
 
-    const emojiMatch = emoji.match(/^<(a?):\w+:([0-9]+)>$/);
+    const animated = !!animatedFlag;
 
-    if (!emojiMatch?.[2]) {
-      return { success: false, reason: "Could not find the specified emoji." };
-    }
+    const url = getEmoteCDNLink(id, animated);
 
-    const emoteURL = `https://cdn.discordapp.com/emojis/${emojiMatch[2]}.${emojiMatch[1] ? "gif" : "png"}`;
+    await ctx.defer();
 
-    let content = ":hourglass: Downloading...";
-    const reply = await message.channel.createMessage(content);
-
-    const fetched = await got(emoteURL, {
-      throwHttpErrors: false,
-    });
-
+    // Download
+    const fetched = await got(url, { throwHttpErrors: false });
     if (fetched.statusCode !== 200) {
-      return { success: false, reason: "An error occurred while trying to download that emote." };
+      logger.warn(`emote download failed: ${fetched.statusCode} (${fetched.statusMessage})`);
+      await ctx.send(":x: Could not download the emote. Make sure you typed it correctly!");
+      return;
     }
 
-    content = content.split(":hourglass:").join(":white_check_mark:") + " Done!\n:hourglass: Uploading...";
-    await reply.edit(content);
-
-    await message.channel.createMessage(
-      {
-        content: stripIndents`
-          **Name**: \`${emojiMatch[0]}\`
-          **Animated**: ${emojiMatch[1] ? "Yes" : "No"}
-          **ID**: \`${emojiMatch[2]}\`
-          **URL**: <${emoteURL}>`,
-      },
-      {
+    await ctx.send({
+      content: stripIndents`
+          **Name**: \`${name}\`
+          **Animated**: ${animated ? "Yes" : "No"}
+          **ID**: \`${id}\`
+          **URL**: <${url}>
+          **Image (attached):**`,
+      file: {
         file: fetched.rawBody,
-        name: `${emojiMatch[2]}.${emojiMatch[1] ? "gif" : "png"}`,
+        name: `${name}.${animated ? "gif" : "png"}`,
       },
-    );
-
-    await reply.delete();
+    });
   }
 }
+
+export = DownloadCommand;

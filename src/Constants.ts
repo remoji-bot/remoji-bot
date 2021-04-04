@@ -15,6 +15,7 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
+
 import eris from "eris";
 import child_process from "child_process";
 
@@ -24,9 +25,7 @@ const Constants = Object.freeze({
   requiredPermissions:
     eris.Constants.Permissions.manageEmojis |
     eris.Constants.Permissions.readMessages |
-    eris.Constants.Permissions.sendMessages |
-    eris.Constants.Permissions.embedLinks |
-    eris.Constants.Permissions.attachFiles |
+    eris.Constants.Permissions.readMessageHistory |
     eris.Constants.Permissions.externalEmojis,
   version: "1.1.1",
   git: Object.freeze({
@@ -36,64 +35,7 @@ const Constants = Object.freeze({
   stati: [
     {
       type: 5 as eris.BotActivityType,
-      name: `discord | ${process.env.COMMAND_PREFIX}help`,
-    },
-    {
-      type: 5 as eris.BotActivityType,
-      name: `emoji management | ${process.env.COMMAND_PREFIX}help`,
-    },
-    {
-      type: 2,
-      name: `${process.env.COMMAND_PREFIX}help`,
-    },
-    {
-      type: 0,
-      name: `with emojis | ${process.env.COMMAND_PREFIX}help`,
-    },
-    {
-      type: 0,
-      name: `KEKW | ${process.env.COMMAND_PREFIX}help`,
-    },
-    {
-      type: 0,
-      name: `emoji management | ${process.env.COMMAND_PREFIX}help`,
-    },
-    {
-      type: 0,
-      name: `with Shino | ${process.env.COMMAND_PREFIX}help`,
-    },
-    {
-      type: 0,
-      name: `vote for Remoji on top.gg! | ${process.env.COMMAND_PREFIX}help`,
-    },
-    {
-      type: 1,
-      name: `Shino | ${process.env.COMMAND_PREFIX}help`,
-      url: "https://twitch.tv/shinotheshino",
-    },
-    {
-      type: 0,
-      name: `What's ba-lug-na? | ${process.env.COMMAND_PREFIX}help`,
-    },
-    {
-      type: 0,
-      name: `Wait, you're a Redditor *and* a Discord mod??? omg :flushed: | ${process.env.COMMAND_PREFIX}help`,
-    },
-    {
-      type: 0,
-      name: `not related to remoji.com | ${process.env.COMMAND_PREFIX}help`,
-    },
-    {
-      type: 0,
-      name: `Join the support server! | ${process.env.COMMAND_PREFIX}help`,
-    },
-    {
-      type: 0,
-      name: `How are you today? :) | ${process.env.COMMAND_PREFIX}help`,
-    },
-    {
-      type: 0,
-      name: `Stealing emotes since November 2020 | ${process.env.COMMAND_PREFIX}help`,
+      name: "/info (slash commands)",
     },
   ] as eris.ActivityPartial<eris.BotActivityType>[],
 });

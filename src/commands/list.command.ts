@@ -15,49 +15,118 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-import { Command, botPermissionCheck } from "../lib/command";
-import eris from "eris";
 
-export class ListCommand extends Command {
-  constructor() {
-    super({
+import { SlashCommand, SlashCreator, CommandContext } from "slash-create";
+import { Embed } from "eris";
+
+import { Bot } from "../lib/bot";
+import { getGuildEmotes, getRemainingGuildEmoteSlots } from "../lib/utils";
+
+class ListCommand extends SlashCommand {
+  constructor(creator: SlashCreator) {
+    super(creator, {
       name: "list",
-      aliases: [],
-      checks: {
-        "Bot must have 'Embed Links' permission.": botPermissionCheck(["embedLinks"]),
-      },
+      description: "Lists emotes in the current server",
     });
+    this.filePath = __filename;
   }
 
-  async run(message: eris.Message<eris.GuildTextableChannel>): Promise<void> {
-    const descs: string[] = [];
-    let s = "";
+  async run(ctx: CommandContext): Promise<void | string> {
+    if (!ctx.guildID) {
+      await ctx.send(":x: This command may only be used in a server.");
+      return;
+    }
 
-    for (const emoji of message.channel.guild.emojis.sort((a, b) => a.name.localeCompare(b.name))) {
-      const line = ` <${emoji.animated ? "a" : ""}:${emoji.name}:${emoji.id}>`;
-      if (s.length + line.length > 2048) {
-        descs.push(s);
-        s = line.trim();
+    await ctx.defer();
+
+    const emotes = await getGuildEmotes(Bot.getInstance().client, ctx.guildID);
+    const [remStandard, remAnimated] = await getRemainingGuildEmoteSlots(Bot.getInstance().client, ctx.guildID);
+
+    const regular = emotes.filter(emote => !emote.animated).sort((a, b) => a.name.localeCompare(b.name));
+    const animated = emotes.filter(emote => emote.animated).sort((a, b) => a.name.localeCompare(b.name));
+
+    let page = "";
+
+    const regularPages: string[] = [];
+    const animatedPages: string[] = [];
+
+    const embeds: Embed[] = [];
+
+    for (const emote of regular) {
+      const append = ` <:_:${emote.id}> \`:${emote.name}:\`\n`;
+      if (page.length + append.length > 1024) {
+        regularPages.push(page);
+        page = append.trim() + "\n";
       } else {
-        s += line;
+        page += append;
       }
     }
-    if (s) descs.push(s);
-    if (descs.length > 0) {
-      for (const desc of descs)
-        await this.bot.client.createMessage(message.channel.id, {
-          embed: {
-            color: 0xf5f5f5,
-            description: desc,
-          },
+    if (page) regularPages.push(page);
+    page = "";
+
+    for (const emote of animated) {
+      const append = ` <a:_:${emote.id}> \`:${emote.name}:\`\n`;
+      if (page.length + append.length > 1024) {
+        animatedPages.push(page);
+        page = append.trim() + "\n";
+      } else {
+        page += append;
+      }
+    }
+    if (page) animatedPages.push(page);
+    page = "";
+
+    if (regular.length) {
+      embeds.push({
+        type: "rich",
+        title: "Regular Emotes",
+        fields: regularPages.splice(0, 5).map(page => ({ name: "\u200b", value: page, inline: true })),
+      });
+      while (regularPages.length > 0) {
+        embeds.push({
+          type: "rich",
+          fields: regularPages.splice(0, 5).map(page => ({ name: "\u200b", value: page, inline: true })),
         });
+      }
     } else {
-      await this.bot.client.createMessage(message.channel.id, {
-        embed: {
-          color: 0xf5f5f5,
-          description: "No emotes exist in this server... *yet*",
-        },
+      embeds.push({
+        type: "rich",
+        title: "Regular Emotes",
+        description: "None! *yet*",
       });
     }
+    embeds[embeds.length - 1].footer = {
+      text: `${regular.length} regular emotes (${remStandard} slots available)`,
+    };
+
+    if (animated.length) {
+      embeds.push({
+        type: "rich",
+        title: "Animated Emotes",
+        fields: animatedPages.splice(0, 5).map(page => ({ name: "\u200b", value: page, inline: true })),
+      });
+      while (animatedPages.length > 0) {
+        embeds.push({
+          type: "rich",
+          fields: animatedPages.splice(0, 5).map(page => ({ name: "\u200b", value: page, inline: true })),
+        });
+      }
+      embeds[embeds.length - 1].footer = {
+        text: `${animated.length} animated emotes (${remAnimated} slots available)`,
+      };
+    } else {
+      embeds.push({
+        type: "rich",
+        title: "Animated Emotes",
+        description: "None! *yet*",
+      });
+    }
+    embeds[embeds.length - 1].footer = {
+      text: `${animated.length} animated emotes (${remAnimated} slots available)`,
+    };
+
+    await ctx.send({ embeds });
   }
 }
+
+export = ListCommand;

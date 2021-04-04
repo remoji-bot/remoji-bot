@@ -15,42 +15,8 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-export type ErisPermissionKeys =
-  | "createInstantInvite"
-  | "kickMembers"
-  | "banMembers"
-  | "administrator"
-  | "manageChannels"
-  | "manageGuild"
-  | "addReactions"
-  | "viewAuditLogs"
-  | "voicePrioritySpeaker"
-  | "stream"
-  | "readMessages"
-  | "sendMessages"
-  | "sendTTSMessages"
-  | "manageMessages"
-  | "embedLinks"
-  | "attachFiles"
-  | "readMessageHistory"
-  | "mentionEveryone"
-  | "externalEmojis"
-  | "viewGuildInsights"
-  | "voiceConnect"
-  | "voiceSpeak"
-  | "voiceMuteMembers"
-  | "voiceDeafenMembers"
-  | "voiceMoveMembers"
-  | "voiceUseVAD"
-  | "changeNickname"
-  | "manageNicknames"
-  | "manageRoles"
-  | "manageWebhooks"
-  | "manageEmojis"
-  | "all"
-  | "allGuild"
-  | "allText"
-  | "allVoice";
+
+import { BaseData, Client, Emoji, Guild } from "eris";
 
 export function timeSync<T>(cb: () => T): [number, T] {
   const before = Date.now();
@@ -66,4 +32,30 @@ export async function time<T>(cb: () => Promise<T>): Promise<[number, T]> {
 
 export function randomChoice<T>(array: T[]): T {
   return array[Math.floor(Math.random() * array.length)];
+}
+
+export function getEmoteCDNLink(id: string, animated: boolean): string {
+  return `https://cdn.discordapp.com/emojis/${id}.${animated ? "gif" : "png"}`;
+}
+
+export async function getGuildEmotes(client: Client, guildID: string): Promise<Emoji[]> {
+  return ((await client.requestHandler.request("GET", `/guilds/${guildID}/emojis`, true)) as unknown) as Emoji[];
+}
+
+export async function getRemainingGuildEmoteSlots(client: Client, guildID: string): Promise<[standard: number, animated: number]> {
+  // This is a work-around to fetch a guild while not in REST mode in eris.
+  const guild = await client.requestHandler
+    .request("GET", `/guilds/${guildID}`, true, {
+      with_counts: false,
+    })
+    .then(guild => new Guild(guild as BaseData, client));
+  if (!guild) throw new Error(`Could not find guild: ${guildID}`);
+  const totalSlots =
+    {
+      0: 50,
+      1: 100,
+      2: 150,
+      3: 200,
+    }[guild.premiumTier] ?? 0;
+  return [totalSlots - guild.emojis.filter(e => !e.animated).length, totalSlots - guild.emojis.filter(e => e.animated).length];
 }

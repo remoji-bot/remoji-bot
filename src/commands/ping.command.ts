@@ -15,25 +15,24 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-import { Command } from "../lib/command";
-import eris from "eris";
-import { stripIndents } from "common-tags";
+
+import { SlashCommand, SlashCreator, CommandContext } from "slash-create";
+
 import { time } from "../lib/utils";
 
-export class PingCommand extends Command {
-  constructor() {
-    super({
+class PingCommand extends SlashCommand {
+  constructor(creator: SlashCreator) {
+    super(creator, {
       name: "ping",
-      aliases: [],
-      checks: {},
+      description: "Tests the bot's connection to Discord",
     });
+    this.filePath = __filename;
   }
 
-  async run(message: eris.Message): Promise<void> {
-    const [elapsed, reply] = await time(() => this.bot.client.createMessage(message.channel.id, "Pong!"));
-    await reply.edit(stripIndents`
-        Pong!
-        Message Edit: ${elapsed}ms
-        Websocket: ${Math.floor(this.bot.client.shards.reduce((a, s) => a + s.latency, 0) / this.bot.client.shards.size)}ms`);
+  async run(ctx: CommandContext): Promise<void> {
+    const [delay] = await time(() => ctx.defer());
+    await ctx.send(`Pong! Latency: ${delay}ms`);
   }
 }
+
+export = PingCommand;

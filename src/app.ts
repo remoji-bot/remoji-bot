@@ -15,46 +15,58 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
+
 import dotenv from "dotenv-safe";
-dotenv.config({ allowEmptyValues: true });
+dotenv.config();
 
-import { Bot } from "./lib/bot";
-import { Constants as ErisConstants } from "eris";
-import { PingCommand } from "./commands/ping.command";
-import logger from "./lib/logger";
-import { HelpCommand } from "./commands/help.command";
-import { randomChoice } from "./lib/utils";
+import path from "path";
+
+import { AnyRequestData, GatewayServer, SlashCreator } from "slash-create";
+
 import Constants from "./Constants";
-import { CopyCommand } from "./commands/copy.command";
-import { DownloadCommand } from "./commands/download.command";
-import { UploadCommand } from "./commands/upload.command";
-import { ListCommand } from "./commands/list.command";
-
-const { Intents } = ErisConstants;
+import { Bot } from "./lib/bot";
+import logger from "./lib/logger";
+import { randomChoice } from "./lib/utils";
 
 const bot = new Bot({
   token: process.env.DISCORD_TOKEN as string,
   erisOptions: {
-    intents: Intents.guilds | Intents.guildMessages | Intents.guildMessageReactions | Intents.guildEmojis,
-    allowedMentions: {
-      everyone: false,
-      roles: false,
-      users: true,
-    },
+    intents: [],
   },
 });
 
-bot
-  .addCommand(new PingCommand())
-  .addCommand(new HelpCommand())
-  .addCommand(new CopyCommand())
-  .addCommand(new DownloadCommand())
-  .addCommand(new UploadCommand())
-  .addCommand(new ListCommand());
+const creator = new SlashCreator({
+  applicationID: process.env.APPLICATION_ID as string,
+  publicKey: process.env.CLIENT_PUBLIC_KEY as string,
+  token: process.env.DISCORD_TOKEN as string,
+  allowedMentions: {
+    everyone: false,
+    roles: false,
+    users: false,
+  },
+});
+
+creator.on("error", err => logger.error(err));
+creator.on("commandError", (command, err, ctx) => logger.error({ command, err, ctx }));
+creator.on("debug", message => logger.debug(message));
 
 async function main() {
   await bot.login();
-  logger.info("Logged in!");
+  creator
+    .withServer(
+      new GatewayServer(handler =>
+        bot.client.on("rawWS", e => {
+          if (e.t === "INTERACTION_CREATE") handler(e.d as AnyRequestData);
+        }),
+      ),
+    )
+    .registerCommandsIn({
+      dirname: path.join(__dirname, "commands"),
+      filter: /.+\.command\.[jt]s$/,
+    })
+    .syncCommands();
+
+  logger.info(`Logged in as ${bot.client.user.username}#${bot.client.user.discriminator} with ${creator.commands.size} commands.`);
 
   function editStatus() {
     bot.client.editStatus("online", randomChoice(Constants.stati));

@@ -15,9 +15,9 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-import { Command } from "./command";
-import eris, { GuildChannel, GuildTextableChannel, PrivateChannel } from "eris";
-import * as parser from "discord-command-parser";
+
+import eris from "eris";
+
 import logger from "./logger";
 
 export interface BotOptions {
@@ -26,61 +26,23 @@ export interface BotOptions {
 }
 
 export class Bot {
-  readonly client: eris.Client;
+  private static instance?: Bot;
+  static getInstance(): Bot {
+    if (!this.instance) throw new ReferenceError("bot instance is not yet defined");
+    return this.instance;
+  }
 
-  protected readonly commands = new Set<Command>();
+  readonly client: eris.Client;
   protected ready = false;
 
   constructor(options: BotOptions) {
     this.client = new eris.Client(options.token, options.erisOptions);
-    this.client.on("messageCreate", this.onMessage.bind(this));
     this.client.once("ready", this.onReady.bind(this));
     this.client.on("error", this.onError.bind(this));
+    Bot.instance = this;
   }
 
-  addCommand(command: Command): this {
-    this.commands.add(command);
-    if (this.ready) void command.__initialize(this);
-    return this;
-  }
-
-  private async onMessage(message: eris.Message): Promise<void> {
-    if (!this.ready || !(message.channel instanceof GuildChannel) || message.channel instanceof PrivateChannel) return;
-    const parsed = parser.parse(message as eris.Message<GuildTextableChannel>, process.env.COMMAND_PREFIX as string, {
-      ignorePrefixCase: true,
-      allowSpaceBeforeCommand: true,
-    });
-    if (!parsed.success) return;
-    for (const command of this.commands) {
-      if (command.name.toLowerCase() === parsed.command.toLowerCase()) {
-        logger.info(
-          `*${message.guildID} > #${message.channel.id} > @${message.author.id} (${message.author.username}#${message.author.discriminator}) used command '${command.name}'`,
-        );
-        const result = await command.__execute(parsed);
-        if (!result.success) {
-          if ("error" in result) {
-            try {
-              await message.channel.createMessage(":x: An error occurred while running this command!");
-            } catch (error) {
-              logger.error(error);
-            } finally {
-              logger.error(result.error);
-            }
-          } else {
-            try {
-              await message.channel.createMessage(`:x: Command failed: ${result.reason}`);
-            } catch (error) {
-              logger.error(error);
-            }
-          }
-        }
-        break;
-      }
-    }
-  }
-
-  private async onReady() {
-    await Promise.all([...this.commands].map(command => command.__initialize(this)));
+  private onReady() {
     this.ready = true;
   }
 
@@ -88,7 +50,21 @@ export class Bot {
     logger.error(error);
   }
 
-  async login(): Promise<void> {
-    await this.client.connect();
+  login(): Promise<void> {
+    void this.client.connect();
+    return new Promise((resolve, reject) => {
+      const cleanup = () => {
+        this.client.off("ready", resolve);
+        this.client.off("error", reject);
+      };
+      this.client.once("ready", () => {
+        cleanup();
+        resolve();
+      });
+      this.client.once("error", () => {
+        cleanup();
+        reject();
+      });
+    });
   }
 }
