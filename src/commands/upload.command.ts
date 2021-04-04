@@ -1,5 +1,6 @@
-import { SlashCommand, SlashCreator, CommandContext, CommandOptionType } from "slash-create";
+import { SlashCommand, SlashCreator, CommandContext, CommandOptionType, Permissions } from "slash-create";
 import fetch from "node-fetch";
+import { URL } from "url";
 
 import { getRemainingGuildEmoteSlots } from "../lib/utils";
 import { Bot } from "../lib/bot";
@@ -34,6 +35,11 @@ class UploadCommand extends SlashCommand {
       return;
     }
 
+    if (!ctx.member?.permissions.has(Permissions.FLAGS.MANAGE_EMOJIS)) {
+      await ctx.send(":lock: You need the Manage Emojis permission to use this command.", { ephemeral: true });
+      return;
+    }
+
     const url = ctx.options.url as string;
     const name = ctx.options.name as string;
 
@@ -55,17 +61,20 @@ class UploadCommand extends SlashCommand {
 
     const [remStandard, remAnimated] = await getRemainingGuildEmoteSlots(Bot.getInstance().client, ctx.guildID);
 
-    if (url.endsWith("gif") && !remAnimated) {
-      await ctx.send(":no_entry: You do not have any available animated emote slots left in this server.");
+    const urlUrl = new URL(url);
+
+    if (urlUrl.pathname.endsWith(".gif") && !remAnimated) {
+      await ctx.send(":no_entry: There are no animated emote slots left in this server.");
       return;
-    } else if (!url.endsWith(".gif") && !remStandard) {
-      await ctx.send(":no_entry: You do not have any available normal emote slots left in this server.");
+    } else if (!urlUrl.pathname.endsWith(".gif") && !remStandard) {
+      await ctx.send(":no_entry: There are no normal emote slots left in this server.");
       return;
     }
 
     try {
       const fetched = await fetch(url, {
         size: 256 * 1000,
+        timeout: 10000,
       });
 
       const data = await fetched.buffer();
@@ -75,7 +84,7 @@ class UploadCommand extends SlashCommand {
         image: `data:${fetched.headers.get("Content-Type")};base64,${data.toString("base64")}`,
       });
 
-      await ctx.send(`:white_check_mark: Copied emote! \`:${created.name}:\``);
+      await ctx.send(`:white_check_mark: Uploaded emote! \`:${created.name}:\``);
     } catch (err) {
       logger.error(err);
       await ctx.send(":x: Could not create the emoji. Make sure you specified a valid image under 256KiB.");

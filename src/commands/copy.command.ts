@@ -16,7 +16,7 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { SlashCommand, SlashCreator, CommandContext, CommandOptionType } from "slash-create";
+import { SlashCommand, SlashCreator, CommandContext, CommandOptionType, Permissions } from "slash-create";
 import got from "got";
 
 import { getEmoteCDNLink, getRemainingGuildEmoteSlots } from "../lib/utils";
@@ -49,6 +49,11 @@ class CopyCommand extends SlashCommand {
   async run(ctx: CommandContext): Promise<void | string> {
     if (!ctx.guildID) {
       await ctx.send(":x: This command may only be used in a server.");
+      return;
+    }
+
+    if (!ctx.member?.permissions.has(Permissions.FLAGS.MANAGE_EMOJIS)) {
+      await ctx.send(":lock: You need the Manage Emojis permission to use this command.", { ephemeral: true });
       return;
     }
 
