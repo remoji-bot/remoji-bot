@@ -2,13 +2,11 @@
 
 ![Travis CI](https://travis-ci.org/shinotheshino/remoji-bot.svg?branch=master)
 
-A Discord bot that re-uploads and provides tools for managing emojis in Discord.
+A Discord **Slash Command** bot that re-uploads and provides tools for managing emojis in Discord.
 
-# [Add to Discord](https://discord.com/oauth2/authorize?client_id=781606551349231667&permissions=1074056192&scope=bot)
+# [Add to Discord](https://discord.com/oauth2/authorize?client_id=781606551349231667&permissions=1074070528&scope=applications.commands%20bot)
 
 # [Support Server](https://discord.gg/WhbncjXPXN)
-
-![Help Screenshot](https://i.imgur.com/2SNyBZo.png)
 
 To run your own instance of the bot:
 
