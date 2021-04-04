@@ -80,12 +80,12 @@ class ListCommand extends SlashCommand {
       embeds.push({
         type: "rich",
         title: "Regular Emotes",
-        fields: regularPages.splice(0, 5).map(page => ({ name: "\u200b", value: page, inline: true })),
+        fields: regularPages.splice(0, 4).map(page => ({ name: "\u200b", value: page, inline: true })),
       });
       while (regularPages.length > 0) {
         embeds.push({
           type: "rich",
-          fields: regularPages.splice(0, 5).map(page => ({ name: "\u200b", value: page, inline: true })),
+          fields: regularPages.splice(0, 4).map(page => ({ name: "\u200b", value: page, inline: true })),
         });
       }
     } else {
@@ -103,12 +103,12 @@ class ListCommand extends SlashCommand {
       embeds.push({
         type: "rich",
         title: "Animated Emotes",
-        fields: animatedPages.splice(0, 5).map(page => ({ name: "\u200b", value: page, inline: true })),
+        fields: animatedPages.splice(0, 4).map(page => ({ name: "\u200b", value: page, inline: true })),
       });
       while (animatedPages.length > 0) {
         embeds.push({
           type: "rich",
-          fields: animatedPages.splice(0, 5).map(page => ({ name: "\u200b", value: page, inline: true })),
+          fields: animatedPages.splice(0, 4).map(page => ({ name: "\u200b", value: page, inline: true })),
         });
       }
       embeds[embeds.length - 1].footer = {
