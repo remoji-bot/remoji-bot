@@ -15,76 +15,107 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-import { Command, botPermissionCheck, userPermissionCheck, CommandResult } from "../lib/command";
-import eris from "eris";
-import { MessageArgumentReader } from "discord-command-parser";
+
+import { SlashCommand, SlashCreator, CommandContext, CommandOptionType, Permissions } from "slash-create";
 import got from "got";
 
-export class CopyCommand extends Command {
-  constructor() {
-    super({
+import { getEmoteCDNLink, getRemainingGuildEmoteSlots } from "../lib/utils";
+import { Bot } from "../lib/bot";
+import logger from "../lib/logger";
+
+class CopyCommand extends SlashCommand {
+  constructor(creator: SlashCreator) {
+    super(creator, {
       name: "copy",
-      aliases: [],
-      checks: {
-        "User must have 'Manage Emojis' permission.": userPermissionCheck(["manageEmojis"]),
-        "Bot must have 'Manage Emojis' permission.": botPermissionCheck(["manageEmojis"]),
-      },
+      description: "Copies an emote to the current server",
+      options: [
+        {
+          name: "emote",
+          description: "The emote to copy (must be a custom emote)",
+          type: CommandOptionType.STRING,
+          required: true,
+        },
+        {
+          name: "name",
+          description: "The name for the new, copied emote",
+          type: CommandOptionType.STRING,
+          required: true,
+        },
+      ],
     });
+    this.filePath = __filename;
   }
 
-  async run(message: eris.Message<eris.GuildTextableChannel>, args: MessageArgumentReader): Promise<CommandResult | void> {
-    const emoji = args.getString(false, v => /^<(a?):\w+:[0-9]+>$/.test(v));
-    const name = args.getString(false, v => /^\w+$/.test(v));
-
-    if (!emoji) {
-      return { success: false, reason: "Specify a valid (custom) emoji." };
+  async run(ctx: CommandContext): Promise<void | string> {
+    if (!ctx.guildID) {
+      await ctx.send(":x: This command may only be used in a server.");
+      return;
     }
 
-    if (!name) {
-      return { success: false, reason: "Specify a name for the new emoji." };
+    if (!ctx.member?.permissions.has(Permissions.FLAGS.MANAGE_EMOJIS)) {
+      await ctx.send(":lock: You need the Manage Emojis permission to use this command.", { ephemeral: true });
+      return;
     }
+
+    const emote = ctx.options.emote as string;
+    const name = ctx.options.name as string;
 
     // [0] = full string, [1] = (animated ? 'a' : ''), [2] = ID
-    const emojiMatch = emoji.match(/^<(a?):\w+:([0-9]+)>$/);
+    const [, animatedFlag, id] = emote.match(/^<(a?):\w+:([0-9]+)>$/) ?? [];
 
-    if (!emojiMatch?.[2]) {
-      return { success: false, reason: "Could not find the specified emoji." };
+    if (!/^<(a?):\w+:[0-9]+>$/.test(emote) || !id) {
+      await ctx.send(
+        ":x: That doesn't look like a valid custom emote. To copy an existing emote, just select it from the emoji picker when prompted for the `emote` in the command. If you're trying to copy an emote for which you do not have access, try the `/upload` command instead.",
+        { ephemeral: true },
+      );
+      return;
     }
 
-    const emoteURL = `https://cdn.discordapp.com/emojis/${emojiMatch[2]}.${emojiMatch[1] ? "gif" : "png"}`;
+    const animated = !!animatedFlag;
 
-    let content = ":hourglass: Downloading...";
-    const reply = await message.channel.createMessage(content);
+    if (!/^[\w_]+$/.test(name)) {
+      await ctx.send(":x: That isn't a valid custom emote name. Use numbers, letters, and/or underscore (`_`) characters in your name.", {
+        ephemeral: true,
+      });
+      return;
+    }
 
-    const fetched = await got(emoteURL, {
-      throwHttpErrors: false,
-    });
+    const url = getEmoteCDNLink(id, animated);
 
+    await ctx.defer();
+
+    const [remStandard, remAnimated] = await getRemainingGuildEmoteSlots(Bot.getInstance().client, ctx.guildID);
+
+    if (animated && !remAnimated) {
+      await ctx.send(":no_entry: You do not have any available animated emote slots left in this server.");
+      return;
+    } else if (!animated && !remStandard) {
+      await ctx.send(":no_entry: You do not have any available normal emote slots left in this server.");
+      return;
+    }
+
+    // Download
+    const fetched = await got(url, { throwHttpErrors: false });
     if (fetched.statusCode !== 200) {
-      return { success: false, reason: "An error occurred while trying to download that emote." };
+      logger.warn(`emote download failed: ${fetched.statusCode} (${fetched.statusMessage})`);
+      await ctx.send(":x: Could not download the emote. Make sure you typed it correctly!");
+      return;
     }
 
-    content = content.split(":hourglass:").join(":white_check_mark:") + " Done!\n:hourglass: Uploading...";
-    await reply.edit(content);
-
+    // Upload
     try {
-      const created = await this.bot.client.createGuildEmoji(message.guildID as string, {
+      const created = await Bot.getInstance().client.createGuildEmoji(ctx.guildID, {
         name,
         image: `data:${fetched.headers["content-type"]};base64,${fetched.rawBody.toString("base64")}`,
       });
-
-      content = content.split(":hourglass:").join(":white_check_mark:") + ` Done!\n:white_check_mark: Copied emoji! \`:${created.name}:\``;
-      await reply.edit(content);
+      await ctx.send(`:white_check_mark: Copied emote! \`:${created.name}:\``);
     } catch (error) {
-      if (error instanceof eris.DiscordRESTError && error.code === 30008) {
-        content = content.split(":hourglass:").join(":x:") + " Failed!";
-        await Promise.all([
-          reply.edit(content),
-          message.channel.createMessage(":no_entry: Your server has reached the maximum number of emojis allowed by Discord!"),
-        ]);
-      } else {
-        throw error;
-      }
+      logger.error(error);
+      await ctx.send(
+        ":no_entry: Failed to copy emote! This may be because you are out of emote slots or it may be due to an error with the specific emote you chose.",
+      );
     }
   }
 }
+
+export = CopyCommand;
