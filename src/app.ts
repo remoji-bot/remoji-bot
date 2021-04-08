@@ -31,7 +31,7 @@ import { randomChoice } from "./lib/utils";
 const bot = new Bot({
   token: process.env.DISCORD_TOKEN as string,
   erisOptions: {
-    intents: [],
+    restMode: true,
   },
 });
 

@@ -20,7 +20,7 @@ import { SlashCommand, SlashCreator, CommandContext } from "slash-create";
 import { Embed } from "eris";
 
 import { Bot } from "../lib/bot";
-import { getGuildEmotes, getRemainingGuildEmoteSlots } from "../lib/utils";
+import { getRemainingGuildEmoteSlots } from "../lib/utils";
 
 class ListCommand extends SlashCommand {
   constructor(creator: SlashCreator) {
@@ -39,7 +39,7 @@ class ListCommand extends SlashCommand {
 
     await ctx.defer();
 
-    const emotes = await getGuildEmotes(Bot.getInstance().client, ctx.guildID);
+    const emotes = await Bot.getInstance().client.getRESTGuildEmojis(ctx.guildID);
     const [remStandard, remAnimated] = await getRemainingGuildEmoteSlots(Bot.getInstance().client, ctx.guildID);
 
     const regular = emotes.filter(emote => !emote.animated).sort((a, b) => a.name.localeCompare(b.name));

@@ -16,7 +16,7 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { BaseData, Client, Emoji, Guild } from "eris";
+import { Client } from "eris";
 
 export function timeSync<T>(cb: () => T): [number, T] {
   const before = Date.now();
@@ -38,18 +38,9 @@ export function getEmoteCDNLink(id: string, animated: boolean): string {
   return `https://cdn.discordapp.com/emojis/${id}.${animated ? "gif" : "png"}`;
 }
 
-export async function getGuildEmotes(client: Client, guildID: string): Promise<Emoji[]> {
-  return ((await client.requestHandler.request("GET", `/guilds/${guildID}/emojis`, true)) as unknown) as Emoji[];
-}
-
 export async function getRemainingGuildEmoteSlots(client: Client, guildID: string): Promise<[standard: number, animated: number]> {
   // This is a work-around to fetch a guild while not in REST mode in eris.
-  const guild = await client.requestHandler
-    .request("GET", `/guilds/${guildID}`, true, {
-      with_counts: false,
-    })
-    .then(guild => new Guild(guild as BaseData, client));
-  if (!guild) throw new Error(`Could not find guild: ${guildID}`);
+  const guild = await client.getRESTGuild(guildID);
   const totalSlots =
     {
       0: 50,
