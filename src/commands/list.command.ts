@@ -39,8 +39,10 @@ class ListCommand extends SlashCommand {
 
     await ctx.defer();
 
-    const emotes = await Bot.getInstance().client.getRESTGuildEmojis(ctx.guildID);
-    const [remStandard, remAnimated] = await getRemainingGuildEmoteSlots(Bot.getInstance().client, ctx.guildID);
+    const bot = Bot.getInstance();
+
+    const emotes = bot.client.guilds.get(ctx.guildID)?.emojis ?? (await bot.client.getRESTGuildEmojis(ctx.guildID));
+    const [remStandard, remAnimated] = await getRemainingGuildEmoteSlots(bot.client, ctx.guildID);
 
     const regular = emotes.filter(emote => !emote.animated).sort((a, b) => a.name.localeCompare(b.name));
     const animated = emotes.filter(emote => emote.animated).sort((a, b) => a.name.localeCompare(b.name));
