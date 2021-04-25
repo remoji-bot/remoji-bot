@@ -22,6 +22,8 @@ import got from "got";
 import { getEmoteCDNLink, getRemainingGuildEmoteSlots } from "../lib/utils";
 import { Bot } from "../lib/bot";
 import logger from "../lib/logger";
+import Constants from "../Constants";
+import { stripIndents } from "common-tags";
 
 class CopyCommand extends SlashCommand {
   constructor(creator: SlashCreator) {
@@ -111,9 +113,14 @@ class CopyCommand extends SlashCommand {
       await ctx.send(`:white_check_mark: Copied emote! \`:${created.name}:\``);
     } catch (error) {
       logger.error(error);
-      await ctx.send(
-        ":no_entry: Failed to copy emote! This may be because you are out of emote slots or it may be due to an error with the specific emote you chose.",
-      );
+      await ctx.send(stripIndents`
+        :no_entry: Failed to copy emote! This is likely due to an error with the specific emote you chose or permissions.
+
+        1.  Make sure Remoji has the **Manage Emojis** permission in the server.
+        2.  Try using the \`/upload\` command with the emoji URL (\`${url}\`).
+
+        If the problem persists, **please** join the support server and report it! ${Constants.supportServerInvite}
+      `);
     }
   }
 }

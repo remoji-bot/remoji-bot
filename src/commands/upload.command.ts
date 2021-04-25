@@ -23,6 +23,8 @@ import { URL } from "url";
 import { getRemainingGuildEmoteSlots } from "../lib/utils";
 import { Bot } from "../lib/bot";
 import logger from "../lib/logger";
+import { stripIndents } from "common-tags";
+import Constants from "../Constants";
 
 class UploadCommand extends SlashCommand {
   constructor(creator: SlashCreator) {
@@ -103,9 +105,16 @@ class UploadCommand extends SlashCommand {
       });
 
       await ctx.send(`:white_check_mark: Uploaded emote! \`:${created.name}:\``);
-    } catch (err) {
-      logger.error(err);
-      await ctx.send(":x: Could not create the emoji. Make sure you specified a valid image under 256KiB.");
+    } catch (error) {
+      logger.error(error);
+      await ctx.send(stripIndents`
+        :no_entry: Failed to create the emote! This is likely due to an error with the specific emote you chose or permissions.
+
+        1.  Make sure that you specified a valid image (JPG, PNG, GIF) **under 256KB** or else Discord will reject it.
+        2.  Make sure Remoji has the **Manage Emojis** permission in the server.
+
+        If the problem persists and you are sure that you are using a valid image, **please** join the support server and report it! ${Constants.supportServerInvite}
+      `);
     }
   }
 }
