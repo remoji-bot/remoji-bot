@@ -84,14 +84,16 @@ class CopyCommand extends SlashCommand {
 
     const url = getEmoteCDNLink(id, animated);
 
+    logger.debug(`commands/copy: emote = ${emote}, name = ${name}, animated = ${animated}, id = ${id}, url = ${url}`);
+
     await ctx.defer();
 
     const [remStandard, remAnimated] = await getRemainingGuildEmoteSlots(Bot.getInstance().client, ctx.guildID);
 
-    if (animated && !remAnimated) {
+    if (animated && remAnimated < 1) {
       await ctx.send(":no_entry: You do not have any available animated emote slots left in this server.");
       return;
-    } else if (!animated && !remStandard) {
+    } else if (!animated && remStandard < 1) {
       await ctx.send(":no_entry: You do not have any available normal emote slots left in this server.");
       return;
     }

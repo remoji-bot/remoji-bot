@@ -17,6 +17,7 @@
 */
 
 import { Client } from "eris";
+import logger from "./logger";
 
 export function timeSync<T>(cb: () => T): [number, T] {
   const before = Date.now();
@@ -39,8 +40,8 @@ export function getEmoteCDNLink(id: string, animated: boolean): string {
 }
 
 export async function getRemainingGuildEmoteSlots(client: Client, guildID: string): Promise<[standard: number, animated: number]> {
-  // This is a work-around to fetch a guild while not in REST mode in eris.
-  const guild = await client.getRESTGuild(guildID);
+  logger.debug(`getReminaingGuildEmoteSlots(guildID = ${guildID})`);
+  const guild = client.guilds.get(guildID) ?? (await client.getRESTGuild(guildID));
   const totalSlots =
     {
       0: 50,
@@ -48,5 +49,8 @@ export async function getRemainingGuildEmoteSlots(client: Client, guildID: strin
       2: 150,
       3: 200,
     }[guild.premiumTier] ?? 0;
-  return [totalSlots - guild.emojis.filter(e => !e.animated).length, totalSlots - guild.emojis.filter(e => e.animated).length];
+  const standard = totalSlots - guild.emojis.filter(e => !e.animated).length;
+  const animated = totalSlots - guild.emojis.filter(e => e.animated).length;
+  logger.debug(`getReminaingGuildEmoteSlots(guildID = ${guildID}) -> [standard: ${standard}, animated: ${animated}]`);
+  return [standard, animated];
 }

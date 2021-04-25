@@ -69,7 +69,9 @@ async function main() {
   logger.info(`Logged in as ${bot.client.user.username}#${bot.client.user.discriminator} with ${creator.commands.size} commands.`);
 
   function editStatus() {
-    bot.client.editStatus("online", randomChoice(Constants.stati));
+    const status = randomChoice(Constants.stati);
+    logger.debug(`editStatus(): changing status to (${status.type}) "${status.name}"`);
+    bot.client.editStatus("online", status);
   }
 
   setInterval(editStatus, 1000 * 60 * 5).unref();

@@ -57,6 +57,8 @@ class DownloadCommand extends SlashCommand {
 
     const url = getEmoteCDNLink(id, animated);
 
+    logger.debug(`commands/download: emote = ${emote}, name = ${name}, animated = ${animated}, id = ${id}, url = ${url}`);
+
     await ctx.defer();
 
     // Download
