@@ -20,7 +20,7 @@ import eris from "eris";
 import child_process from "child_process";
 
 const Constants = Object.freeze({
-  supportServerInvite: "https://discord.gg/QmWcB94Qmt",
+  supportServerInvite: "https://discord.gg/WhbncjXPXN",
   topGG: "https://top.gg/bot/781606551349231667",
   requiredPermissions:
     eris.Constants.Permissions.manageEmojis |
