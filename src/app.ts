@@ -19,14 +19,19 @@
 import dotenv from "dotenv-safe";
 dotenv.config();
 
-import path from "path";
-
 import { AnyRequestData, GatewayServer, SlashCreator } from "slash-create";
 
 import Constants from "./Constants";
 import { Bot } from "./lib/bot";
 import logger from "./lib/logger";
 import { randomChoice } from "./lib/utils";
+
+import CopyCommand from "./commands/copy.command";
+import DownloadCommand from "./commands/download.command";
+import InfoCommand from "./commands/info.command";
+import ListCommand from "./commands/list.command";
+import PingCommand from "./commands/ping.command";
+import UploadCommand from "./commands/upload.command";
 
 const bot = new Bot({
   token: process.env.DISCORD_TOKEN as string,
@@ -60,10 +65,12 @@ async function main() {
         }),
       ),
     )
-    .registerCommandsIn({
-      dirname: path.join(__dirname, "commands"),
-      filter: /.+\.command\.[jt]s$/,
-    })
+    .registerCommand(CopyCommand)
+    .registerCommand(DownloadCommand)
+    .registerCommand(InfoCommand)
+    .registerCommand(ListCommand)
+    .registerCommand(PingCommand)
+    .registerCommand(UploadCommand)
     .syncCommands({
       skipGuildErrors: true,
       deleteCommands: true,

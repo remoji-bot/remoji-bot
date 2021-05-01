@@ -26,7 +26,7 @@ import logger from "../lib/logger";
 import { stripIndents } from "common-tags";
 import Constants from "../Constants";
 
-export class UploadCommand extends SlashCommand {
+export default class UploadCommand extends SlashCommand {
   constructor(creator: SlashCreator) {
     super(creator, {
       name: "upload",
