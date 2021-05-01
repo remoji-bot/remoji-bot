@@ -38,6 +38,7 @@ const Constants = Object.freeze({
       name: "/info (slash commands)",
     },
   ] as eris.ActivityPartial<eris.BotActivityType>[],
+  imageDomainWhitelist: ["i.imgur.com", "cdn.discordapp.com"],
 });
 
 export default Constants;

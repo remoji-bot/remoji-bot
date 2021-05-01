@@ -70,10 +70,44 @@ class UploadCommand extends SlashCommand {
       return;
     }
 
-    if (!/^[\w_]+$/.test(name)) {
-      await ctx.send(":x: That isn't a valid custom emote name. Use numbers, letters, and/or underscore (`_`) characters in your name.", {
+    if (!/^[\w_]+$/.test(name) || name.length < 2) {
+      await ctx.send(
+        ":x: That isn't a valid custom emote name. Use numbers, letters, and/or underscore (`_`) characters in your name. Names must be at least 2 characters long.",
+        {
+          ephemeral: true,
+        },
+      );
+      return;
+    }
+
+    let urlUrl: URL;
+    try {
+      urlUrl = new URL(url);
+    } catch (err) {
+      await ctx.send(":x: Failed to parse URL.");
+      return;
+    }
+
+    if (urlUrl.protocol !== "http:" && urlUrl.protocol !== "https:") {
+      await ctx.send(":x: Only `http:` and `https:` URLs are allowed.", {
         ephemeral: true,
       });
+      return;
+    }
+
+    if (!Constants.imageDomainWhitelist.some(domain => domain.toLowerCase() === urlUrl.hostname.toLowerCase())) {
+      let siteList = "";
+      for (const domain of Constants.imageDomainWhitelist) siteList += `-  \`${domain}\`\n`;
+      await ctx.send(
+        stripIndents`
+          :x: For security reasons, only images hosted on the following sites may be used:
+          ${siteList}
+          If you need to use an image from another site, just upload it to Discord first and copy the Discord image link.
+        `,
+        {
+          ephemeral: true,
+        },
+      );
       return;
     }
 
@@ -81,12 +115,10 @@ class UploadCommand extends SlashCommand {
 
     const [remStandard, remAnimated] = await getRemainingGuildEmoteSlots(Bot.getInstance().client, ctx.guildID);
 
-    const urlUrl = new URL(url);
-
-    if (urlUrl.pathname.endsWith(".gif") && !remAnimated) {
+    if (urlUrl.pathname.endsWith(".gif") && remAnimated < 1) {
       await ctx.send(":no_entry: There are no animated emote slots left in this server.");
       return;
-    } else if (!urlUrl.pathname.endsWith(".gif") && !remStandard) {
+    } else if (!urlUrl.pathname.endsWith(".gif") && remStandard < 1) {
       await ctx.send(":no_entry: There are no normal emote slots left in this server.");
       return;
     }
@@ -96,6 +128,8 @@ class UploadCommand extends SlashCommand {
         size: 256 * 1000,
         timeout: 10000,
       });
+
+      if (fetched.status !== 200) throw new Error(`Request to ${url} failed with status ${fetched.status}`);
 
       const data = await fetched.buffer();
 
