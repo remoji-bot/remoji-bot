@@ -17,12 +17,11 @@
 */
 
 import { SlashCommand, SlashCreator, CommandContext } from "slash-create";
-import { Embed } from "eris";
 
 import { Bot } from "../lib/bot";
-import { getRemainingGuildEmoteSlots } from "../lib/utils";
+import { getRemainingGuildEmoteSlots, EmbedBuilder, EmbedUtil } from "../lib/utils";
 
-class ListCommand extends SlashCommand {
+export default class ListCommand extends SlashCommand {
   constructor(creator: SlashCreator) {
     super(creator, {
       name: "list",
@@ -52,7 +51,7 @@ class ListCommand extends SlashCommand {
     const regularPages: string[] = [];
     const animatedPages: string[] = [];
 
-    const embeds: Embed[] = [];
+    const embeds: EmbedBuilder[] = [];
 
     for (const emote of regular) {
       const append = ` <:_:${emote.id}> \`:${emote.name}:\`\n`;
@@ -78,59 +77,37 @@ class ListCommand extends SlashCommand {
     if (page) animatedPages.push(page);
     page = "";
 
+    let embed;
     if (regular.length) {
-      embeds.push({
-        type: "rich",
-        title: "Regular Emotes",
-        fields: regularPages.splice(0, 5).map(page => ({ name: "\u200b", value: page, inline: true })),
-      });
+      embed = EmbedUtil.success().setTitle("Regular Emotes");
+      for (const page of regularPages.splice(0, 5)) embed.addField("\u200b", page, true);
+      embeds.push(embed);
+
       while (regularPages.length > 0) {
-        embeds.push({
-          type: "rich",
-          fields: regularPages.splice(0, 5).map(page => ({ name: "\u200b", value: page, inline: true })),
-        });
+        embed = EmbedUtil.successFollowup();
+        for (const page of regularPages.splice(0, 5)) embed.addField("\u200b", page, true);
+        embeds.push(embed);
       }
     } else {
-      embeds.push({
-        type: "rich",
-        title: "Regular Emotes",
-        description: "None! *yet*",
-      });
+      embeds.push(EmbedUtil.success("None! *yet...*").setTitle("Regular Emotes"));
     }
-    embeds[embeds.length - 1].footer = {
-      text: `${regular.length} regular emotes (${remStandard} slots available)`,
-    };
+    embeds[embeds.length - 1].setFooter(`${regular.length} regular emotes (${remStandard} slots available)`);
 
     if (animated.length) {
-      embeds.push({
-        type: "rich",
-        title: "Animated Emotes",
-        fields: animatedPages.splice(0, 5).map(page => ({ name: "\u200b", value: page, inline: true })),
-      });
-      while (animatedPages.length > 0) {
-        embeds.push({
-          type: "rich",
-          fields: animatedPages.splice(0, 5).map(page => ({ name: "\u200b", value: page, inline: true })),
-        });
-      }
-      embeds[embeds.length - 1].footer = {
-        text: `${animated.length} animated emotes (${remAnimated} slots available)`,
-      };
-    } else {
-      embeds.push({
-        type: "rich",
-        title: "Animated Emotes",
-        description: "None! *yet*",
-      });
-    }
-    embeds[embeds.length - 1].footer = {
-      text: `${animated.length} animated emotes (${remAnimated} slots available)`,
-    };
+      embed = EmbedUtil.successFollowup().setTitle("Animated Emotes");
+      for (const page of animatedPages.splice(0, 5)) embed.addField("\u200b", page, true);
+      embeds.push(embed);
 
-    while (embeds.length) {
-      await ctx.send({ embeds: embeds.splice(0, 1) });
+      while (animatedPages.length > 0) {
+        embed = EmbedUtil.successFollowup();
+        for (const page of animatedPages.splice(0, 5)) embed.addField("\u200b", page, true);
+        embeds.push(embed);
+      }
+    } else {
+      embeds.push(EmbedUtil.successFollowup("None! *yet...*").setTitle("Animated Emotes"));
     }
+    embeds[embeds.length - 1].setFooter(`${animated.length} animated emotes (${remAnimated} slots available)`);
+
+    while (embeds.length) await ctx.send({ embeds: [embeds.shift()] });
   }
 }
-
-export = ListCommand;

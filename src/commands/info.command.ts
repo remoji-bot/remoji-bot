@@ -20,8 +20,9 @@ import { SlashCommand, SlashCreator, CommandContext } from "slash-create";
 
 import Constants from "../Constants";
 import { Bot } from "../lib/bot";
+import { EmbedUtil } from "../lib/utils";
 
-class InfoCommand extends SlashCommand {
+export default class InfoCommand extends SlashCommand {
   constructor(creator: SlashCreator) {
     super(creator, {
       name: "info",
@@ -31,45 +32,25 @@ class InfoCommand extends SlashCommand {
   }
 
   async run(ctx: CommandContext): Promise<void> {
-    await ctx.send({
-      embeds: [
-        {
-          color: 0xf5f5f5,
-          title: "Remoji - Discord Emoji Manager",
-          thumbnail: {
-            url: Bot.getInstance().client.user.dynamicAvatarURL("png"),
-          },
-          description:
-            "Remoji is a super-simple but super-powerful emote manager bot for Discord. Among other features, Remoji allows you to ~~steal~~ *copy* or upload emotes to your server from directly in Discord, even on mobile!",
-          fields: [
-            {
-              name: "Join Remoji's Discord server to stay up-to-date with new features!",
-              value: `**[JOIN](${Constants.supportServerInvite})**`,
-              inline: false,
-            },
-            {
-              name: `Invite Remoji`,
-              value: `**[INVITE](https://discord.com/oauth2/authorize?client_id=${ctx.creator.options.applicationID}&permissions=${Constants.requiredPermissions}&scope=applications.commands%20bot)**`,
-              inline: true,
-            },
-            {
-              name: `Vote for Remoji`,
-              value: `**[VOTE ON TOP.GG](${Constants.topGG})**`,
-              inline: true,
-            },
-            {
-              name: "Created by Shino",
-              value:
-                "[GitHub](https://github.com/shinotheshino)  |  [Patreon](https://patreon.com/shinotheshino)  |  [Twitch](https://twitch.tv/shinotheshino)",
-            },
-          ],
-          footer: {
-            text: `Remoji version ${Constants.version} ${Constants.git.branch}-${Constants.git.commit} - GNU AGPL 3.0`,
-          },
-        },
-      ],
-    });
+    const embed = EmbedUtil.info()
+      .setTitle("Bot Info")
+      .setThumbnail(Bot.getInstance().client.user.dynamicAvatarURL("png"))
+      .setDescription(
+        "Remoji is a super-simple but super-powerful emote manager bot for Discord. Among other features, Remoji allows you to ~~steal~~ *copy* or upload emotes to your server from directly in Discord, even on mobile!",
+      )
+      .addField("Join Remoji's Discord server to stay up-to-date with new features!", `**[JOIN](${Constants.supportServerInvite})**`)
+      .addField(
+        "Invite Remoji",
+        `**[INVITE](https://discord.com/oauth2/authorize?client_id=${ctx.creator.options.applicationID}&permissions=${Constants.requiredPermissions}&scope=applications.commands%20bot)**`,
+        true,
+      )
+      .addField("Vote for Remoji", `**[VOTE ON TOP.GG](${Constants.topGG})**`, true)
+      .addField(
+        "Created by Shino",
+        "[GitHub](https://github.com/shinotheshino)  |  [Patreon](https://patreon.com/shinotheshino)  |  [Twitch](https://twitch.tv/shinotheshino)",
+      )
+      .setFooter(`Remoji version ${Constants.version} ${Constants.git.branch}-${Constants.git.commit} - GNU AGPL 3.0`);
+
+    await ctx.send({ embeds: [embed] });
   }
 }
-
-export = InfoCommand;

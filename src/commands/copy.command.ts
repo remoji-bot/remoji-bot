@@ -19,13 +19,13 @@
 import { SlashCommand, SlashCreator, CommandContext, CommandOptionType, Permissions } from "slash-create";
 import got from "got";
 
-import { getEmoteCDNLink, getRemainingGuildEmoteSlots } from "../lib/utils";
+import { getEmoteCDNLink, getRemainingGuildEmoteSlots, EmbedUtil } from "../lib/utils";
 import { Bot } from "../lib/bot";
 import logger from "../lib/logger";
 import Constants from "../Constants";
 import { stripIndents } from "common-tags";
 
-class CopyCommand extends SlashCommand {
+export default class CopyCommand extends SlashCommand {
   constructor(creator: SlashCreator) {
     super(creator, {
       name: "copy",
@@ -50,12 +50,12 @@ class CopyCommand extends SlashCommand {
 
   async run(ctx: CommandContext): Promise<void | string> {
     if (!ctx.guildID) {
-      await ctx.send(":x: This command may only be used in a server.");
+      await ctx.send({ embeds: [EmbedUtil.error(":x: This command may only be used in a server.")] });
       return;
     }
 
     if (!ctx.member?.permissions.has(Permissions.FLAGS.MANAGE_EMOJIS)) {
-      await ctx.send(":lock: You need the Manage Emojis permission to use this command.", { ephemeral: true });
+      await ctx.send({ embeds: [EmbedUtil.error(":lock: You need the Manage Emojis permission to use this command.")], ephemeral: true });
       return;
     }
 
@@ -66,17 +66,26 @@ class CopyCommand extends SlashCommand {
     const [, animatedFlag, id] = emote.match(/^<(a?):\w+:([0-9]+)>$/) ?? [];
 
     if (!/^<(a?):\w+:[0-9]+>$/.test(emote) || !id) {
-      await ctx.send(
-        ":x: That doesn't look like a valid custom emote. To copy an existing emote, just select it from the emoji picker when prompted for the `emote` in the command. If you're trying to copy an emote for which you do not have access, try the `/upload` command instead.",
-        { ephemeral: true },
-      );
+      await ctx.send({
+        embeds: [
+          EmbedUtil.error(
+            ":x: That doesn't look like a valid custom emote. To copy an existing emote, just select it from the emoji picker when prompted for the `emote` in the command. If you're trying to copy an emote for which you do not have access, try the `/upload` command instead.",
+          ),
+        ],
+        ephemeral: true,
+      });
       return;
     }
 
     const animated = !!animatedFlag;
 
     if (!/^[\w_]+$/.test(name)) {
-      await ctx.send(":x: That isn't a valid custom emote name. Use numbers, letters, and/or underscore (`_`) characters in your name.", {
+      await ctx.send({
+        embeds: [
+          EmbedUtil.error(
+            ":x: That isn't a valid custom emote name. Use numbers, letters, and/or underscore (`_`) characters in your name.",
+          ),
+        ],
         ephemeral: true,
       });
       return;
@@ -91,18 +100,18 @@ class CopyCommand extends SlashCommand {
     const [remStandard, remAnimated] = await getRemainingGuildEmoteSlots(Bot.getInstance().client, ctx.guildID);
 
     if (animated && remAnimated < 1) {
-      await ctx.send(":no_entry: You do not have any available animated emote slots left in this server.");
+      await ctx.send({ embeds: [EmbedUtil.error(":no_entry: You do not have any available animated emote slots left in this server.")] });
       return;
     } else if (!animated && remStandard < 1) {
-      await ctx.send(":no_entry: You do not have any available normal emote slots left in this server.");
+      await ctx.send({ embeds: [EmbedUtil.error(":no_entry: You do not have any available normal emote slots left in this server.")] });
       return;
     }
 
     // Download
     const fetched = await got(url, { throwHttpErrors: false });
     if (fetched.statusCode !== 200) {
-      logger.warn(`emote download failed: ${fetched.statusCode} (${fetched.statusMessage})`);
-      await ctx.send(":x: Could not download the emote. Make sure you typed it correctly!");
+      logger.warn(`emote download ${url} failed: ${fetched.statusCode} (${fetched.statusMessage})`);
+      await ctx.send({ embeds: [EmbedUtil.error(":x: Could not download the emote. Make sure you typed it correctly!")] });
       return;
     }
 
@@ -112,19 +121,22 @@ class CopyCommand extends SlashCommand {
         name,
         image: `data:${fetched.headers["content-type"]};base64,${fetched.rawBody.toString("base64")}`,
       });
-      await ctx.send(`:white_check_mark: Copied emote! \`:${created.name}:\``);
+      await ctx.send({ embeds: [EmbedUtil.success(`:white_check_mark: Copied emote! \`:${created.name}:\``)] });
     } catch (error) {
       logger.error(error);
-      await ctx.send(stripIndents`
-        :no_entry: Failed to copy emote! This is likely due to an error with the specific emote you chose or permissions.
+      await ctx.send({
+        embeds: [
+          EmbedUtil.error(stripIndents`
+            :no_entry: Failed to copy emote! This is likely due to an error with the specific emote you chose or permissions.
 
-        1.  Make sure Remoji has the **Manage Emojis** permission in the server.
-        2.  Try using the \`/upload\` command with the emoji URL (\`${url}\`).
+            1.  Make sure Remoji has the **Manage Emojis** permission in the server.
+            2.  Try using the \`/upload\` command with the emoji URL (\`${url}\`).
+            3.  The emoji may be very close to the size limit (256kB), in which case it may be too large after encoding. Try resizing it.
 
-        If the problem persists, **please** join the support server and report it! ${Constants.supportServerInvite}
-      `);
+            If the problem persists, **please** join the support server and report it! ${Constants.supportServerInvite}
+          `),
+        ],
+      });
     }
   }
 }
-
-export = CopyCommand;

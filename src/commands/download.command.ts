@@ -17,17 +17,15 @@
 */
 
 import { SlashCommand, SlashCreator, CommandContext, CommandOptionType } from "slash-create";
-import got from "got";
 import { stripIndents } from "common-tags";
 
-import { getEmoteCDNLink } from "../lib/utils";
-import logger from "../lib/logger";
+import { getEmoteCDNLink, EmbedUtil } from "../lib/utils";
 
-class DownloadCommand extends SlashCommand {
+export default class DownloadCommand extends SlashCommand {
   constructor(creator: SlashCreator) {
     super(creator, {
       name: "download",
-      description: "Downloads an emote (for permalinking) and shows info about it",
+      description: "Shows an emotes image and basic info about it",
       options: [
         {
           name: "emote",
@@ -46,10 +44,14 @@ class DownloadCommand extends SlashCommand {
     const [, animatedFlag, name, id] = emote.match(/^<(a?):(\w+):([0-9]+)>$/) ?? [];
 
     if (!/^<(a?):\w+:[0-9]+>$/.test(emote) || !id) {
-      await ctx.send(
-        ":x: That doesn't look like a valid custom emote. To download an existing emote, just select it from the emoji picker when prompted for the `emote` in the command.",
-        { ephemeral: true },
-      );
+      await ctx.send({
+        ephemeral: true,
+        embeds: [
+          EmbedUtil.error(
+            ":x: That doesn't look like a valid custom emote. To download an existing emote, just select it from the emoji picker when prompted for the `emote` in the command.",
+          ),
+        ],
+      });
       return;
     }
 
@@ -57,31 +59,15 @@ class DownloadCommand extends SlashCommand {
 
     const url = getEmoteCDNLink(id, animated);
 
-    logger.debug(`commands/download: emote = ${emote}, name = ${name}, animated = ${animated}, id = ${id}, url = ${url}`);
-
-    await ctx.defer();
-
-    // Download
-    const fetched = await got(url, { throwHttpErrors: false });
-    if (fetched.statusCode !== 200) {
-      logger.warn(`emote download failed: ${fetched.statusCode} (${fetched.statusMessage})`);
-      await ctx.send(":x: Could not download the emote. Make sure you typed it correctly!");
-      return;
-    }
-
     await ctx.send({
-      content: stripIndents`
-          **Name**: \`${name}\`
-          **Animated**: ${animated ? "Yes" : "No"}
-          **ID**: \`${id}\`
-          **URL**: <${url}>
-          **Image (attached):**`,
-      file: {
-        file: fetched.rawBody,
-        name: `${name}.${animated ? "gif" : "png"}`,
-      },
+      embeds: [
+        EmbedUtil.success()
+          .addField("Name", `\`${name}\``, true)
+          .addField("Animated", animated ? "Yes" : "No", true)
+          .addField("ID", `\`${id}\``, true)
+          .addField("URL", url, true)
+          .setImage(url),
+      ],
     });
   }
 }
-
-export = DownloadCommand;

@@ -18,9 +18,9 @@
 
 import { SlashCommand, SlashCreator, CommandContext } from "slash-create";
 
-import { time } from "../lib/utils";
+import { time, EmbedUtil } from "../lib/utils";
 
-class PingCommand extends SlashCommand {
+export default class PingCommand extends SlashCommand {
   constructor(creator: SlashCreator) {
     super(creator, {
       name: "ping",
@@ -31,8 +31,8 @@ class PingCommand extends SlashCommand {
 
   async run(ctx: CommandContext): Promise<void> {
     const [delay] = await time(() => ctx.defer());
-    await ctx.send(`Pong! Latency: ${delay}ms`);
+    await ctx.send({
+      embeds: [EmbedUtil.success(`Pong! Latency: ${delay}ms`)],
+    });
   }
 }
-
-export = PingCommand;
