@@ -77,7 +77,7 @@ async function main() {
     bot.client.editStatus("online", status);
   }
 
-  setInterval(editStatus, 1000 * 60 * 5).unref();
+  setInterval(editStatus, 1000 * 60 * 60).unref();
   editStatus();
 }
 
