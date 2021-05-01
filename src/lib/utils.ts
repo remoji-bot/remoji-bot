@@ -394,6 +394,18 @@ export class EmbedUtil {
     return this.base().setColor(0x5555ff).setDescription(description);
   }
 
+  public static promo(): EmbedBuilder {
+    // TODO: choose a random promo message - maybe from Constants or a JSON file or something
+    return new EmbedBuilder()
+      .setColor(0xffaa00)
+      .setDescription(
+        `If you find Remoji useful, please vote for (or review!) us on top.gg - it really helps the bot grow!\n<${Constants.topGG}>`,
+      )
+      .setFooter(
+        "If you're feeling extra-extra-generous, you might consider donating (click the donate link on top.gg) - hosting the bot isn't free, after all!",
+      );
+  }
+
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   private constructor() {}
 }
