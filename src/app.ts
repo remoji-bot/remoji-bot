@@ -64,7 +64,10 @@ async function main() {
       dirname: path.join(__dirname, "commands"),
       filter: /.+\.command\.[jt]s$/,
     })
-    .syncCommands();
+    .syncCommands({
+      skipGuildErrors: true,
+      deleteCommands: true,
+    });
 
   logger.info(`Logged in as ${bot.client.user.username}#${bot.client.user.discriminator} with ${creator.commands.size} commands.`);
 

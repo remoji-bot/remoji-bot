@@ -40,7 +40,7 @@ export class Bot {
     this.client = new eris.Client(options.token, options.erisOptions);
     this.client.once("ready", this.onReady.bind(this));
     this.client.on("error", this.onError.bind(this));
-    this.client.on("debug", (message, id) => logger.debug(id ? { id, message } : message));
+    // this.client.on("debug", (message, id) => logger.debug(id ? { id, message } : message));
     Bot.instance = this;
   }
 
