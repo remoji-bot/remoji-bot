@@ -101,18 +101,18 @@ export function gettype(value: unknown): VariableType {
   }
 }
 
-export class EmbedBuilder {
-  private author?: EmbedAuthorOptions;
-  private color?: number;
-  private description?: string;
-  private fields?: EmbedField[];
-  private footer?: EmbedFooterOptions;
-  private image?: EmbedImageOptions;
-  private thumbnail?: EmbedImageOptions;
-  private timestamp?: Date;
-  private title?: string;
-  private readonly type: "rich" = "rich";
-  private url?: string;
+export class EmbedBuilder implements Embed {
+  public author?: EmbedAuthorOptions;
+  public color?: number;
+  public description?: string;
+  public fields?: EmbedField[];
+  public footer?: EmbedFooterOptions;
+  public image?: EmbedImageOptions;
+  public thumbnail?: EmbedImageOptions;
+  public timestamp?: Date;
+  public title?: string;
+  public readonly type: "rich" = "rich";
+  public url?: string;
 
   public constructor(options?: Embed | EmbedOptions) {
     if (!options) return;
@@ -143,10 +143,6 @@ export class EmbedBuilder {
     };
   }
 
-  public getAuthor(): EmbedAuthor | null {
-    return this.author ?? null;
-  }
-
   public setAuthor(author: string | EmbedAuthor | null | undefined): this {
     switch (gettype(author)) {
       case "string":
@@ -164,10 +160,6 @@ export class EmbedBuilder {
         throw new TypeError(`Invalid type for author parameter: ${gettype(author)}`);
     }
     return this;
-  }
-
-  public getColor(): number | null {
-    return this.color ?? null;
   }
 
   public setColor(color: string | number | null | undefined): this {
@@ -190,10 +182,6 @@ export class EmbedBuilder {
     return this;
   }
 
-  public getDescription(): string | null {
-    return this.description ?? null;
-  }
-
   public setDescription(description: string | null | undefined): this {
     switch (gettype(description)) {
       case "string":
@@ -208,10 +196,6 @@ export class EmbedBuilder {
     }
 
     return this;
-  }
-
-  public getFields(): EmbedField[] | null {
-    return this.fields ?? null;
   }
 
   public addField(field: EmbedField): this;
@@ -236,8 +220,9 @@ export class EmbedBuilder {
     return this;
   }
 
-  public getFooter(): EmbedFooterOptions | null {
-    return this.footer ?? null;
+  public addFields(...fields: EmbedField[]): this {
+    for (const field of fields) this.addField(field);
+    return this;
   }
 
   public setFooter(footer: EmbedFooterOptions | null | undefined): this;
@@ -261,10 +246,6 @@ export class EmbedBuilder {
     return this;
   }
 
-  public getImage(): EmbedImageOptions | null {
-    return this.image ?? null;
-  }
-
   public setImage(url: string): this;
   public setImage(image: EmbedImageOptions | null | undefined): this;
   public setImage(image: EmbedImageOptions | string | null | undefined): this {
@@ -284,10 +265,6 @@ export class EmbedBuilder {
     }
 
     return this;
-  }
-
-  public getThumbnail(): EmbedImageOptions | null {
-    return this.thumbnail ?? null;
   }
 
   public setThumbnail(url: string): this;
@@ -311,10 +288,6 @@ export class EmbedBuilder {
     return this;
   }
 
-  public getTimestamp(): Date | null {
-    return this.timestamp ?? null;
-  }
-
   public setTimestamp(timestamp: Date | string | null | undefined): this {
     switch (gettype(timestamp)) {
       case "object": // Date
@@ -333,10 +306,6 @@ export class EmbedBuilder {
     return this;
   }
 
-  public getTitle(): string | null {
-    return this.title ?? null;
-  }
-
   public setTitle(title: string | null | undefined): this {
     switch (gettype(title)) {
       case "string":
@@ -351,10 +320,6 @@ export class EmbedBuilder {
     }
 
     return this;
-  }
-
-  public getURL(): string | null {
-    return this.url ?? null;
   }
 
   public setURL(url: string | null | undefined): this {
@@ -383,27 +348,30 @@ export class EmbedUtil {
   }
 
   public static error(description?: string): EmbedBuilder {
-    return this.base().setColor(0xff5555).setDescription(description);
+    return this.base()
+      .setColor(0xff5555)
+      .setDescription(description)
+      .addField("Need help?", `[Join the support server](${Constants.supportServerInvite})`);
   }
 
   public static success(description?: string): EmbedBuilder {
-    return this.base().setColor(0x55ff55).setDescription(description);
+    return this.base()
+      .setColor(0x55ff55)
+      .setAuthor({
+        icon_url: "https://i.imgur.com/1wLOFn2.png", // Star
+        name: "Click here to vote for Remoji!",
+        url: Constants.topGG,
+      })
+      .setDescription(description)
+      .setFooter("Remoji - Discord Emoji Manager - Created by Shino");
+  }
+
+  public static successFollowup(description?: string): EmbedBuilder {
+    return new EmbedBuilder().setColor(0x55ff55).setDescription(description);
   }
 
   public static info(description?: string): EmbedBuilder {
     return this.base().setColor(0x5555ff).setDescription(description);
-  }
-
-  public static promo(): EmbedBuilder {
-    // TODO: choose a random promo message - maybe from Constants or a JSON file or something
-    return new EmbedBuilder()
-      .setColor(0xffaa00)
-      .setDescription(
-        `If you find Remoji useful, please vote for (or review!) us on top.gg - it really helps the bot grow!\n<${Constants.topGG}>`,
-      )
-      .setFooter(
-        "If you're feeling extra-extra-generous, you might consider donating (click the donate link on top.gg) - hosting the bot isn't free, after all!",
-      );
   }
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function
