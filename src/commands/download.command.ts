@@ -17,7 +17,6 @@
 */
 
 import { SlashCommand, SlashCreator, CommandContext, CommandOptionType } from "slash-create";
-import { stripIndents } from "common-tags";
 
 import { getEmoteCDNLink, EmbedUtil } from "../lib/utils";
 
