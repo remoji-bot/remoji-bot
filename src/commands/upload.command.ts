@@ -84,7 +84,8 @@ class UploadCommand extends SlashCommand {
     try {
       urlUrl = new URL(url);
     } catch (err) {
-      await ctx.send(":x: Failed to parse URL.");
+      logger.error(err);
+      await ctx.send(":x: Failed to parse URL.", { ephemeral: true });
       return;
     }
 
