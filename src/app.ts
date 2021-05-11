@@ -54,7 +54,12 @@ const creator = new SlashCreator({
 creator.on("error", err => logger.error(err));
 creator.on("commandError", (command, err, ctx) => logger.error({ command, err, ctx }));
 creator.on("commandRun", (command, _, ctx) => {
-  logger.info(`Running command '${command.commandName}': server=${ctx.guildID},user=${ctx.user.id},options=${JSON.stringify(ctx.options)}`);
+  logger.info({
+    command: command.commandName,
+    guild: ctx.guildID,
+    user: `${ctx.user.id} (${ctx.user.username}#${ctx.user.discriminator})`,
+    options: ctx.options,
+  });
 });
 creator.on("debug", message => logger.debug(message));
 
