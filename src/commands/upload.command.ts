@@ -119,6 +119,8 @@ export default class UploadCommand extends SlashCommand {
       return;
     }
 
+    logger.info(`Upload: ${url} -> :${name}:`);
+
     const [remStandard, remAnimated] = await getRemainingGuildEmoteSlots(Bot.getInstance().client, ctx.guildID);
 
     if (urlUrl.pathname.endsWith(".gif") && remAnimated < 1) {

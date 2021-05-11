@@ -79,21 +79,21 @@ export default class CopyCommand extends SlashCommand {
 
     const animated = !!animatedFlag;
 
-    if (!/^[\w_]+$/.test(name)) {
+    if (!/^[\w_]+$/.test(name) || name.length < 2) {
       await ctx.send({
+        ephemeral: true,
         embeds: [
           EmbedUtil.error(
-            ":x: That isn't a valid custom emote name. Use numbers, letters, and/or underscore (`_`) characters in your name.",
+            ":x: That isn't a valid custom emote name. Use numbers, letters, and/or underscore (`_`) characters in your name. Names must be at least 2 characters long.",
           ),
         ],
-        ephemeral: true,
       });
       return;
     }
 
     const url = getEmoteCDNLink(id, animated);
 
-    logger.debug(`commands/copy: emote = ${emote}, name = ${name}, animated = ${animated}, id = ${id}, url = ${url}`);
+    logger.info(`Copy: ${emote} (${url}) -> :${name}:`);
 
     await ctx.defer();
 

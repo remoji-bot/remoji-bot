@@ -19,5 +19,8 @@
   "tsimporter.doubleQuotes": true,
   "typescript.enablePromptUseWorkspaceTsdk": true,
   "typescript.tsdk": "node_modules/ttypescript/lib",
-  "discord.enabled": false
+  "discord.enabled": false,
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
 }

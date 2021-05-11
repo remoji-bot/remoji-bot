@@ -17,6 +17,7 @@
 */
 
 import { SlashCommand, SlashCreator, CommandContext, CommandOptionType } from "slash-create";
+import logger from "../lib/logger";
 
 import { getEmoteCDNLink, EmbedUtil } from "../lib/utils";
 
@@ -57,6 +58,8 @@ export default class DownloadCommand extends SlashCommand {
     const animated = !!animatedFlag;
 
     const url = getEmoteCDNLink(id, animated);
+
+    logger.info(`Download: ${emote} -> ${url}`);
 
     await ctx.send({
       embeds: [
