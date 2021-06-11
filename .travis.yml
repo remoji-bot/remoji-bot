@@ -1,15 +1,14 @@
 language: node_js
 node_js:
-  - "13"
   - "14"
+  - "15"
 cache: yarn
 jobs:
   include:
-    - stage: test
+    - stage: lint
       script:
         - yarn
         - yarn lint
-        - yarn test
 stages:
-  - name: test
+  - name: lint
     if: type = push

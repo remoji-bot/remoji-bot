@@ -108,6 +108,6 @@ export default class ListCommand extends SlashCommand {
     }
     embeds[embeds.length - 1].setFooter(`${animated.length} animated emotes (${remAnimated} slots available)`);
 
-    while (embeds.length) await ctx.send({ embeds: [embeds.shift()] });
+    while (embeds.length > 0) await ctx.send({ embeds: [embeds.shift() as EmbedBuilder] });
   }
 }

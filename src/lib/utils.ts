@@ -374,6 +374,30 @@ export class EmbedUtil {
     return this.base().setColor(0x5555ff).setDescription(description);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  private constructor() {}
+  private constructor() {
+    // private
+  }
+}
+
+export function arrayFilterInPlace<T>(a: T[], condition: (x: T, i: number, a: T[]) => boolean, thisArg?: unknown): void {
+  let j = 0;
+
+  a.forEach((e, i) => {
+    if (condition.call(thisArg, e, i, a)) {
+      if (i !== j) a[j] = e;
+      j++;
+    }
+  });
+
+  a.length = j;
+}
+
+export function arraySumColumn<T, K extends keyof T>(
+  a: T[],
+  column: K,
+  callback: (x: T[K]) => number | null = x => (typeof x === "number" ? x : null),
+): number {
+  let sum = 0;
+  for (const row of a) if (column in row) sum += callback(row[column]) ?? 0;
+  return sum;
 }

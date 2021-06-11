@@ -16,18 +16,18 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import eris from "eris";
-import child_process from "child_process";
+import * as eris from "eris";
+import * as child_process from "child_process";
 
 const Constants = Object.freeze({
   supportServerInvite: "https://discord.gg/WhbncjXPXN",
   topGG: "https://top.gg/bot/781606551349231667",
   requiredPermissions:
     eris.Constants.Permissions.manageEmojis |
-    eris.Constants.Permissions.readMessages |
+    eris.Constants.Permissions.viewChannel |
     eris.Constants.Permissions.readMessageHistory |
-    eris.Constants.Permissions.externalEmojis,
-  version: "2.1.0",
+    eris.Constants.Permissions.useExternalEmojis,
+  version: "2.2.0",
   git: Object.freeze({
     branch: child_process.execSync("git rev-parse --abbrev-ref HEAD").toString("utf8").trim(),
     commit: child_process.execSync("git rev-parse --short HEAD").toString("utf8").trim(),

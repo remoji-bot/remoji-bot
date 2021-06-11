@@ -16,12 +16,15 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import eris from "eris";
+import { Api } from "@top-gg/sdk";
+import * as eris from "eris";
 
 import logger from "./logger";
+import { RatelimitBackendNative, RatelimitManager } from "./ratelimits";
 
 export interface BotOptions {
   token: string;
+  topggToken: string;
   erisOptions?: eris.ClientOptions;
 }
 
@@ -31,12 +34,18 @@ export class Bot {
     if (!this.instance) throw new ReferenceError("bot instance is not yet defined");
     return this.instance;
   }
+  static readonly rates = new RatelimitManager(new RatelimitBackendNative());
 
   readonly client: eris.Client;
   protected ready = false;
 
+  readonly topgg: Api;
+
   constructor(options: BotOptions) {
     if (Bot.instance) throw new Error("Cannot construct Bot when instance is already defined");
+
+    this.topgg = new Api(options.topggToken);
+
     this.client = new eris.Client(options.token, options.erisOptions);
     this.client.once("ready", this.onReady.bind(this));
     this.client.on("error", this.onError.bind(this));

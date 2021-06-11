@@ -38,7 +38,10 @@ export default class InfoCommand extends SlashCommand {
       .setDescription(
         "Remoji is a super-simple but super-powerful emote manager bot for Discord. Among other features, Remoji allows you to ~~steal~~ *copy* or upload emotes to your server from directly in Discord, even on mobile!",
       )
-      .addField("Join Remoji's Discord server to stay up-to-date with new features!", `**[JOIN](${Constants.supportServerInvite})**`)
+      .addField(
+        "Join Remoji's Discord server to stay up-to-date with new features!",
+        `**[JOIN REMOJI'S DISCORD](${Constants.supportServerInvite})**`,
+      )
       .addField(
         "Invite Remoji",
         `**[INVITE](https://discord.com/oauth2/authorize?client_id=${ctx.creator.options.applicationID}&permissions=${Constants.requiredPermissions}&scope=applications.commands%20bot)**`,

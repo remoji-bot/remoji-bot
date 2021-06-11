@@ -1,21 +1,23 @@
 {
   "root": true,
   "parser": "@typescript-eslint/parser",
-  "plugins": ["@typescript-eslint"],
+  "plugins": ["@typescript-eslint", "prettier"],
   "extends": [
     "eslint:recommended",
-    "plugin:@typescript-eslint/eslint-recommended",
     "plugin:@typescript-eslint/recommended",
-    "plugin:prettier/recommended"
+    "plugin:prettier/recommended",
+    "plugin:eslint-comments/recommended"
   ],
   "rules": {
     "require-await": "error",
     "@typescript-eslint/no-floating-promises": "error",
     "@typescript-eslint/no-explicit-any": "warn",
+    "@typescript-eslint/no-this-alias": "off",
     "@typescript-eslint/no-non-null-assertion": "warn",
-    "no-console": "warn"
+    "no-console": "warn",
+    "eslint-comments/no-use": ["warn", { "allow": [] }]
   },
   "parserOptions": {
-    "project": "tsconfig.eslint.json"
+    "project": "./tsconfig.json"
   }
 }

@@ -16,7 +16,7 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import dotenv from "dotenv-safe";
+import * as dotenv from "dotenv-safe";
 dotenv.config();
 
 import { AnyRequestData, GatewayServer, SlashCreator } from "slash-create";
@@ -38,6 +38,7 @@ const bot = new Bot({
   erisOptions: {
     restMode: true,
   },
+  topggToken: process.env.TOPGG_TOKEN as string,
 });
 
 const creator = new SlashCreator({

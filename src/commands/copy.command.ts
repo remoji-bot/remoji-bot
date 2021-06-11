@@ -19,7 +19,7 @@
 import { SlashCommand, SlashCreator, CommandContext, CommandOptionType, Permissions } from "slash-create";
 import got from "got";
 
-import { getEmoteCDNLink, getRemainingGuildEmoteSlots, EmbedUtil } from "../lib/utils";
+import { getEmoteCDNLink, getRemainingGuildEmoteSlots, EmbedUtil, arraySumColumn } from "../lib/utils";
 import { Bot } from "../lib/bot";
 import logger from "../lib/logger";
 import Constants from "../Constants";
@@ -29,26 +29,35 @@ export default class CopyCommand extends SlashCommand {
   constructor(creator: SlashCreator) {
     super(creator, {
       name: "copy",
-      description: "Copies an emote to the current server",
+      description: "Copies one or more emotes to the current server",
       options: [
         {
-          name: "emote",
-          description: "The emote to copy (must be a custom emote)",
+          name: "emotes",
+          description: "The emotes to copy (must be custom emotes)",
           type: CommandOptionType.STRING,
           required: true,
         },
         {
           name: "name",
-          description: "The name for the new, copied emote",
+          description: "The name for the new, copied emote (if uploading only one)",
           type: CommandOptionType.STRING,
-          required: true,
+          required: false,
         },
       ],
     });
     this.filePath = __filename;
   }
 
+  readonly bucket = Bot.rates.bucket(1, 15, "command:copy");
+
   async run(ctx: CommandContext): Promise<void | string> {
+    if (!(await this.bucket.take(ctx.user.id))) {
+      await ctx.send({
+        ephemeral: true,
+        embeds: [EmbedUtil.error(":octagonal_sign: This command may only be used once every 15 seconds.")],
+      });
+      return;
+    }
     if (!ctx.guildID) {
       await ctx.send({ embeds: [EmbedUtil.error(":x: This command may only be used in a server.")] });
       return;
@@ -59,84 +68,148 @@ export default class CopyCommand extends SlashCommand {
       return;
     }
 
-    const emote = ctx.options.emote as string;
-    const name = ctx.options.name as string;
+    const emotes = ctx.options.emotes as string;
+    const name = ctx.options.name as string | null;
 
-    // [0] = full string, [1] = (animated ? 'a' : ''), [2] = ID
-    const [, animatedFlag, id] = emote.match(/^<(a?):\w+:([0-9]+)>$/) ?? [];
+    const uploads = [] as { emote: string; url: string; name: string; animated: boolean }[];
+    for (const [emote, animatedFlag, name, id] of emotes.matchAll(/<(a?):([\w_]{2,32}):([1-9]\d{17,20})>/g)) {
+      const url = getEmoteCDNLink(id, !!animatedFlag);
+      if (!uploads.some(e => e.url === url))
+        uploads.push({
+          emote,
+          url,
+          name,
+          animated: !!animatedFlag,
+        });
+    }
 
-    if (!/^<(a?):\w+:[0-9]+>$/.test(emote) || !id) {
+    if (uploads.length === 0) {
       await ctx.send({
+        ephemeral: true,
+        embeds: [EmbedUtil.error(":x: Please specify one or more valid **custom** emotes.")],
+      });
+      return;
+    } else if (uploads.length > 1) {
+      if (name) {
+        await ctx.send({
+          ephemeral: true,
+          embeds: [EmbedUtil.error(":x: If you are copying multiple emotes at once, you can't specify a `name` option.")],
+        });
+        return;
+      }
+      if (uploads.length > 30) {
+        await ctx.send({
+          ephemeral: true,
+          embeds: [EmbedUtil.error(":x: Limit 30 emotes, please!")],
+        });
+        return;
+      }
+      const voted = await Bot.getInstance().topgg.hasVoted(ctx.user.id);
+      if (!voted) {
+        await ctx.send({
+          embeds: [
+            EmbedUtil.info(
+              stripIndents`
+                ⭐ To enable uploading multiple emotes at once, go vote for Remoji on top.gg!
+                **[CLICK HERE TO VOTE](${Constants.topGG}/vote)**
+              `,
+            ),
+          ],
+        });
+        return;
+      }
+    }
+
+    const [remStandard, remAnimated] = await getRemainingGuildEmoteSlots(Bot.getInstance().client, ctx.guildID);
+    const [remStandardNew, remAnimatedNew] = [
+      remStandard - arraySumColumn(uploads, "animated", x => (x ? 0 : 1)),
+      remAnimated - arraySumColumn(uploads, "animated", x => (x ? 1 : 0)),
+    ];
+
+    logger.debug({ remStandard, remAnimated, remStandardNew, remAnimatedNew });
+    if (remStandardNew < 0) {
+      await ctx.send({
+        ephemeral: true,
         embeds: [
           EmbedUtil.error(
-            ":x: That doesn't look like a valid custom emote. To copy an existing emote, just select it from the emoji picker when prompted for the `emote` in the command. If you're trying to copy an emote for which you do not have access, try the `/upload` command instead.",
+            `:x: There are not enough **regular** emote slots available in the server; **you need ${-remStandardNew} more regular emote slots** to process this upload.`,
           ),
         ],
-        ephemeral: true,
       });
       return;
     }
-
-    const animated = !!animatedFlag;
-
-    if (!/^[\w_]+$/.test(name) || name.length < 2) {
+    if (remAnimatedNew < 0) {
       await ctx.send({
         ephemeral: true,
         embeds: [
           EmbedUtil.error(
-            ":x: That isn't a valid custom emote name. Use numbers, letters, and/or underscore (`_`) characters in your name. Names must be at least 2 characters long.",
+            `:x: There are not enough **animated** emote slots available in the server; **you need ${-remAnimatedNew} more animated emote slots** to process this upload.`,
           ),
         ],
       });
       return;
     }
-
-    const url = getEmoteCDNLink(id, animated);
-
-    logger.info(`Copy: ${emote} (${url}) -> :${name}:`);
 
     await ctx.defer();
 
-    const [remStandard, remAnimated] = await getRemainingGuildEmoteSlots(Bot.getInstance().client, ctx.guildID);
+    const errors = [] as string[];
 
-    if (animated && remAnimated < 1) {
-      await ctx.send({ embeds: [EmbedUtil.error(":no_entry: You do not have any available animated emote slots left in this server.")] });
-      return;
-    } else if (!animated && remStandard < 1) {
-      await ctx.send({ embeds: [EmbedUtil.error(":no_entry: You do not have any available normal emote slots left in this server.")] });
-      return;
+    for (const upload of uploads) {
+      logger.info(`Copy: ${upload.emote} (${upload.url}) -> ${name ?? upload.name}`);
+      try {
+        const fetched = await got(upload.url);
+        await Bot.getInstance().client.createGuildEmoji(ctx.guildID, {
+          name: name ?? upload.name,
+          image: `data:${fetched.headers["content-type"]};base64,${fetched.rawBody.toString("base64")}`,
+        });
+      } catch (err) {
+        logger.error({ upload, err });
+        errors.push(`${upload.emote} (\`:${name ?? upload.name}:\`): \`${err.message ?? "Unknown Error"}\``);
+      }
+      await new Promise(r => setTimeout(r, 500 * 1.1 ** errors.length));
     }
 
-    // Download
-    const fetched = await got(url, { throwHttpErrors: false });
-    if (fetched.statusCode !== 200) {
-      logger.warn(`emote download ${url} failed: ${fetched.statusCode} (${fetched.statusMessage})`);
-      await ctx.send({ embeds: [EmbedUtil.error(":x: Could not download the emote. Make sure you typed it correctly!")] });
-      return;
-    }
-
-    // Upload
-    try {
-      const created = await Bot.getInstance().client.createGuildEmoji(ctx.guildID, {
-        name,
-        image: `data:${fetched.headers["content-type"]};base64,${fetched.rawBody.toString("base64")}`,
-      });
-      await ctx.send({ embeds: [EmbedUtil.success(`:white_check_mark: Copied emote! \`:${created.name}:\``)] });
-    } catch (error) {
-      logger.error(error);
+    if (errors.length === uploads.length) {
       await ctx.send({
         embeds: [
-          EmbedUtil.error(stripIndents`
-            :no_entry: Failed to copy emote! This is likely due to an error with the specific emote you chose or permissions.
+          EmbedUtil.error(
+            stripIndents`
+              :no_entry: Failed to copy emotes! This is likely due to an error with the specific emotes you chose or permissions.
 
-            1.  Make sure Remoji has the **Manage Emojis** permission in the server.
-            2.  Try using the \`/upload\` command with the emoji URL (\`${url}\`).
-            3.  The emoji may be very close to the size limit (256kB), in which case it may be too large after encoding. Try resizing it.
+              **__Troubleshooting__**
+              **1.**  Make sure Remoji has the **Manage Emojis** permission in the server.
+              **2.**  Try using the \`/upload\` command with the emoji URL (right-click emote -> Copy Link).
+              **3.**  The emoji may be very close to the size limit (256kB), in which case it may be too large after encoding. Try resizing it.
 
-            If the problem persists, **please** join the support server and report it! ${Constants.supportServerInvite}
-          `),
+              If the problem persists or you need help, **please** join the support server! ${Constants.supportServerInvite}
+            `,
+          ).addField("Details", errors.join("\n")),
         ],
       });
+      return;
+    } else if (errors.length > 0) {
+      await ctx.send({
+        embeds: [
+          EmbedUtil.success(
+            stripIndents`
+              :warning: Not all emotes were copied! See "**Errors**" below for details.
+              Uploaded ${uploads.length - errors.length}/${uploads.length}).
+
+              **__Troubleshooting__**
+              **1.**  Try using the \`/upload\` command with the emote URL (right-click emote -> Copy Link).
+              **2.**  The emote may be very close to the size limit (256kB), in which case it may be too large after encoding. Try resizing it.
+
+              If the problem persists or you need help, **please** join the support server! ${Constants.supportServerInvite}
+            `,
+          ).addField("Details", errors.join("\n")),
+        ],
+      });
+      return;
+    } else {
+      await ctx.send({
+        embeds: [EmbedUtil.success(`:white_check_mark: Success! Copied ${uploads.length} emote${uploads.length > 1 ? "s" : ""}!`)],
+      });
+      return;
     }
   }
 }

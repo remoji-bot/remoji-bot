@@ -15,10 +15,10 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-import chalk from "chalk";
-import fs from "fs";
-import path from "path";
-import moment from "moment";
+import * as chalk from "chalk";
+import * as fs from "fs";
+import * as path from "path";
+import * as moment from "moment";
 import { inspect } from "util";
 import got from "got";
 
@@ -48,8 +48,7 @@ const logger = {
           [LogLevel.ERROR]: chalk.redBright.bold,
         }[level];
         const timestamp = moment().format("YYYY-MM-DD HH:mm:ss.SSS");
-        // eslint-disable-next-line no-console
-        console.log(format(`${timestamp} ${level}: ${message}`));
+        process.stdout.write(format(`${timestamp} ${level}: ${message}\n`));
       },
     },
     {
