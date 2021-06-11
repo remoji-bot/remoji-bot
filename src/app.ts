@@ -20,11 +20,10 @@ import * as dotenv from "dotenv-safe";
 dotenv.config();
 
 import { AnyRequestData, GatewayServer, SlashCreator } from "slash-create";
-import { inspect } from "util";
 
 import Constants from "./Constants";
 import { Bot } from "./lib/bot";
-import { Logger } from "./lib/logger";
+import logger from "./lib/logger";
 import { randomChoice } from "./lib/utils";
 
 import CopyCommand from "./commands/copy.command";
@@ -53,19 +52,17 @@ const creator = new SlashCreator({
   },
 });
 
-creator.on("error", err => Logger.error(inspect(err)));
-creator.on("commandError", (command, err, ctx) => Logger.error(inspect({ command, err, ctx })));
+creator.on("error", err => logger.error(err));
+creator.on("commandError", (command, err, ctx) => logger.error({ command, err, ctx }));
 creator.on("commandRun", (command, _, ctx) => {
-  Logger.info(
-    JSON.stringify({
-      command: command.commandName,
-      guild: ctx.guildID,
-      user: `${ctx.user.id} (${ctx.user.username}#${ctx.user.discriminator})`,
-      options: ctx.options,
-    }),
-  );
+  logger.info({
+    command: command.commandName,
+    guild: ctx.guildID,
+    user: `${ctx.user.id} (${ctx.user.username}#${ctx.user.discriminator})`,
+    options: ctx.options,
+  });
 });
-creator.on("debug", message => Logger.verbose(message));
+creator.on("debug", message => logger.debug(message));
 
 async function main() {
   await bot.login();
@@ -88,11 +85,11 @@ async function main() {
       deleteCommands: true,
     });
 
-  Logger.info(`Logged in as ${bot.client.user.username}#${bot.client.user.discriminator} with ${creator.commands.size} commands.`);
+  logger.info(`Logged in as ${bot.client.user.username}#${bot.client.user.discriminator} with ${creator.commands.size} commands.`);
 
   function editStatus() {
     const status = randomChoice(Constants.stati);
-    Logger.verbose(`editStatus(): changing status to (${status.type}) "${status.name}"`);
+    logger.debug(`editStatus(): changing status to (${status.type}) "${status.name}"`);
     bot.client.editStatus("online", status);
   }
 

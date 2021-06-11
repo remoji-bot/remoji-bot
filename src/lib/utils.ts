@@ -19,6 +19,7 @@
 import * as assert from "assert";
 import { Client, Embed, EmbedAuthor, EmbedAuthorOptions, EmbedField, EmbedFooterOptions, EmbedImageOptions, EmbedOptions } from "eris";
 
+import logger from "./logger";
 import Constants from "../Constants";
 
 export function timeSync<T>(cb: () => T): [number, T] {
@@ -55,6 +56,7 @@ export function getEmoteCDNLink(id: string, animated: boolean): string {
 }
 
 export async function getRemainingGuildEmoteSlots(client: Client, guildID: string): Promise<[standard: number, animated: number]> {
+  logger.debug(`getReminaingGuildEmoteSlots(guildID = ${guildID})`);
   const guild = client.guilds.get(guildID) ?? (await client.getRESTGuild(guildID));
   const totalSlots =
     {
@@ -65,6 +67,7 @@ export async function getRemainingGuildEmoteSlots(client: Client, guildID: strin
     }[guild.premiumTier] ?? 0;
   const standard = totalSlots - guild.emojis.filter(e => !e.animated).length;
   const animated = totalSlots - guild.emojis.filter(e => e.animated).length;
+  logger.debug(`getReminaingGuildEmoteSlots(guildID = ${guildID}) -> [standard: ${standard}, animated: ${animated}]`);
   return [standard, animated];
 }
 
