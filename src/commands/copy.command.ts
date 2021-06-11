@@ -110,10 +110,10 @@ export default class CopyCommand extends SlashCommand {
           embeds: [
             EmbedUtil.info(
               stripIndents`
-                ⭐ To enable uploading multiple emotes at once, go vote for Remoji on top.gg!
+                🛑 To enable uploading multiple emotes at once, go vote for Remoji on top.gg!
                 **[CLICK HERE TO VOTE](${Constants.topGG}/vote)**
               `,
-            ),
+            ).setColor(0xffff00),
           ],
         });
         return;
