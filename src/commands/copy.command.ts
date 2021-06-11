@@ -16,14 +16,15 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { SlashCommand, SlashCreator, CommandContext, CommandOptionType, Permissions } from "slash-create";
+import { stripIndents } from "common-tags";
 import got from "got";
+import { SlashCommand, SlashCreator, CommandContext, CommandOptionType, Permissions } from "slash-create";
+import { inspect } from "util";
 
 import { getEmoteCDNLink, getRemainingGuildEmoteSlots, EmbedUtil, arraySumColumn } from "../lib/utils";
 import { Bot } from "../lib/bot";
-import logger from "../lib/logger";
+import { Logger } from "../lib/logger";
 import Constants from "../Constants";
-import { stripIndents } from "common-tags";
 
 export default class CopyCommand extends SlashCommand {
   constructor(creator: SlashCreator) {
@@ -126,7 +127,6 @@ export default class CopyCommand extends SlashCommand {
       remAnimated - arraySumColumn(uploads, "animated", x => (x ? 1 : 0)),
     ];
 
-    logger.debug({ remStandard, remAnimated, remStandardNew, remAnimatedNew });
     if (remStandardNew < 0) {
       await ctx.send({
         ephemeral: true,
@@ -155,7 +155,7 @@ export default class CopyCommand extends SlashCommand {
     const errors = [] as string[];
 
     for (const upload of uploads) {
-      logger.info(`Copy: ${upload.emote} (${upload.url}) -> ${name ?? upload.name}`);
+      Logger.info(`Copy: ${upload.emote} (${upload.url}) -> ${name ?? upload.name}`);
       try {
         const fetched = await got(upload.url);
         await Bot.getInstance().client.createGuildEmoji(ctx.guildID, {
@@ -163,7 +163,7 @@ export default class CopyCommand extends SlashCommand {
           image: `data:${fetched.headers["content-type"]};base64,${fetched.rawBody.toString("base64")}`,
         });
       } catch (err) {
-        logger.error({ upload, err });
+        Logger.error(inspect({ upload, err }));
         errors.push(`${upload.emote} (\`:${name ?? upload.name}:\`): \`${err.message ?? "Unknown Error"}\``);
       }
       await new Promise(r => setTimeout(r, 500 * 1.1 ** errors.length));

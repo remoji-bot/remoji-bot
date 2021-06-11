@@ -22,7 +22,7 @@ import { URL } from "url";
 
 import { getRemainingGuildEmoteSlots, EmbedUtil } from "../lib/utils";
 import { Bot } from "../lib/bot";
-import logger from "../lib/logger";
+import { Logger } from "../lib/logger";
 import { stripIndents } from "common-tags";
 import Constants from "../Constants";
 
@@ -91,7 +91,7 @@ export default class UploadCommand extends SlashCommand {
     try {
       urlUrl = new URL(url);
     } catch (err) {
-      logger.error(err);
+      Logger.error(err);
       await ctx.send({ ephemeral: true, embeds: [EmbedUtil.error(":x: Failed to parse URL.")] });
       return;
     }
@@ -119,7 +119,7 @@ export default class UploadCommand extends SlashCommand {
       return;
     }
 
-    logger.info(`Upload: ${url} -> :${name}:`);
+    Logger.info(`Upload: ${url} -> :${name}:`);
 
     const [remStandard, remAnimated] = await getRemainingGuildEmoteSlots(Bot.getInstance().client, ctx.guildID);
 
@@ -150,7 +150,7 @@ export default class UploadCommand extends SlashCommand {
 
       await ctx.send({ embeds: [EmbedUtil.success(`:white_check_mark: Uploaded emote! \`:${created.name}:\``)] });
     } catch (error) {
-      logger.error(error);
+      Logger.error(error);
       await ctx.send({
         embeds: [
           EmbedUtil.error(stripIndents`

@@ -18,8 +18,9 @@
 
 import { Api } from "@top-gg/sdk";
 import * as eris from "eris";
+import { inspect } from "util";
 
-import logger from "./logger";
+import { Logger } from "./logger";
 import { RatelimitBackendNative, RatelimitManager } from "./ratelimits";
 
 export interface BotOptions {
@@ -58,7 +59,7 @@ export class Bot {
   }
 
   private onError(error: Error): void {
-    logger.error(error);
+    Logger.error(inspect(error));
   }
 
   login(): Promise<void> {
