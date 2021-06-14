@@ -150,11 +150,12 @@ export default class CopyCommand extends SlashCommand {
       return;
     }
 
-    await ctx.defer();
+    await ctx.send(`Uploading ${uploads.length} emotes...`);
 
     const errors = [] as string[];
 
-    for (const upload of uploads) {
+    const start = Date.now();
+    for (const [i, upload] of uploads.entries()) {
       logger.info(`Copy: ${upload.emote} (${upload.url}) -> ${name ?? upload.name}`);
       try {
         const fetched = await got(upload.url);
@@ -166,7 +167,18 @@ export default class CopyCommand extends SlashCommand {
         logger.error({ upload, err });
         errors.push(`${upload.emote} (\`:${name ?? upload.name}:\`): \`${err.message ?? "Unknown Error"}\``);
       }
-      await new Promise(r => setTimeout(r, 500 * 1.1 ** errors.length));
+      logger.debug(`[copy] setTimeout: 500 * ${errors.length} = ${500 * errors.length}`);
+      if (i >= uploads.length - 1) {
+        await ctx.editOriginal(
+          `Uploaded ${uploads.length - errors.length} / ${uploads.length} emotes (${errors.length} failed) in ${(
+            (Date.now() - start) /
+            1000
+          ).toFixed(1)} sec.`,
+        );
+      } else {
+        await ctx.editOriginal(`Uploading emote ${i + 1} / ${uploads.length}${errors.length ? ` (${errors.length} failed)` : ""}...`);
+      }
+      await new Promise(r => setTimeout(r, 500 * errors.length));
     }
 
     if (errors.length === uploads.length) {
