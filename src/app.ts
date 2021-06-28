@@ -37,6 +37,7 @@ const bot = new Bot({
   token: process.env.DISCORD_TOKEN as string,
   erisOptions: {
     restMode: true,
+    maxShards: "auto",
   },
   topggToken: process.env.TOPGG_TOKEN as string,
 });

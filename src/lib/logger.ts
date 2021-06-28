@@ -20,7 +20,6 @@ import * as fs from "fs";
 import * as path from "path";
 import * as moment from "moment";
 import { inspect } from "util";
-import got from "got";
 
 const LogLevel = Object.freeze({
   DEBUG: "DEBUG" as const,
@@ -62,38 +61,6 @@ const logger = {
         fs.appendFileSync(path.resolve(__dirname, "..", "..", "logs", `${day}.log`), `${timestamp} ${level}: ${message}\n`);
       },
     },
-    {
-      minLevel: LogLevel.INFO, // INFO
-      consume: (level: keyof typeof LogLevel, message: string, wasString: boolean): void => {
-        const color = {
-          [LogLevel.DEBUG]: 0x55ffff,
-          [LogLevel.INFO]: 0x0000aa,
-          [LogLevel.WARN]: 0xffff55,
-          [LogLevel.ERROR]: 0xff5555,
-        }[level];
-        const embed = {
-          color,
-          author: {
-            name: `${level}`,
-          },
-          description: (wasString
-            ? message.trim().substr(0, 2048)
-            : `\`\`\`js
-${message.trim().substr(0, 2000)}
-\`\`\``
-          ).replace(/[_*`|\\]g/, "\\$1"),
-          timestamp: new Date(),
-        };
-        if (process.env.LOGGER_WEBHOOK_URL) {
-          got(process.env.LOGGER_WEBHOOK_URL, {
-            method: "POST",
-            json: {
-              embeds: [embed],
-            },
-          }).catch(err => logger.error(err));
-        }
-      },
-    },
   ],
 
   log(level: keyof typeof LogLevel, message: unknown): void {
@@ -105,7 +72,7 @@ ${message.trim().substr(0, 2000)}
     if (!isString) message = inspect(message);
     for (const listener of this.listeners) {
       if (LogLevelOrdinal[level] >= LogLevelOrdinal[listener.minLevel]) {
-        listener.consume(level, message as string, isString);
+        listener.consume(level, message as string);
       }
     }
   },
