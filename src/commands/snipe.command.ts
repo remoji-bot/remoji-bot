@@ -38,7 +38,6 @@ export default class SnipeCommand extends SlashCommand {
           required: true,
         },
       ],
-      guildIDs: ["683009037830324235"],
     });
     this.filePath = __filename;
   }
@@ -62,14 +61,14 @@ export default class SnipeCommand extends SlashCommand {
     if (!groups) {
       await ctx.send({
         ephemeral: true,
-        embeds: [EmbedUtil.error(":x: That doesn't look like a valid message URL.")],
+        embeds: [EmbedUtil.error(":x: That doesn't look like a valid message URL. Right click or long press a message to copy its link.")],
       });
       return;
     }
 
-    const bot = Bot.getInstance().client;
+    const client = Bot.getInstance().client;
 
-    const message = await bot.getMessage(groups.channel, groups.message);
+    const message = await client.getMessage(groups.channel, groups.message);
 
     await ctx.defer();
 
@@ -88,14 +87,14 @@ export default class SnipeCommand extends SlashCommand {
     if (uploads.length === 0) {
       await ctx.send({
         ephemeral: true,
-        embeds: [EmbedUtil.error(":x: Please specify one or more valid **custom** emotes.")],
+        embeds: [EmbedUtil.error(":x: Please specify a message with one or more valid **custom** emotes.")],
       });
       return;
     } else {
       if (uploads.length > 30) {
         await ctx.send({
           ephemeral: true,
-          embeds: [EmbedUtil.error(":x: Limit 30 emotes, please!")],
+          embeds: [EmbedUtil.error(":x: Limit the number of emotes in the message to 30, please!")],
         });
         return;
       }
@@ -145,7 +144,7 @@ export default class SnipeCommand extends SlashCommand {
       return;
     }
 
-    await ctx.send(`Uploading ${uploads.length} emotes...`);
+    await ctx.send(`Sniping ${uploads.length} emotes...`);
 
     const errors = [] as string[];
 
@@ -165,13 +164,13 @@ export default class SnipeCommand extends SlashCommand {
       logger.debug(`[snipe] setTimeout: 500 * ${errors.length} = ${500 * errors.length}`);
       if (i >= uploads.length - 1) {
         await ctx.editOriginal(
-          `Uploaded ${uploads.length - errors.length} / ${uploads.length} emotes (${errors.length} failed) in ${(
+          `Sniped ${uploads.length - errors.length} / ${uploads.length} emotes (${errors.length} failed) in ${(
             (Date.now() - start) /
             1000
           ).toFixed(1)} sec.`,
         );
       } else {
-        await ctx.editOriginal(`Uploading emote ${i + 1} / ${uploads.length}${errors.length ? ` (${errors.length} failed)` : ""}...`);
+        await ctx.editOriginal(`Sniping emote ${i + 1} / ${uploads.length}${errors.length ? ` (${errors.length} failed)` : ""}...`);
       }
       await new Promise(r => setTimeout(r, 500 * errors.length));
     }
@@ -199,8 +198,8 @@ export default class SnipeCommand extends SlashCommand {
         embeds: [
           EmbedUtil.success(
             stripIndents`
-              :warning: Not all emotes were copied! See "**Errors**" below for details.
-              Uploaded ${uploads.length - errors.length}/${uploads.length}).
+              :warning: Not all emotes were sniped! See "**Errors**" below for details.
+              Sniped ${uploads.length - errors.length}/${uploads.length}).
 
               **__Troubleshooting__**
               **1.**  Try using the \`/upload\` command with the emote URL (right-click emote -> Copy Link).

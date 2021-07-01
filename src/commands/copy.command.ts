@@ -104,7 +104,7 @@ export default class CopyCommand extends SlashCommand {
         });
         return;
       }
-      const voted = await Bot.getInstance().topgg.hasVoted(ctx.user.id);
+      const voted = !process.env.TOPGG_TOKEN || (await Bot.getInstance().topgg.hasVoted(ctx.user.id));
       if (!voted) {
         await ctx.send({
           embeds: [
