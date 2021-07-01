@@ -17,62 +17,63 @@
 */
 
 import { SlashCommand, SlashCreator, CommandContext, CommandOptionType, Permissions } from "slash-create";
-import got from "got";
 
-import { getEmoteCDNLink, getRemainingGuildEmoteSlots, EmbedUtil, arraySumColumn } from "../lib/utils";
+import { getRemainingGuildEmoteSlots, EmbedUtil, getEmoteCDNLink, arraySumColumn } from "../lib/utils";
 import { Bot } from "../lib/bot";
 import logger from "../lib/logger";
-import Constants from "../Constants";
 import { stripIndents } from "common-tags";
+import Constants from "../Constants";
+import got from "got";
 
-export default class CopyCommand extends SlashCommand {
+export default class SnipeCommand extends SlashCommand {
   constructor(creator: SlashCreator) {
     super(creator, {
-      name: "copy",
-      description: "Copies one or more emotes to the current server",
+      name: "snipe",
+      description: "Snipe emojis from a message link",
       options: [
         {
-          name: "emotes",
-          description: "The emotes to copy (must be custom emotes)",
+          name: "url",
+          description: "The message URL to snipe emojis from",
           type: CommandOptionType.STRING,
           required: true,
-        },
-        {
-          name: "name",
-          description: "The name for the new, copied emote (if uploading only one)",
-          type: CommandOptionType.STRING,
-          required: false,
         },
       ],
     });
     this.filePath = __filename;
   }
 
-  readonly bucket = Bot.rates.bucket(1, 15, "command:copy");
-
   async run(ctx: CommandContext): Promise<void | string> {
-    if (!(await this.bucket.take(ctx.user.id))) {
-      await ctx.send({
-        ephemeral: true,
-        embeds: [EmbedUtil.error(":octagonal_sign: This command may only be used once every 15 seconds.")],
-      });
-      return;
-    }
     if (!ctx.guildID) {
       await ctx.send({ embeds: [EmbedUtil.error(":x: This command may only be used in a server.")] });
       return;
     }
 
     if (!ctx.member?.permissions.has(Permissions.FLAGS.MANAGE_EMOJIS)) {
-      await ctx.send({ embeds: [EmbedUtil.error(":lock: You need the Manage Emojis permission to use this command.")], ephemeral: true });
+      await ctx.send({ ephemeral: true, embeds: [EmbedUtil.error(":lock: You need the Manage Emojis permission to use this command.")] });
       return;
     }
 
-    const emotes = ctx.options.emotes as string;
-    const name = ctx.options.name as string | null;
+    const url = ctx.options.url as string;
+
+    const regex = /^https:\/\/(canary\.|ptb\.)?discord\.com\/channels\/\d{17,20}\/(?<channel>\d{17,20})\/(?<message>\d{17,20})$/;
+    const groups = url.match(regex)?.groups;
+
+    if (!groups) {
+      await ctx.send({
+        ephemeral: true,
+        embeds: [EmbedUtil.error(":x: That doesn't look like a valid message URL. Right click or long press a message to copy its link.")],
+      });
+      return;
+    }
+
+    const client = Bot.getInstance().client;
+
+    const message = await client.getMessage(groups.channel, groups.message);
+
+    await ctx.defer();
 
     const uploads = [] as { emote: string; url: string; name: string; animated: boolean }[];
-    for (const [emote, animatedFlag, name, id] of emotes.matchAll(/<(a?):([\w_]{2,32}):([1-9]\d{17,20})>/g)) {
+    for (const [emote, animatedFlag, name, id] of message.content.matchAll(/<(a?):([\w_]{2,32}):([1-9]\d{17,20})>/g)) {
       const url = getEmoteCDNLink(id, !!animatedFlag);
       if (!uploads.some(e => e.url === url))
         uploads.push({
@@ -86,21 +87,14 @@ export default class CopyCommand extends SlashCommand {
     if (uploads.length === 0) {
       await ctx.send({
         ephemeral: true,
-        embeds: [EmbedUtil.error(":x: Please specify one or more valid **custom** emotes.")],
+        embeds: [EmbedUtil.error(":x: Please specify a message with one or more valid **custom** emotes.")],
       });
       return;
-    } else if (uploads.length > 1) {
-      if (name) {
-        await ctx.send({
-          ephemeral: true,
-          embeds: [EmbedUtil.error(":x: If you are copying multiple emotes at once, you can't specify a `name` option.")],
-        });
-        return;
-      }
+    } else {
       if (uploads.length > 30) {
         await ctx.send({
           ephemeral: true,
-          embeds: [EmbedUtil.error(":x: Limit 30 emotes, please!")],
+          embeds: [EmbedUtil.error(":x: Limit the number of emotes in the message to 30, please!")],
         });
         return;
       }
@@ -110,7 +104,7 @@ export default class CopyCommand extends SlashCommand {
           embeds: [
             EmbedUtil.info(
               stripIndents`
-                🛑 To enable uploading multiple emotes at once, go vote for Remoji on top.gg!
+                🛑 To enable message emote sniping, go vote for Remoji on top.gg!
                 **[CLICK HERE TO VOTE](${Constants.topGG}/vote)**
               `,
             ).setColor(0xffff00),
@@ -150,33 +144,33 @@ export default class CopyCommand extends SlashCommand {
       return;
     }
 
-    await ctx.send(`Uploading ${uploads.length} emotes...`);
+    await ctx.send(`Sniping ${uploads.length} emotes...`);
 
     const errors = [] as string[];
 
     const start = Date.now();
     for (const [i, upload] of uploads.entries()) {
-      logger.info(`Copy: ${upload.emote} (${upload.url}) -> ${name ?? upload.name}`);
+      logger.info(`Snipe: ${upload.emote} (${upload.url}) -> ${upload.name}`);
       try {
         const fetched = await got(upload.url);
         await Bot.getInstance().client.createGuildEmoji(ctx.guildID, {
-          name: name ?? upload.name,
+          name: upload.name,
           image: `data:${fetched.headers["content-type"]};base64,${fetched.rawBody.toString("base64")}`,
         });
       } catch (err) {
         logger.error({ upload, err });
-        errors.push(`${upload.emote} (\`:${name ?? upload.name}:\`): \`${err.message ?? "Unknown Error"}\``);
+        errors.push(`${upload.emote} (\`:${upload.name}:\`): \`${err.message ?? "Unknown Error"}\``);
       }
-      logger.debug(`[copy] setTimeout: 500 * ${errors.length} = ${500 * errors.length}`);
+      logger.debug(`[snipe] setTimeout: 500 * ${errors.length} = ${500 * errors.length}`);
       if (i >= uploads.length - 1) {
         await ctx.editOriginal(
-          `Uploaded ${uploads.length - errors.length} / ${uploads.length} emotes (${errors.length} failed) in ${(
+          `Sniped ${uploads.length - errors.length} / ${uploads.length} emotes (${errors.length} failed) in ${(
             (Date.now() - start) /
             1000
           ).toFixed(1)} sec.`,
         );
       } else {
-        await ctx.editOriginal(`Uploading emote ${i + 1} / ${uploads.length}${errors.length ? ` (${errors.length} failed)` : ""}...`);
+        await ctx.editOriginal(`Sniping emote ${i + 1} / ${uploads.length}${errors.length ? ` (${errors.length} failed)` : ""}...`);
       }
       await new Promise(r => setTimeout(r, 500 * errors.length));
     }
@@ -186,12 +180,12 @@ export default class CopyCommand extends SlashCommand {
         embeds: [
           EmbedUtil.error(
             stripIndents`
-              :no_entry: Failed to copy emotes! This is likely due to an error with the specific emotes you chose or permissions.
+              :no_entry: Failed to snipe emotes! This is likely due to an error with the specific emotes you chose or permissions.
 
               **__Troubleshooting__**
               **1.**  Make sure Remoji has the **Manage Emojis** permission in the server.
               **2.**  Try using the \`/upload\` command with the emoji URL (right-click emote -> Copy Link).
-              **3.**  The emoji may be very close to the size limit (256kB), in which case it may be too large after encoding. Try resizing it.
+              **3.**  An emoji may be very close to the size limit (256kB), in which case it may be too large after encoding. Try resizing it.
 
               If the problem persists or you need help, **please** join the support server! ${Constants.supportServerInvite}
             `,
@@ -204,8 +198,8 @@ export default class CopyCommand extends SlashCommand {
         embeds: [
           EmbedUtil.success(
             stripIndents`
-              :warning: Not all emotes were copied! See "**Errors**" below for details.
-              Uploaded ${uploads.length - errors.length}/${uploads.length}).
+              :warning: Not all emotes were sniped! See "**Errors**" below for details.
+              Sniped ${uploads.length - errors.length}/${uploads.length}).
 
               **__Troubleshooting__**
               **1.**  Try using the \`/upload\` command with the emote URL (right-click emote -> Copy Link).
@@ -219,7 +213,7 @@ export default class CopyCommand extends SlashCommand {
       return;
     } else {
       await ctx.send({
-        embeds: [EmbedUtil.success(`:white_check_mark: Success! Copied ${uploads.length} emote${uploads.length > 1 ? "s" : ""}!`)],
+        embeds: [EmbedUtil.success(`:white_check_mark: Success! Sniped ${uploads.length} emote${uploads.length > 1 ? "s" : ""}!`)],
       });
       return;
     }

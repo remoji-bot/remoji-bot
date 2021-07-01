@@ -17,7 +17,7 @@
 */
 
 import * as dotenv from "dotenv-safe";
-dotenv.config();
+dotenv.config({ allowEmptyValues: true });
 
 import { AnyRequestData, GatewayServer, SlashCreator } from "slash-create";
 
@@ -31,6 +31,7 @@ import DownloadCommand from "./commands/download.command";
 import InfoCommand from "./commands/info.command";
 import ListCommand from "./commands/list.command";
 import PingCommand from "./commands/ping.command";
+import SnipeCommand from "./commands/snipe.command";
 import UploadCommand from "./commands/upload.command";
 
 const bot = new Bot({
@@ -80,6 +81,7 @@ async function main() {
     .registerCommand(InfoCommand)
     .registerCommand(ListCommand)
     .registerCommand(PingCommand)
+    .registerCommand(SnipeCommand)
     .registerCommand(UploadCommand)
     .syncCommands({
       skipGuildErrors: true,
