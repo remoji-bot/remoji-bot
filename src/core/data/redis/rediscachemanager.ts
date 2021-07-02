@@ -16,7 +16,7 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { RedisConnection } from "./RedisConnection";
+import { RedisConnection } from "./redisconnection";
 
 /**
  * Represents a redis cache namespace.

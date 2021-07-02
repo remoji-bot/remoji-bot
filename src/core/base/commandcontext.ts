@@ -17,30 +17,27 @@
 */
 
 import { CommandInteraction } from "discord.js";
-import { Command } from "../../core/base/command";
-import { EmbedUtil } from "../../core/utils/embeds";
-import { time } from "../../core/utils/functions";
+import { EmbedUtil } from "../utils/embedutil";
+import { CommandOptionResolver } from "./commandoptionresolver";
 
 /**
- * `/ping` command - Tests the bot's connection to Discord.
+ * Wraps a Slash Command interaction, providing useful methods and utilities.
  */
-export class PingCommand extends Command {
-  constructor() {
-    super({
-      name: "ping",
-      description: "Test the bot's connection to Discord",
-    });
+export class CommandContext {
+  readonly interaction: CommandInteraction;
+  readonly options: CommandOptionResolver;
+
+  constructor(interaction: CommandInteraction) {
+    this.interaction = interaction;
+    this.options = new CommandOptionResolver(interaction.options);
   }
 
   /**
-   * Run the command.
+   * Sends an error embed using `EmbedBuilder`.
    *
-   * @param interaction - The interaction object for the command.
+   * @param message - The content of the error message
    */
-  async run(interaction: CommandInteraction): Promise<void | string> {
-    const [delay] = await time(interaction.defer);
-    await interaction.reply({
-      embeds: [EmbedUtil.success(`Pong! Latency: ${delay}ms`)],
-    });
+  async error(message: string): Promise<void> {
+    await this.interaction.reply({ embeds: [EmbedUtil.error(message)] });
   }
 }

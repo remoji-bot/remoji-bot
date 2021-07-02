@@ -30,5 +30,5 @@ process.on("unhandledRejection", rejection => {
   process.exit(1);
 });
 
-dotenv.config({ allowEmptyValues: true });
+dotenv.config();
 void Bot.getInstance().connect();

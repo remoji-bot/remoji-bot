@@ -17,7 +17,11 @@
 */
 
 import * as discord from "discord.js";
-import { RedisConnection } from "./data/redis/RedisConnection";
+import { PingCommand } from "../commands/core/ping.command";
+import { UploadCommand } from "../commands/core/upload.command";
+import { CommandContext } from "./base/commandcontext";
+import { CommandManager } from "./base/commandmanager";
+import { RedisConnection } from "./data/redis/redisconnection";
 import { Logger } from "./logger";
 
 import { TopGGInterface } from "./third-party/TopGGInterface";
@@ -40,7 +44,8 @@ export class Bot {
   }
 
   readonly client: discord.Client;
-  readonly topgg: TopGGInterface = TopGGInterface.getInstance();
+  readonly topgg = TopGGInterface.getInstance();
+  readonly commands = new CommandManager();
 
   private constructor() {
     this.client = new discord.Client({
@@ -49,7 +54,8 @@ export class Bot {
       shards: "auto",
       rejectOnRateLimit: data => data.global,
     });
-    // this.client.application?.commands.create()
+
+    this.client.on("interaction", this.handleInteraction.bind(this));
   }
 
   /**
@@ -61,5 +67,35 @@ export class Bot {
     Logger.info("Connecting to Discord...");
     await this.client.login(getenv("DISCORD_TOKEN", false, true));
     Logger.info(`Connected as ${this.client.user?.tag} with ${this.client.shard?.count ?? 1} shard(s)`);
+
+    this.commands.register(new PingCommand()).register(new UploadCommand());
+    // TODO.. :)
+
+    await Promise.all(
+      this.commands.commands.mapValues(command => this.client.application?.commands.create(command.data)),
+    );
+    await Promise.all(
+      this.commands.commands.mapValues(async command => {
+        const guild = await this.client.guilds.fetch(getenv("COMMAND_TESTING_GUILD", false, true) as discord.Snowflake);
+        await guild.commands.create(command.data);
+      }),
+    );
+    Logger.info("Registered commands!");
+  }
+
+  /**
+   * Handle an interaction event.
+   *
+   * @param interaction - The interaction to handle.
+   */
+  private async handleInteraction(interaction: discord.Interaction): Promise<void> {
+    if (interaction.isCommand()) {
+      const command = this.commands.get(interaction.commandName);
+      if (command) await command["_run"](new CommandContext(interaction));
+    } else if (interaction.isButton()) {
+      // TODO
+    } else if (interaction.isSelectMenu()) {
+      // TODO
+    }
   }
 }

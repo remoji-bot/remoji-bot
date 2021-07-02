@@ -19,7 +19,8 @@
 import * as topgg from "@top-gg/sdk";
 import { Snowflake } from "discord.js";
 
-import { RedisCacheManager } from "../data/redis/RedisCacheManager";
+import { RedisCacheManager } from "../data/redis/rediscachemanager";
+import { Logger } from "../logger";
 import { getenv } from "../utils/functions";
 import { Nullable } from "../utils/types";
 
@@ -53,7 +54,19 @@ export class TopGGInterface {
    * @returns - Whether the user has voted.
    */
   async hasVoted(user: Snowflake): Promise<boolean> {
-    if (!this.api) return true;
+    const result = await this._hasVoted(user);
+    Logger.info(`hasVoted(${user}): ${result}`);
+    return result;
+  }
+
+  /**
+   * Check if a user has voted for the bot.
+   *
+   * @param user - The user ID to check.
+   * @returns - Whether the user has voted.
+   */
+  private async _hasVoted(user: Snowflake): Promise<boolean> {
+    if (!this.api || process.env.NODE_ENV === "development") return true;
 
     const cached = await this.cache.get(user);
     if (cached) return true;
@@ -61,7 +74,7 @@ export class TopGGInterface {
     const result = await this.api.hasVoted(user);
 
     if (result) {
-      await this.cache.set(user, "h", 3600000);
+      await this.cache.set(user, "h", 60 * 60 * 1000);
       return true;
     }
 

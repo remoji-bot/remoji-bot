@@ -17,6 +17,7 @@
 */
 
 import { MessageEmbed } from "discord.js";
+import { Bot } from "../bot";
 import { getenv } from "./functions";
 
 /**
@@ -31,7 +32,11 @@ export class EmbedUtil {
   public static base(): MessageEmbed {
     return new MessageEmbed()
       .setColor(0xfffffe)
-      .setAuthor("Remoji - Discord Emoji Manager", getenv("TOPGG_URL", false, true));
+      .setAuthor(
+        "Remoji - Discord Emoji Manager",
+        Bot.getInstance().client.user?.displayAvatarURL(),
+        getenv("TOPGG_URL", false, true),
+      );
   }
 
   /**
@@ -44,7 +49,7 @@ export class EmbedUtil {
     return this.base()
       .setColor(0xff5555)
       .setDescription(description)
-      .addField("Need help?", `[Join the support server](${getenv("SUPPORT_INVITE")})`);
+      .addField("Need help?", `[Join the support server](${getenv("SUPPORT_INVITE", false, true)})`);
   }
 
   /**

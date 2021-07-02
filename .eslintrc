@@ -16,7 +16,7 @@
     "@typescript-eslint/no-floating-promises": "error",
     "@typescript-eslint/no-explicit-any": "warn",
     "@typescript-eslint/no-this-alias": "off",
-    "@typescript-eslint/no-non-null-assertion": "warn",
+    "@typescript-eslint/no-non-null-assertion": "off",
     "no-console": "warn",
     "eslint-comments/no-use": ["warn", { "allow": [] }],
     "jsdoc/require-jsdoc": [
