@@ -16,23 +16,21 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { SlashCommand, SlashCreator, CommandContext } from "slash-create";
+import * as discord from "discord.js";
+import { Bot } from "../bot";
+import { Logger } from "../logger";
 
-import { time, EmbedUtil } from "../lib/utils";
+/**
+ * The basic abstract class for all commands.
+ */
+export abstract class Command {
+  readonly data: Readonly<discord.ApplicationCommandData>;
+  readonly bot = Bot.getInstance();
 
-export default class PingCommand extends SlashCommand {
-  constructor(creator: SlashCreator) {
-    super(creator, {
-      name: "ping",
-      description: "Tests the bot's connection to Discord",
-    });
-    this.filePath = __filename;
+  constructor(data: discord.ApplicationCommandData) {
+    Logger.verbose(`Constructed Command: ${data.name}`);
+    this.data = data;
   }
 
-  async run(ctx: CommandContext): Promise<void> {
-    const [delay] = await time(() => ctx.defer());
-    await ctx.send({
-      embeds: [EmbedUtil.success(`Pong! Latency: ${delay}ms`)],
-    });
-  }
+  abstract run(interaction: discord.CommandInteraction): Promise<void | string>;
 }

@@ -1,0 +1,19 @@
+version: "2.4"
+
+services:
+  bot:
+    build: .
+    depends_on:
+      - redis
+    restart: always
+    volumes:
+      - ./_volumes/logs:/srv/bot/logs
+    env_file: .env
+    # ports:
+    # - 8080:127.0.0.1:8080
+  redis:
+    image: redis:6.2.4-alpine
+    restart: always
+    volumes:
+      - ./_volumes/redis-dump:/var/lib/redis
+      - ./_volumes/redis:/data
