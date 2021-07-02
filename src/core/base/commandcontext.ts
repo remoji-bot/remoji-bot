@@ -16,18 +16,50 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { CommandInteraction } from "discord.js";
+import { APIInteractionGuildMember } from "discord-api-types/v8";
+import {
+  CommandInteraction,
+  DMChannel,
+  Guild,
+  GuildMember,
+  NewsChannel,
+  PartialDMChannel,
+  Snowflake,
+  TextChannel,
+  ThreadChannel,
+} from "discord.js";
 import { EmbedUtil } from "../utils/embedutil";
+import { Ternary } from "../utils/types";
 import { CommandOptionResolver } from "./commandoptionresolver";
+
+/**
+ * Typing utility for guild interactions.
+ */
+export type GuildDependentInteraction<GUILD extends boolean> = CommandInteraction &
+  Ternary<
+    GUILD,
+    {
+      guild: Guild;
+      guildID: Snowflake;
+      member: GuildMember | APIInteractionGuildMember;
+      channel: TextChannel | NewsChannel | ThreadChannel;
+    },
+    {
+      guild: null;
+      guildID: null;
+      member: null;
+      channel: DMChannel | PartialDMChannel;
+    }
+  >;
 
 /**
  * Wraps a Slash Command interaction, providing useful methods and utilities.
  */
-export class CommandContext {
-  readonly interaction: CommandInteraction;
+export class CommandContext<GUILD extends boolean = boolean> {
+  readonly interaction: GuildDependentInteraction<GUILD>;
   readonly options: CommandOptionResolver;
 
-  constructor(interaction: CommandInteraction) {
+  constructor(interaction: GuildDependentInteraction<GUILD>) {
     this.interaction = interaction;
     this.options = new CommandOptionResolver(interaction.options);
   }
@@ -39,5 +71,14 @@ export class CommandContext {
    */
   async error(message: string): Promise<void> {
     await this.interaction.reply({ embeds: [EmbedUtil.error(message)] });
+  }
+
+  /**
+   * Sends a success embed using `EmbedBuilder`.
+   *
+   * @param message - The content of the success message
+   */
+  async success(message: string): Promise<void> {
+    await this.interaction.reply({ embeds: [EmbedUtil.success(message)] });
   }
 }

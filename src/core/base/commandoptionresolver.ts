@@ -107,7 +107,7 @@ export class CommandOptionResolver {
    */
   channel(name: string, required = true): Nullable<GuildChannel | APIInteractionDataResolvedChannel> {
     const option = this.get(name, required);
-    if (option && !option.channel) throw new TypeError(`Non-channel+- value in channel option: ${name}`);
+    if (option && !option.channel) throw new TypeError(`Non-channel value in channel option: ${name}`);
     return option?.channel ?? null;
   }
 
@@ -122,7 +122,7 @@ export class CommandOptionResolver {
    */
   member(name: string, required = true): Nullable<GuildMember | APIInteractionDataResolvedGuildMember> {
     const option = this.get(name, required);
-    if (option && !option.member) throw new TypeError(`Non-member+- value in member option: ${name}`);
+    if (option && !option.member) throw new TypeError(`Non-member value in member option: ${name}`);
     return option?.member ?? null;
   }
 
@@ -137,7 +137,7 @@ export class CommandOptionResolver {
    */
   role(name: string, required = true): Nullable<Role | APIRole> {
     const option = this.get(name, required);
-    if (option && !option.role) throw new TypeError(`Non-role+- value in role option: ${name}`);
+    if (option && !option.role) throw new TypeError(`Non-role value in role option: ${name}`);
     return option?.role ?? null;
   }
 
@@ -152,7 +152,7 @@ export class CommandOptionResolver {
    */
   user(name: string, required = true): Nullable<User> {
     const option = this.get(name, required);
-    if (option && !option.user) throw new TypeError(`Non-user+- value in user option: ${name}`);
+    if (option && !option.user) throw new TypeError(`Non-user value in user option: ${name}`);
     return option?.user ?? null;
   }
 }

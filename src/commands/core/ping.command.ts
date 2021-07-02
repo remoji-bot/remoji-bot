@@ -24,12 +24,17 @@ import { time } from "../../core/utils/functions";
 /**
  * `/ping` command - Tests the bot's connection to Discord.
  */
-export class PingCommand extends Command {
+export class PingCommand extends Command<false> {
   constructor() {
-    super({
-      name: "pingg",
-      description: "Test the bot's connection to Discord",
-    });
+    super(
+      {
+        name: "pingg",
+        description: "Test the bot's connection to Discord",
+      },
+      {
+        guildOnly: false,
+      },
+    );
   }
 
   /**
@@ -37,7 +42,7 @@ export class PingCommand extends Command {
    *
    * @param ctx - The context for the command.
    */
-  async run(ctx: CommandContext): Promise<void> {
+  async run(ctx: CommandContext<false>): Promise<void> {
     const [delay] = await time(() => ctx.interaction.defer());
     await ctx.interaction.editReply({
       embeds: [EmbedUtil.success(`Pong! Latency: ${delay}ms`)],

@@ -26,3 +26,12 @@ export type Awaitable<T> = T | Promise<T>;
  * Either `T` or null.
  */
 export type Nullable<T> = T | null;
+
+/**
+ * Ternary helper function for typing.
+ */
+export type Ternary<FLAG extends boolean, TRUTHY, FALSY> = FLAG extends true
+  ? TRUTHY
+  : FLAG extends false
+  ? FALSY
+  : never;

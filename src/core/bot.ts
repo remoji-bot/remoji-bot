@@ -17,13 +17,13 @@
 */
 
 import * as discord from "discord.js";
+
 import { PingCommand } from "../commands/core/ping.command";
-import { UploadCommand } from "../commands/core/upload.command";
-import { CommandContext } from "./base/commandcontext";
+import { UploadCommand } from "../commands/emotes/upload.command";
+import { CommandContext, GuildDependentInteraction } from "./base/commandcontext";
 import { CommandManager } from "./base/commandmanager";
 import { RedisConnection } from "./data/redis/redisconnection";
 import { Logger } from "./logger";
-
 import { TopGGInterface } from "./third-party/topgginterface";
 import { getenv } from "./utils/functions";
 
@@ -91,7 +91,7 @@ export class Bot {
   private async handleInteraction(interaction: discord.Interaction): Promise<void> {
     if (interaction.isCommand()) {
       const command = this.commands.get(interaction.commandName);
-      if (command) await command["_run"](new CommandContext(interaction));
+      if (command) await command["_run"](new CommandContext(interaction as GuildDependentInteraction<boolean>));
     } else if (interaction.isButton()) {
       // TODO
     } else if (interaction.isSelectMenu()) {
