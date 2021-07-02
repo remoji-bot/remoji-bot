@@ -24,7 +24,7 @@ import { CommandManager } from "./base/commandmanager";
 import { RedisConnection } from "./data/redis/redisconnection";
 import { Logger } from "./logger";
 
-import { TopGGInterface } from "./third-party/TopGGInterface";
+import { TopGGInterface } from "./third-party/topgginterface";
 import { getenv } from "./utils/functions";
 
 /**
