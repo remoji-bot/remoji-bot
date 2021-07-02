@@ -16,6 +16,7 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import { performance } from "perf_hooks";
 import { Awaitable, Nullable } from "./types";
 
 export function getenv(name: string, number?: false, assert?: false): string | null;
@@ -60,7 +61,7 @@ export async function time<T, P extends []>(
   cb: (...args: P) => Awaitable<T>,
   ...args: P
 ): Promise<[time: number, result: T]> {
-  const before = Date.now();
+  const before = performance.now();
   const res = await cb(...args);
-  return [Date.now() - before, res];
+  return [performance.now() - before, res];
 }

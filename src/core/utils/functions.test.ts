@@ -62,8 +62,8 @@ test("getenv", () => {
 
 test("time", async () => {
   const wait = (timeout: number) => new Promise(r => setTimeout(r, timeout));
-  const wait500OK = () => wait(5).then(() => "OK");
-  const [time, result] = await functions.time(wait500OK);
-  expect(time).toBeGreaterThanOrEqual(5);
+  const waitOK = () => wait(5).then(() => "OK");
+  const [time, result] = await functions.time(waitOK);
+  expect(time).toBeGreaterThanOrEqual(4);
   expect(result).toStrictEqual("OK");
 });
