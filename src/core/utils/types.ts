@@ -28,10 +28,21 @@ export type Awaitable<T> = T | Promise<T>;
 export type Nullable<T> = T | null;
 
 /**
+ * Conditional typing extension helper.
+ *
+ * 1. If `T extends SUPERTRUTHY`, then `TRUTHY`
+ *
+ * 2. If `T extends SUPERFALSY`, then `FALSY`
+ *
+ * 3. Else `FALLBACK`
+ */
+export type ExtendConditional<T, SUPERTRUTHY, TRUTHY, SUPERFALSY, FALSY, FALLBACK = never> = T extends SUPERTRUTHY
+  ? TRUTHY
+  : T extends SUPERFALSY
+  ? FALSY
+  : FALLBACK;
+
+/**
  * Ternary helper function for typing.
  */
-export type Ternary<FLAG extends boolean, TRUTHY, FALSY> = FLAG extends true
-  ? TRUTHY
-  : FLAG extends false
-  ? FALSY
-  : never;
+export type Ternary<FLAG extends boolean, TRUTHY, FALSY> = ExtendConditional<FLAG, true, TRUTHY, false, FALSY>;

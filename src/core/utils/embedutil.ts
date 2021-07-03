@@ -17,6 +17,7 @@
 */
 
 import { MessageEmbed } from "discord.js";
+import { I18N } from "../../i18n";
 import { Bot } from "../bot";
 import { getenv } from "./functions";
 
@@ -27,13 +28,14 @@ export class EmbedUtil {
   /**
    * Create a base embed.
    *
+   * @param i18n - The `I18N` instance to use
    * @returns - The created base embed.
    */
-  public static base(): MessageEmbed {
+  public static base(i18n: I18N): MessageEmbed {
     return new MessageEmbed()
       .setColor(0xfffffe)
       .setAuthor(
-        "Remoji - Discord Emoji Manager",
+        i18n.embed_remoji_author_name,
         Bot.getInstance().client.user?.displayAvatarURL(),
         getenv("TOPGG_URL", false, true),
       );
@@ -42,52 +44,59 @@ export class EmbedUtil {
   /**
    * Create an error embed.
    *
+   * @param i18n - The `I18N` instance to use
    * @param description - The description of the error embed.
    * @returns - The created error embed.
    */
-  public static error(description: string): MessageEmbed {
-    return this.base()
+  public static error(i18n: I18N, description: string): MessageEmbed {
+    return this.base(i18n)
       .setColor(0xff5555)
       .setDescription(description)
-      .addField("Need help?", `[Join the support server](${getenv("SUPPORT_INVITE", false, true)})`);
+      .addField(
+        i18n.embed_help_callout_title,
+        `[${i18n.embed_join_support_server_link}](${getenv("SUPPORT_INVITE", false, true)})`,
+      );
   }
 
   /**
    * Create a success embed.
    *
+   * @param i18n - The `I18N` instance to use
    * @param description - The description of the success embed.
    * @returns - The created success embed.
    */
-  public static success(description: string): MessageEmbed {
-    return this.base()
+  public static success(i18n: I18N, description: string): MessageEmbed {
+    return this.base(i18n)
       .setColor(0x55ff55)
       .setAuthor(
-        "Click here to vote for Remoji!",
+        i18n.embed_vote_callout_link,
         "https://i.imgur.com/1wLOFn2.png", // Star
         getenv("TOPGG_URL", false, true),
       )
       .setDescription(description)
-      .setFooter("Remoji - Discord Emoji Manager - Created by Shino");
+      .setFooter(i18n.embed_footer_tagline);
   }
 
   /**
    * Creates a success-followup embed.
    *
+   * @param i18n - The `I18N` instance to use
    * @param description - The description of the success-followup embed.
    * @returns - The created success-followup embed.
    */
-  public static successFollowup(description: string): MessageEmbed {
+  public static successFollowup(i18n: I18N, description: string): MessageEmbed {
     return new MessageEmbed().setColor(0x55ff55).setDescription(description);
   }
 
   /**
    * Create an info embed.
    *
+   * @param i18n - The `I18N` instance to use
    * @param description - The description of the info embed.
    * @returns - The created info embed.
    */
-  public static info(description: string): MessageEmbed {
-    return this.base().setColor(0x5555ff).setDescription(description);
+  public static info(i18n: I18N, description: string): MessageEmbed {
+    return this.base(i18n).setColor(0x5555ff).setDescription(description);
   }
 
   private constructor() {

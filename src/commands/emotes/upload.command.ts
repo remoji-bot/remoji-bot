@@ -61,16 +61,15 @@ export class UploadCommand extends Command<true> {
     const url = ctx.options.string("url");
     const name = ctx.options.string("name");
 
-    if (name.length < 3 || !/^[\w_]+$/.test(name)) return await ctx.error("That doesn't look like a valid name...");
+    if (name.length < 3 || !/^[\w_]+$/.test(name)) return await ctx.error(ctx.s.image_invalid_name);
 
     const image = await ImageUtil.downloadImage(url);
 
     if (!image.success) {
-      if (image.error) await ctx.error(`Could not download the image: \`${image.error}\``);
-      else if (!image.validURL) await ctx.error("That doesn't look like a valid URL...");
-      else if (!image.whitelistedURL)
-        await ctx.error("That image isn't hosted on an allowed website. Try uploading it to imgur or Discord first!");
-      else await ctx.error("Couldn't download the image. An unknown error occurred.");
+      if (image.error) await ctx.error(ctx.s.image_download_error_with_reason(image.error));
+      else if (!image.validURL) await ctx.error(ctx.s.image_invalid_url);
+      else if (!image.whitelistedURL) await ctx.error(ctx.s.image_invalid_domain);
+      else await ctx.error(ctx.s.image_unknown_error);
       return;
     }
 
@@ -78,12 +77,10 @@ export class UploadCommand extends Command<true> {
       const emoji = await ctx.interaction.guild.emojis.create(Buffer.from(image.data), name, {
         reason: `Uploaded by ${ctx.interaction.user.tag} (${ctx.interaction.user.id}) using /${this.data.name}`,
       });
-      await ctx.success(`:tada:  Uploaded \`:${name}:\` to this server! ${emoji}`);
+      await ctx.success(ctx.s.image_upload_success(name, emoji.toString()));
     } catch (error) {
       Logger.error(error);
-      await ctx.error(
-        "Couldn't upload the emote. An unknown error occurred. Maybe try a different image, or try reuploading the image to Discord first.",
-      );
+      await ctx.error(ctx.s.image_upload_failed_unknown_error);
     }
   }
 }

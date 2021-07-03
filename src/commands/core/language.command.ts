@@ -18,18 +18,35 @@
 
 import { Command } from "../../core/base/command";
 import { CommandContext } from "../../core/base/commandcontext";
-import { EmbedUtil } from "../../core/utils/embedutil";
-import { time } from "../../core/utils/functions";
+import { I18NLanguage } from "../../i18n";
 
 /**
- * `/ping` command - Tests the bot's connection to Discord.
+ * `/language` command - Set user language preference.
  */
-export class PingCommand extends Command<false> {
+export class LanguageCommand extends Command<false> {
   constructor() {
     super(
       {
-        name: "ping",
-        description: "Test the bot's connection to Discord",
+        name: "language",
+        description: "Set preferred language for bot responses",
+        options: [
+          {
+            name: "language",
+            description: "The language to switch to (only affects bot messages)",
+            type: "STRING",
+            required: true,
+            choices: [
+              {
+                name: "US English (default)",
+                value: "en-US",
+              },
+              {
+                name: "Welsh",
+                value: "cy-GB",
+              },
+            ],
+          },
+        ],
       },
       {
         guildOnly: false,
@@ -43,9 +60,13 @@ export class PingCommand extends Command<false> {
    * @param ctx - The context for the command.
    */
   async run(ctx: CommandContext<false>): Promise<void> {
-    const [delay] = await time(() => ctx.interaction.defer());
-    await ctx.interaction.editReply({
-      embeds: [EmbedUtil.success(ctx.i18n, ctx.s.ping_success(Math.floor(delay)))],
-    });
+    const language = ctx.options.string("language") as I18NLanguage;
+
+    const oldI18N = await this.bot.i18nUserStore.get(ctx.interaction.user.id);
+
+    const i18n = this.bot.i18n[language];
+    await this.bot.i18nUserStore.set(ctx.interaction.user.id, language);
+
+    await ctx.success(i18n.language_change_success(oldI18N, language));
   }
 }

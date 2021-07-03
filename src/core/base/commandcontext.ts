@@ -28,6 +28,7 @@ import {
   TextChannel,
   ThreadChannel,
 } from "discord.js";
+import { I18N } from "../../i18n";
 import { EmbedUtil } from "../utils/embedutil";
 import { Ternary } from "../utils/types";
 import { CommandOptionResolver } from "./commandoptionresolver";
@@ -58,10 +59,21 @@ export type GuildDependentInteraction<GUILD extends boolean> = CommandInteractio
 export class CommandContext<GUILD extends boolean = boolean> {
   readonly interaction: GuildDependentInteraction<GUILD>;
   readonly options: CommandOptionResolver;
+  readonly i18n: I18N;
 
-  constructor(interaction: GuildDependentInteraction<GUILD>) {
+  /**
+   * Alias for `i18n`
+   *
+   * @returns the `I18N` instance.
+   */
+  get s(): I18N {
+    return this.i18n;
+  }
+
+  constructor(interaction: GuildDependentInteraction<GUILD>, i18n: I18N) {
     this.interaction = interaction;
     this.options = new CommandOptionResolver(interaction.options);
+    this.i18n = i18n;
   }
 
   /**
@@ -70,7 +82,7 @@ export class CommandContext<GUILD extends boolean = boolean> {
    * @param message - The content of the error message
    */
   async error(message: string): Promise<void> {
-    await this.interaction.reply({ embeds: [EmbedUtil.error(message)] });
+    await this.interaction.reply({ embeds: [EmbedUtil.error(this.i18n, message)] });
   }
 
   /**
@@ -79,6 +91,6 @@ export class CommandContext<GUILD extends boolean = boolean> {
    * @param message - The content of the success message
    */
   async success(message: string): Promise<void> {
-    await this.interaction.reply({ embeds: [EmbedUtil.success(message)] });
+    await this.interaction.reply({ embeds: [EmbedUtil.success(this.i18n, message)] });
   }
 }

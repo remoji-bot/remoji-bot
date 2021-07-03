@@ -17,12 +17,17 @@
 */
 
 import * as discord from "discord.js";
+import { LanguageCommand } from "../commands/core/language.command";
 
 import { PingCommand } from "../commands/core/ping.command";
 import { UploadCommand } from "../commands/emotes/upload.command";
+import { I18N, I18NLanguage } from "../i18n";
+import { Lang_cy_GB } from "../i18n/lang/cy-GB.lang";
+import { Lang_en_US } from "../i18n/lang/en-US.lang";
 import { CommandContext, GuildDependentInteraction } from "./base/commandcontext";
 import { CommandManager } from "./base/commandmanager";
 import { RedisConnection } from "./data/redis/redisconnection";
+import { RedisStore } from "./data/redis/redisstore";
 import { Logger } from "./logger";
 import { TopGGInterface } from "./third-party/topgginterface";
 import { getenv } from "./utils/functions";
@@ -47,6 +52,12 @@ export class Bot {
   readonly topgg = TopGGInterface.getInstance();
   readonly commands = new CommandManager();
 
+  readonly i18n: Readonly<Record<I18NLanguage, I18N>> = Object.freeze({
+    "cy-GB": new Lang_cy_GB(),
+    "en-US": new Lang_en_US(),
+  });
+  readonly i18nUserStore = new RedisStore<discord.Snowflake, I18NLanguage>("i18nUser");
+
   private constructor() {
     this.client = new discord.Client({
       allowedMentions: { parse: [] },
@@ -68,9 +79,10 @@ export class Bot {
     await this.client.login(getenv("DISCORD_TOKEN", false, true));
     Logger.info(`Connected as ${this.client.user?.tag} with ${this.client.shard?.count ?? 1} shard(s)`);
 
-    this.commands.register(new PingCommand()).register(new UploadCommand());
+    this.commands.register(new PingCommand()).register(new UploadCommand()).register(new LanguageCommand());
     // TODO.. :)
 
+    // TODO: remove unregistered commands
     await Promise.all(
       this.commands.commands.mapValues(command => this.client.application?.commands.create(command.data)),
     );
@@ -91,11 +103,33 @@ export class Bot {
   private async handleInteraction(interaction: discord.Interaction): Promise<void> {
     if (interaction.isCommand()) {
       const command = this.commands.get(interaction.commandName);
-      if (command) await command["_run"](new CommandContext(interaction as GuildDependentInteraction<boolean>));
+      if (command) {
+        Logger.verbose(
+          `User ${interaction.user.tag} (${interaction.user.id}) ran command: /${
+            command.data.name
+          } with options: ${JSON.stringify(interaction.options.toJSON())}, guild: ${interaction.guildID}, channel: ${
+            interaction.channelID
+          }, interaction: ${interaction.id}`,
+        );
+        const i18n = await this.getI18N(interaction.user.id);
+        await command["_run"](new CommandContext(interaction as GuildDependentInteraction<boolean>, i18n));
+      }
     } else if (interaction.isButton()) {
       // TODO
     } else if (interaction.isSelectMenu()) {
       // TODO
     }
+  }
+
+  /**
+   * Get an i18n object for a specific user.
+   *
+   * @param user - The user ID for which to fetch preferred language
+   * @returns The I18N object to use for translation
+   */
+  async getI18N(user?: discord.Snowflake): Promise<I18N> {
+    const userLanguage = user && (await this.i18nUserStore.get(user));
+    const i18n = userLanguage && userLanguage in this.i18n ? this.i18n[userLanguage] : this.i18n["en-US"];
+    return i18n;
   }
 }
