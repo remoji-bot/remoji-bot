@@ -55,4 +55,12 @@ export abstract class I18N {
   abstract command_error_user_missing_permission: I18NValue<[missing: PermissionString[]]>;
   abstract command_error_bot_missing_permission: I18NValue<[missing: PermissionString[]]>;
   abstract command_error_vote_locked: I18NValue<[command_name: string, topgg_vote_url: string]>;
+
+  abstract emote_copy_invalid_emote: I18NValue;
+  abstract emote_copy_invalid_name: I18NValue;
+  abstract emote_copy_invalid_url: I18NValue;
+  abstract emote_copy_invalid_domain: I18NValue;
+  abstract emote_copy_unknown_download_error: I18NValue;
+  abstract emote_copy_unknown_upload_error: I18NValue;
+  abstract emote_copy_success: I18NValue<[name: string, new_emoji: string]>;
 }

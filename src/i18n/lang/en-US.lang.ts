@@ -33,7 +33,7 @@ export class Lang_en_US extends I18N {
   image_invalid_domain = "That image isn't hosted on an allowed website. Try uploading it to imgur or Discord first!";
   image_unknown_error = "Couldn't download the image. An unknown error occurred.";
   image_upload_success = (name: string, emoji: string): string =>
-    `:tada:  Uploaded \`:${name}:\` to this server! ${emoji}`;
+    `:tada:  Uploaded \`:${name}:\` to your server! ${emoji}`;
   image_upload_failed_unknown_error =
     "Couldn't upload the emote. An unknown error occurred. Maybe try a different image, or try reuploading the image to Discord first.";
   language_change_success = (oldLocale: Nullable<I18NLanguage>, newLocale: I18NLanguage): string =>
@@ -54,4 +54,15 @@ export class Lang_en_US extends I18N {
       .join(", ")}`;
   command_error_vote_locked = (commandName: string, topggURL: string): string =>
     `:lock: To unlock the \`/${commandName}\` command, [vote for Remoji on top.gg](${topggURL})!`;
+
+  emote_copy_invalid_emote = "Could not find an emote to copy. Make sure you use a **custom** emote.";
+  emote_copy_invalid_name =
+    "That isn't a valid emote name. Emote names must be between 2-32 characters and may contain letters, numbers, and underscores.";
+  emote_copy_invalid_url = "Could not download that emote. Maybe it was deleted?";
+  emote_copy_invalid_domain =
+    "Could not download that emote due to an invalid CDN domain name. Please report this error to the developers.";
+  emote_copy_unknown_download_error = "An unknown error occurred while downloading that emote.";
+  emote_copy_unknown_upload_error = "An unknown error occurred while uploading your emoji to Discord.";
+  emote_copy_success = (name: string, newEmoji: string): string =>
+    `:tada:  Copied \`:${name}:\` to your server! ${newEmoji}`;
 }

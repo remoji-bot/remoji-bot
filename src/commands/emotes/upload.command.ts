@@ -22,7 +22,7 @@ import { Logger } from "../../core/logger";
 import { ImageUtil } from "../../core/utils/imageutil";
 
 /**
- * `/upload` command - Tests the bot's connection to Discord.
+ * `/upload` command - Upload an emote by its link.
  */
 export class UploadCommand extends Command<true> {
   constructor() {
@@ -72,6 +72,8 @@ export class UploadCommand extends Command<true> {
       else await ctx.error(ctx.s.image_unknown_error);
       return;
     }
+
+    // TODO: check remaining emote slots/animated status
 
     try {
       const emoji = await ctx.interaction.guild.emojis.create(Buffer.from(image.data), name, {

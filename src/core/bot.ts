@@ -20,6 +20,7 @@ import * as discord from "discord.js";
 import { LanguageCommand } from "../commands/core/language.command";
 
 import { PingCommand } from "../commands/core/ping.command";
+import { CopyCommand } from "../commands/emotes/copy.command";
 import { UploadCommand } from "../commands/emotes/upload.command";
 import { I18N, I18NLanguage } from "../i18n";
 import { Lang_cy_GB } from "../i18n/lang/cy-GB.lang";
@@ -79,7 +80,11 @@ export class Bot {
     await this.client.login(getenv("DISCORD_TOKEN", false, true));
     Logger.info(`Connected as ${this.client.user?.tag} with ${this.client.shard?.count ?? 1} shard(s)`);
 
-    this.commands.register(new PingCommand()).register(new UploadCommand()).register(new LanguageCommand());
+    this.commands
+      .register(new PingCommand())
+      .register(new UploadCommand())
+      .register(new LanguageCommand())
+      .register(new CopyCommand());
     // TODO.. :)
 
     // TODO: remove unregistered commands

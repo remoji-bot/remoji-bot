@@ -17,6 +17,7 @@
 */
 
 import axios from "axios";
+import { Snowflake } from "discord.js";
 import { URL } from "url";
 import { Logger } from "../logger";
 
@@ -37,6 +38,16 @@ export const REGEXP_URL =
 export const MIME_WHITELIST: readonly string[] = ["image/jpeg", "image/png", "image/gif"];
 
 /**
+ * Regular expression to match a single emote.
+ */
+export const REGEXP_EMOTE = /^<(?<animated>a)?:(?<name>[a-zA-Z0-9_]{2,32}):(?<id>\d{17,20})>$/;
+
+/**
+ * Regular expression to match multiple emotes.
+ */
+export const REGEXP_ALL_EMOTES = /<(?<animated>a)?:(?<name>[a-zA-Z0-9_]{2,32}):(?<id>\d{17,20})>/g;
+
+/**
  * Represents a result from `ImageUtil.downloadImage()`.
  */
 export type DownloadImageResult =
@@ -53,11 +64,63 @@ export type DownloadImageResult =
     };
 
 /**
+ * Stores basic information about an emoji.
+ */
+export class EmojiInfo {
+  constructor(readonly id: Snowflake, readonly name: string, readonly animated: boolean) {}
+
+  /**
+   * The CDN URL.
+   *
+   * @returns - The CDN URL.
+   */
+  get url(): string {
+    const extension = this.animated ? "gif" : "png";
+    return `https://cdn.discordapp.com/emojis/${this.id}.${extension}`;
+  }
+}
+
+/**
  * Utilities for uploading/downloading images and emojis.
  */
 export class ImageUtil {
   private constructor() {
     // private
+  }
+
+  /**
+   * Extract all emojis from a given input string.
+   *
+   * @param string - The input string.
+   * @returns - The emojis extracted from the input string.
+   */
+  static extractEmojis(string: string): EmojiInfo[] {
+    const matches = Array.from(string.matchAll(REGEXP_ALL_EMOTES));
+    return matches
+      .filter(match => match.groups)
+      .map(
+        match =>
+          new EmojiInfo(
+            match.groups?.id as Snowflake,
+            match.groups?.name as string,
+            !!(match.groups?.animated as string),
+          ),
+      );
+  }
+
+  /**
+   * Get the Discord CDN asset URL for an emoji.
+   *
+   * @param emoji - The emoji to get the asset URL for.
+   * @returns - The asset URL.
+   */
+  static getEmojiCDNImageURL(emoji: string): string | null {
+    const groups = emoji.match(REGEXP_EMOTE)?.groups;
+
+    if (!groups) return null;
+
+    const extension = groups.animated ? "gif" : "png";
+    return `https://cdn.discordapp.com/emojis/${groups.id}.${extension}`;
   }
 
   /**

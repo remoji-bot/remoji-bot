@@ -28,6 +28,7 @@ import {
   TextChannel,
   ThreadChannel,
 } from "discord.js";
+import { inspect } from "util";
 import { I18N } from "../../i18n";
 import { EmbedUtil } from "../utils/embedutil";
 import { Ternary } from "../utils/types";
@@ -92,5 +93,17 @@ export class CommandContext<GUILD extends boolean = boolean> {
    */
   async success(message: string): Promise<void> {
     await this.interaction.reply({ embeds: [EmbedUtil.success(this.i18n, message)] });
+  }
+
+  /**
+   * FOR TESTING ONLY - Sends a debug reply.
+   *
+   * @deprecated
+   * @param value - The value to send
+   */
+  async debug(value: unknown): Promise<void> {
+    await this.interaction.reply({
+      embeds: [EmbedUtil.base(this.i18n).setDescription("```js\n" + inspect(value).slice(0, 4000) + "\n```")],
+    });
   }
 }

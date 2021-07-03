@@ -50,6 +50,20 @@ export class CommandOptionResolver {
     return option ?? null;
   }
 
+  /**
+   * Gets `name` as a subcommand using a `CommandOptionResolver`.
+   *
+   * @param name - The subcommand name
+   * @returns - The subcommand resolver
+   */
+  subcommand(name: string): CommandOptionResolver | null {
+    const option = this.get(name, false);
+    if (option && option.type !== "SUB_COMMAND")
+      throw new TypeError(`Non-subcommand value in subcommand option: ${name}`);
+    if (!option?.options) return null;
+    return new CommandOptionResolver(option.options);
+  }
+
   string<T extends string = string>(name: string, required?: true): T;
   string<T extends string = string>(name: string, required: boolean): Nullable<T>;
   /**
