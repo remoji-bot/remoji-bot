@@ -6,7 +6,8 @@
     "watch": "ts-node-dev src/main.ts",
     "prepare": "husky install",
     "test:jest": "jest",
-    "test": "npm-run-all --parallel lint test:jest"
+    "test:dry": "tsc --noEmit",
+    "test": "npm-run-all --parallel lint test:jest test:dry"
   },
   "dependencies": {
     "7zip-bin": "^5.1.1",
@@ -26,7 +27,7 @@
     "chalk": "^4.1.0",
     "common-tags": "^1.8.0",
     "discord-api-types": "^0.19.0-next.f393ba520d7d6d2aacaca7b3ca5d355fab614f6e",
-    "discord.js": "^13.0.0-dev.941cd86.1625141252",
+    "discord.js": "^13.0.0-dev.fe5d56c.1625443439",
     "dotenv-safe": "^8.2.0",
     "eslint": "^7.28.0",
     "eslint-config-prettier": "^8.3.0",

@@ -114,8 +114,8 @@ export class Bot {
         Logger.verbose(
           `User ${interaction.user.tag} (${interaction.user.id}) ran command: /${
             command.data.name
-          } with options: ${JSON.stringify(interaction.options.toJSON())}, guild: ${interaction.guildID}, channel: ${
-            interaction.channelID
+          } with options: ${JSON.stringify(interaction.options.toJSON())}, guild: ${interaction.guildId}, channel: ${
+            interaction.channelId
           }, interaction: ${interaction.id}`,
         );
         const i18n = await this.getI18N(interaction.user.id);
