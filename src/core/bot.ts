@@ -25,6 +25,7 @@ import { UploadCommand } from "../commands/emotes/upload.command";
 import { I18N, I18NLanguage } from "../i18n";
 import { Lang_cy_GB } from "../i18n/lang/cy-GB.lang";
 import { Lang_en_US } from "../i18n/lang/en-US.lang";
+import { Lang_nl_NL } from "../i18n/lang/nl-NL.lang";
 import { CommandContext, GuildDependentInteraction } from "./base/commandcontext";
 import { CommandManager } from "./base/commandmanager";
 import { RedisConnection } from "./data/redis/redisconnection";
@@ -56,6 +57,7 @@ export class Bot {
   readonly i18n: Readonly<Record<I18NLanguage, I18N>> = Object.freeze({
     "cy-GB": new Lang_cy_GB(),
     "en-US": new Lang_en_US(),
+    "nl-NL": new Lang_nl_NL(),
   });
   readonly i18nUserStore = new RedisStore<discord.Snowflake, I18NLanguage>("i18nUser");
 

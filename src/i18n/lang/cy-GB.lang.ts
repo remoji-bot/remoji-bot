@@ -25,6 +25,8 @@ import { Lang_en_US } from "./en-US.lang";
 /**
  * Locale: cy-GB
  * Welsh
+ *
+ * Translated by: vcokltfre
  */
 export class Lang_cy_GB extends Lang_en_US {
   ping_success = (delay: number): string => `Pong! Hwyrni: ${delay}ms`;
@@ -42,8 +44,8 @@ export class Lang_cy_GB extends Lang_en_US {
     `Wedi newid eich iaith yn lwwydiannus o \`${oldLocale ?? "dim"}\` i \`${newLocale}\``;
 
   embed_help_callout_title = "Angen help?";
-  embed_remoji_author_name = "Remoji - Rheolwr emoji Discord.";
-  embed_footer_tagline = "Remoji - Rheolwr emoji Discord. - Wedi creu gan Shino";
+  embed_remoji_author_name = "Remoji - Rheolwr emoji Discord";
+  embed_footer_tagline = "Remoji - Rheolwr emoji Discord - Wedi creu gan Shino";
   embed_join_support_server_link = "Ymuno'r gweinydd cyfnogaeth!";
   embed_vote_callout_link = "Cliciwch yma i bleidleisio am Remoji!";
 

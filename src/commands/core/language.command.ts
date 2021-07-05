@@ -44,6 +44,10 @@ export class LanguageCommand extends Command<false> {
                 name: "Welsh",
                 value: "cy-GB",
               },
+              {
+                name: "Dutch",
+                value: "nl-NL",
+              },
             ],
           },
         ],

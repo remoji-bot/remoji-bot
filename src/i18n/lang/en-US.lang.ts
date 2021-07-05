@@ -40,7 +40,7 @@ export class Lang_en_US extends I18N {
     `Successfully changed your language from \`${oldLocale ?? "none"}\` to \`${newLocale}\``;
 
   embed_help_callout_title = "Need help?";
-  embed_remoji_author_name = "Remoji - Discord emoji manager.";
+  embed_remoji_author_name = "Remoji - Discord emoji manager";
   embed_footer_tagline = "Remoji - Discord emoji manager - Created by Shino";
   embed_join_support_server_link = "Join the support server";
   embed_vote_callout_link = "Click here to vote for Remoji!";
