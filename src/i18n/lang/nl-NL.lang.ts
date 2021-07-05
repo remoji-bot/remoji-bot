@@ -41,7 +41,7 @@ export class Lang_nl_NL extends Lang_en_US {
   image_upload_failed_unknown_error =
     "Kon de emote niet uploaden. Een onbekende error heeft plaatsgevonden. Probeer een andere afbeelding, of probeer de afbeelding naar Discord opnieuw te uploaden.";
   language_change_success = (oldLocale: Nullable<I18NLanguage>, newLocale: I18NLanguage): string =>
-    `Je taal is succesvol veranderd van \`${oldLocale ?? "none"}\` naar \`${newLocale}\``;
+    `Je taal is succesvol veranderd van \`${oldLocale ?? "niks"}\` naar \`${newLocale}\``;
 
   embed_help_callout_title = "Hulp nodig?";
   embed_remoji_author_name = "Remoji - Discord emoji manager.";
