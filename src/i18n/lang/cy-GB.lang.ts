@@ -25,6 +25,8 @@ import { Lang_en_US } from "./en-US.lang";
 /**
  * Locale: cy-GB
  * Welsh
+ *
+ * Translated by: vcokltfre
  */
 export class Lang_cy_GB extends Lang_en_US {
   ping_success = (delay: number): string => `Pong! Hwyrni: ${delay}ms`;
