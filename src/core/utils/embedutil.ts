@@ -19,7 +19,7 @@
 import { MessageEmbed } from "discord.js";
 import { I18N } from "../../i18n";
 import { Bot } from "../bot";
-import { getenv } from "./functions";
+import { getenv } from "@remoji-bot/core";
 
 /**
  *An embed builder.

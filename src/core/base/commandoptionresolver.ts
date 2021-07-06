@@ -23,7 +23,7 @@ import {
   APIRole,
 } from "discord-api-types/v8";
 
-import { Nullable } from "../utils/types";
+import { Nullable } from "@remoji-bot/core";
 
 /**
  * A resolver for `CommandInteractionOption` collections.

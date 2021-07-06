@@ -18,7 +18,6 @@
 
 import { Command } from "../../core/base/command";
 import { CommandContext } from "../../core/base/commandcontext";
-import { Logger } from "../../core/logger";
 import { ImageUtil } from "../../core/utils/imageutil";
 
 /**
@@ -81,7 +80,7 @@ export class UploadCommand extends Command<true> {
       });
       await ctx.success(ctx.s.image_upload_success(name, emoji.toString()));
     } catch (error) {
-      Logger.error(error);
+      this.logger.error(error);
       await ctx.error(ctx.s.image_upload_failed_unknown_error);
     }
   }

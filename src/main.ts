@@ -18,15 +18,18 @@
 
 import dotenv = require("dotenv-safe");
 
+import { Logger } from "@remoji-bot/core";
+
 import { Bot } from "./core/bot";
-import { Logger } from "./core/logger";
+
+const logger = Logger.getDefault();
 
 process.on("uncaughtException", error => {
-  Logger.error(error);
+  logger.error(error);
   process.exit(1);
 });
 process.on("unhandledRejection", rejection => {
-  Logger.error(rejection);
+  logger.error(rejection);
   process.exit(1);
 });
 

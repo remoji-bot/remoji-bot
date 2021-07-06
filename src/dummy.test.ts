@@ -16,33 +16,8 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/**
- * Represents a value which can be used with `await`.
- * i.e. either a value or a Promise of that value.
- */
-export type Awaitable<T> = T | Promise<T>;
+// TODO: this file exists because there are no suitable tests yet
 
-/**
- * Either `T` or null.
- */
-export type Nullable<T> = T | null;
-
-/**
- * Conditional typing extension helper.
- *
- * 1. If `T extends SUPERTRUTHY`, then `TRUTHY`
- *
- * 2. If `T extends SUPERFALSY`, then `FALSY`
- *
- * 3. Else `FALLBACK`
- */
-export type ExtendConditional<T, SUPERTRUTHY, TRUTHY, SUPERFALSY, FALSY, FALLBACK = never> = T extends SUPERTRUTHY
-  ? TRUTHY
-  : T extends SUPERFALSY
-  ? FALSY
-  : FALLBACK;
-
-/**
- * Ternary helper function for typing.
- */
-export type Ternary<FLAG extends boolean, TRUTHY, FALSY> = ExtendConditional<FLAG, true, TRUTHY, false, FALSY>;
+test("TODO - dummy test", () => {
+  expect(true).toStrictEqual(true);
+});

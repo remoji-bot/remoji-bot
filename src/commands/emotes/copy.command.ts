@@ -18,8 +18,7 @@
 
 import { Command } from "../../core/base/command";
 import { CommandContext } from "../../core/base/commandcontext";
-import { Logger } from "../../core/logger";
-import { getenv } from "../../core/utils/functions";
+import { getenv } from "@remoji-bot/core";
 import { ImageUtil } from "../../core/utils/imageutil";
 
 /**
@@ -112,7 +111,7 @@ export class CopyCommand extends Command<true> {
         const newEmoji = await ctx.interaction.guild.emojis.create(Buffer.from(image.data), name ?? emote.name);
         await ctx.success(ctx.s.emote_copy_success(name ?? emote.name, newEmoji.toString()));
       } catch (error) {
-        Logger.error(error);
+        this.logger.error(error);
         await ctx.error(ctx.s.emote_copy_unknown_upload_error);
       }
     } else if (multiple) {

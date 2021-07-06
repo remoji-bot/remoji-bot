@@ -31,7 +31,7 @@ import {
 import { inspect } from "util";
 import { I18N } from "../../i18n";
 import { EmbedUtil } from "../utils/embedutil";
-import { Ternary } from "../utils/types";
+import { Ternary } from "@remoji-bot/core";
 import { CommandOptionResolver } from "./commandoptionresolver";
 
 /**
