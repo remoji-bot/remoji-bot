@@ -34,5 +34,5 @@ process.on("unhandledRejection", rejection => {
   process.exit(1);
 });
 
-dotenv.config();
+dotenv.config({ allowEmptyValues: process.env.NODE_ENV === "development" });
 void Bot.getInstance().connect();
