@@ -714,10 +714,10 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@remoji-bot/core@^0.0.3":
-  version "0.0.3"
-  resolved "https://npm.pkg.github.com/download/@remoji-bot/core/0.0.3/1f1cb9d9c168b17b128a35a21aec090df124f8e05d7a990a020c3eaf0f2a2c32#1d35b21ce04e56a2ad816dd31b18aeaa6b7f2179"
-  integrity sha512-718C8gG4PsNqvR7ezHG9xF/rk6qqWSMFOgNuaGldZ0c12MN6DMm5QPjPEp623BFzEWOLocpZJxKNSKYmBSEUeQ==
+"@remoji-bot/core@^0.0.4":
+  version "0.0.4"
+  resolved "https://npm.pkg.github.com/download/@remoji-bot/core/0.0.4/ed63106642525966f619a0660ebc57b44a86da71ddca0316998e16fd0e380ce7#3b6f6bfc43666b36ad364085711a2d51be6e65dd"
+  integrity sha512-WSuRQpY558UtsVJ6Ptcl5UwQmGapHpG/le+MGVIIYG4kd5nz92qbBFRD0tf4NbNuIgyepbDrUw9k70OwptPfSQ==
   dependencies:
     "7zip-bin" "^5.1.1"
     app-root-path "^3.0.0"

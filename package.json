@@ -13,7 +13,7 @@
     "7zip-bin": "^5.1.1",
     "@commitlint/cli": "^12.1.1",
     "@commitlint/config-conventional": "^12.1.1",
-    "@remoji-bot/core": "^0.0.3",
+    "@remoji-bot/core": "^0.0.4",
     "@top-gg/sdk": "^3.1.1",
     "@types/common-tags": "^1.8.0",
     "@types/dotenv-safe": "^8.1.1",
