@@ -94,7 +94,7 @@ export class Bot {
     // Remove all unregistered commands
     for (const [, command] of (await this.client.application?.commands.fetch()) ?? []) {
       if (!this.commands.get(command.name)) {
-        Logger.verbose(`Unregistered command: ${command.name}`);
+        this.logger.verbose(`Unregistered command: ${command.name}`);
         await command.delete();
       }
     }
