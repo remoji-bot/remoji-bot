@@ -27,7 +27,7 @@ export type I18NValue<T extends unknown[] | false = false> = ExtendConditional<
   string
 >;
 
-export type I18NLanguage = "en-US" | "cy-GB" | "nl-NL";
+export type I18NLanguage = "en-US" | "cy-GB" | "nl-NL" | "de-DE";
 
 /**
  * An abstract base class for i18n translations

@@ -24,6 +24,7 @@ import { CopyCommand } from "../commands/emotes/copy.command";
 import { UploadCommand } from "../commands/emotes/upload.command";
 import { I18N, I18NLanguage } from "../i18n";
 import { Lang_cy_GB } from "../i18n/lang/cy-GB.lang";
+import { Lang_de_DE } from "../i18n/lang/de-DE.lang";
 import { Lang_en_US } from "../i18n/lang/en-US.lang";
 import { Lang_nl_NL } from "../i18n/lang/nl-NL.lang";
 import { CommandContext, GuildDependentInteraction } from "./base/commandcontext";
@@ -58,6 +59,7 @@ export class Bot {
     "cy-GB": new Lang_cy_GB(),
     "en-US": new Lang_en_US(),
     "nl-NL": new Lang_nl_NL(),
+    "de-DE": new Lang_de_DE(),
   });
   readonly i18nUserStore = new RedisStore<discord.Snowflake, I18NLanguage>("i18nUser");
 
@@ -69,7 +71,7 @@ export class Bot {
       rejectOnRateLimit: data => data.global,
     });
 
-    this.client.on("interaction", this.handleInteraction.bind(this));
+    this.client.on("interactionCreate", this.handleInteraction.bind(this));
   }
 
   /**
@@ -87,9 +89,15 @@ export class Bot {
       .register(new UploadCommand())
       .register(new LanguageCommand())
       .register(new CopyCommand());
-    // TODO.. :)
 
-    // TODO: remove unregistered commands
+    // Remove all unregistered commands
+    for (const [, command] of (await this.client.application?.commands.fetch()) ?? []) {
+      if (!this.commands.get(command.name)) {
+        Logger.verbose(`Unregistered command: ${command.name}`);
+        await command.delete();
+      }
+    }
+
     await Promise.all(
       this.commands.commands.mapValues(command => this.client.application?.commands.create(command.data)),
     );
@@ -122,9 +130,9 @@ export class Bot {
         await command["_run"](new CommandContext(interaction as GuildDependentInteraction<boolean>, i18n));
       }
     } else if (interaction.isButton()) {
-      // TODO
+      // TODO : Handle buttons using button commands for interactions
     } else if (interaction.isSelectMenu()) {
-      // TODO
+      // TODO : Handle select menus using select menu commands for interactions
     }
   }
 

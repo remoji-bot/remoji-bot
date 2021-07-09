@@ -30,7 +30,7 @@ import { Lang_en_US } from "./en-US.lang";
 export class Lang_nl_NL extends Lang_en_US {
   ping_success = (delay: number): string => `Pong! Vertraging: ${delay}ms`;
 
-  image_download_error_with_reason = (reason: Error): string => `Kan afbeelding niet downloaden: \`${reason}\``;
+  image_download_error_with_reason = (reason: Error): string => `Kon afbeelding niet downloaden: \`${reason}\``;
   image_invalid_name = "Dat lijkt niet op een geldige naam...";
   image_invalid_url = "Dat lijkt niet op een geldige URL...";
   image_invalid_domain =

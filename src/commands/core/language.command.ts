@@ -36,18 +36,10 @@ export class LanguageCommand extends Command<false> {
             type: "STRING",
             required: true,
             choices: [
-              {
-                name: "US English (default)",
-                value: "en-US",
-              },
-              {
-                name: "Welsh",
-                value: "cy-GB",
-              },
-              {
-                name: "Dutch",
-                value: "nl-NL",
-              },
+              { name: "US English (default)", value: "en-US" },
+              { name: "Welsh", value: "cy-GB" },
+              { name: "Dutch", value: "nl-NL" },
+              { name: "German", value: "de-DE" },
             ],
           },
         ],
