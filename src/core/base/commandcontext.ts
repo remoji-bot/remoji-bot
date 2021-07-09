@@ -33,6 +33,7 @@ import { I18N } from "../../i18n";
 import { EmbedUtil } from "../utils/embedutil";
 import { Ternary } from "@remoji-bot/core";
 import { CommandOptionResolver } from "./commandoptionresolver";
+import { Bot } from "../bot";
 
 /**
  * Typing utility for guild interactions.
@@ -75,6 +76,16 @@ export class CommandContext<GUILD extends boolean = boolean> {
     this.interaction = interaction;
     this.options = new CommandOptionResolver(interaction.options);
     this.i18n = i18n;
+  }
+
+  /**
+   * Returns whether the interaction user has voted on top.gg.
+   *
+   * @returns whether the interaction user has voted
+   */
+  async isVoter(): Promise<boolean> {
+    const bot = Bot.getInstance();
+    return await bot.topgg.hasVoted(this.interaction.user.id);
   }
 
   /**

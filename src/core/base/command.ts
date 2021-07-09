@@ -111,7 +111,7 @@ export abstract class Command<GUILD extends boolean = boolean> {
       return;
     }
 
-    if (this.options.voterOnly && !(await this.bot.topgg.hasVoted(ctx.interaction.user.id))) {
+    if (this.options.voterOnly && !(await ctx.isVoter())) {
       const url = getenv("TOPGG_URL", false, true);
       await ctx.error(`:lock: To unlock the \`/${this.data.name}\` command, [vote for Remoji on top.gg](${url})!`);
       return;
