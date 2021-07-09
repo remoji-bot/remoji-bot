@@ -714,6 +714,19 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
+"@remoji-bot/core@^0.0.4":
+  version "0.0.4"
+  resolved "https://npm.pkg.github.com/download/@remoji-bot/core/0.0.4/ed63106642525966f619a0660ebc57b44a86da71ddca0316998e16fd0e380ce7#3b6f6bfc43666b36ad364085711a2d51be6e65dd"
+  integrity sha512-WSuRQpY558UtsVJ6Ptcl5UwQmGapHpG/le+MGVIIYG4kd5nz92qbBFRD0tf4NbNuIgyepbDrUw9k70OwptPfSQ==
+  dependencies:
+    "7zip-bin" "^5.1.1"
+    app-root-path "^3.0.0"
+    axios "^0.21.1"
+    chalk "^4.1.0"
+    common-tags "^1.8.0"
+    luxon "^1.27.0"
+    node-7z "^2.1.2"
+
 "@sapphire/async-queue@^1.1.4":
   version "1.1.4"
   resolved "https://registry.yarnpkg.com/@sapphire/async-queue/-/async-queue-1.1.4.tgz#ae431310917a8880961cebe8e59df6ffa40f2957"
@@ -1161,6 +1174,11 @@ anymatch@^3.0.3, anymatch@~3.1.2:
   dependencies:
     normalize-path "^3.0.0"
     picomatch "^2.0.4"
+
+app-root-path@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/app-root-path/-/app-root-path-3.0.0.tgz#210b6f43873227e18a4b810a032283311555d5ad"
+  integrity sha512-qMcx+Gy2UZynHjOHOIXPNvpf+9cjvk3cWrBBK7zg4gH9+clobJRb9NGzcT7mQTcV/6Gm/1WelUtqxVXnNlrwcw==
 
 arg@^4.1.0:
   version "4.1.3"

@@ -19,9 +19,7 @@
 import * as assert from "assert";
 import * as discord from "discord.js";
 import { Bot } from "../bot";
-import { Logger } from "../logger";
-import { getenv } from "../utils/functions";
-import { Nullable } from "../utils/types";
+import { Logger, Nullable, getenv } from "@remoji-bot/core";
 import { CommandContext } from "./commandcontext";
 
 export interface CommandOptions<GUILD extends boolean> {
@@ -41,11 +39,12 @@ export interface CommandOptions<GUILD extends boolean> {
 export abstract class Command<GUILD extends boolean = boolean> {
   readonly data: Readonly<discord.ApplicationCommandData>;
   readonly bot = Bot.getInstance();
+  readonly logger: Logger;
 
   private readonly options: Readonly<CommandOptions<GUILD>>;
 
   constructor(data: discord.ApplicationCommandData, options: CommandOptions<GUILD>) {
-    Logger.verbose(`Constructed Command: ${data.name}`);
+    this.logger = Logger.getLogger(`command/${data.name}`);
     this.data = data;
     this.options = options;
     assert(this._run === Command.prototype._run, "Command#_run must not be overridden");
@@ -77,7 +76,7 @@ export abstract class Command<GUILD extends boolean = boolean> {
     // TODO: check this.options.developerOnly
 
     if (this.options.guildOnly && !ctx.interaction.guild) {
-      Logger.error(`guildOnly command ${this.data.name} was run outside of a guild`);
+      this.logger.error(`guildOnly command ${this.data.name} was run outside of a guild`);
       await ctx.error(`:x: This command can only be used in a server!`);
       return;
     }

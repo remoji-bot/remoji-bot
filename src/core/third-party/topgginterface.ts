@@ -20,9 +20,7 @@ import * as topgg from "@top-gg/sdk";
 import { Snowflake } from "discord.js";
 
 import { RedisCacheManager } from "../data/redis/rediscachemanager";
-import { Logger } from "../logger";
-import { getenv } from "../utils/functions";
-import { Nullable } from "../utils/types";
+import { Logger, Nullable, getenv } from "@remoji-bot/core";
 
 /**
  * A high level caching interface to the topgg API.
@@ -39,6 +37,9 @@ export class TopGGInterface {
     if (!this.instance) this.instance = new this();
     return this.instance;
   }
+
+  readonly logger = Logger.getLogger("topgg");
+
   readonly apiKey = getenv("TOPGG_API_KEY");
   readonly api: Nullable<topgg.Api>;
   readonly cache = new RedisCacheManager("topgg");
@@ -55,7 +56,7 @@ export class TopGGInterface {
    */
   async hasVoted(user: Snowflake): Promise<boolean> {
     const result = await this._hasVoted(user);
-    Logger.info(`hasVoted(${user}): ${result}`);
+    this.logger.info(`hasVoted(${user}): ${result}`);
     return result;
   }
 

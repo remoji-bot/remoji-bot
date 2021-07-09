@@ -31,9 +31,8 @@ import { CommandContext, GuildDependentInteraction } from "./base/commandcontext
 import { CommandManager } from "./base/commandmanager";
 import { RedisConnection } from "./data/redis/redisconnection";
 import { RedisStore } from "./data/redis/redisstore";
-import { Logger } from "./logger";
 import { TopGGInterface } from "./third-party/topgginterface";
-import { getenv } from "./utils/functions";
+import { Logger, getenv } from "@remoji-bot/core";
 
 /**
  * The Bot singleton class.
@@ -50,6 +49,8 @@ export class Bot {
     if (!this.instance) this.instance = new this();
     return this.instance;
   }
+
+  readonly logger = Logger.getLogger("bot");
 
   readonly client: discord.Client;
   readonly topgg = TopGGInterface.getInstance();
@@ -78,11 +79,11 @@ export class Bot {
    * Start the bot.
    */
   async connect(): Promise<void> {
-    Logger.info("Connecting to Redis...");
+    this.logger.info("Connecting to Redis...");
     await RedisConnection.getInstance().redis.ping();
-    Logger.info("Connecting to Discord...");
+    this.logger.info("Connecting to Discord...");
     await this.client.login(getenv("DISCORD_TOKEN", false, true));
-    Logger.info(`Connected as ${this.client.user?.tag} with ${this.client.shard?.count ?? 1} shard(s)`);
+    this.logger.info(`Connected as ${this.client.user?.tag} with ${this.client.shard?.count ?? 1} shard(s)`);
 
     this.commands
       .register(new PingCommand())
@@ -107,7 +108,7 @@ export class Bot {
         await guild.commands.create(command.data);
       }),
     );
-    Logger.info("Registered commands!");
+    this.logger.info("Registered commands!");
   }
 
   /**
@@ -119,7 +120,7 @@ export class Bot {
     if (interaction.isCommand()) {
       const command = this.commands.get(interaction.commandName);
       if (command) {
-        Logger.verbose(
+        this.logger.verbose(
           `User ${interaction.user.tag} (${interaction.user.id}) ran command: /${
             command.data.name
           } with options: ${JSON.stringify(interaction.options.toJSON())}, guild: ${interaction.guildId}, channel: ${

@@ -17,7 +17,7 @@
 */
 
 import { PermissionString } from "discord.js";
-import { ExtendConditional, Nullable } from "../core/utils/types";
+import { ExtendConditional, Nullable } from "@remoji-bot/core";
 
 export type I18NValue<T extends unknown[] | false = false> = ExtendConditional<
   T,

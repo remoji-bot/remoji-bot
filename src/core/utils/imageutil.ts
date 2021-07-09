@@ -19,7 +19,7 @@
 import axios from "axios";
 import { Snowflake } from "discord.js";
 import { URL } from "url";
-import { Logger } from "../logger";
+import { Logger } from "@remoji-bot/core";
 
 /**
  * Whitelisted domains for downloading images.
@@ -88,6 +88,8 @@ export class ImageUtil {
     // private
   }
 
+  static logger = Logger.getLogger("imageutil");
+
   /**
    * Extract all emojis from a given input string.
    *
@@ -149,7 +151,7 @@ export class ImageUtil {
           return res;
         })
         .catch((error: Error) => {
-          Logger.error(error);
+          this.logger.error(error);
           return error;
         });
       if (image instanceof Error) return { success: false, validURL: true, whitelistedURL: true, error: image };

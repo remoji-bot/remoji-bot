@@ -18,7 +18,7 @@
 
 import { PermissionString } from "discord.js";
 import { I18N, I18NLanguage } from "..";
-import { Nullable } from "../../core/utils/types";
+import { Nullable } from "@remoji-bot/core";
 
 /**
  * Locale: en-US

@@ -17,8 +17,7 @@
 */
 
 import { Collection } from "discord.js";
-import { Logger } from "../logger";
-import { Nullable } from "../utils/types";
+import { Logger, Nullable } from "@remoji-bot/core";
 import { Command } from "./command";
 
 /**
@@ -26,6 +25,8 @@ import { Command } from "./command";
  */
 export class CommandManager {
   readonly commands = new Collection<string, Command>();
+
+  readonly logger = Logger.getLogger("CommandManager");
 
   /**
    * Get a command by name.
@@ -36,7 +37,7 @@ export class CommandManager {
   get(name: string): Nullable<Command> {
     const command = this.commands.get(name);
     if (command) return command;
-    Logger.warn(`Could not find command: ${name}`);
+    this.logger.warn(`Could not find command: ${name}`);
     return null;
   }
 

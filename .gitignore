@@ -3,3 +3,4 @@ node_modules/
 logs/
 _volumes/
 yarn-error.log
+package-lock.json

@@ -17,7 +17,7 @@
 */
 
 import * as ioredis from "ioredis";
-import { getenv } from "../../utils/functions";
+import { getenv } from "@remoji-bot/core";
 
 /**
  * Represents a connection to Redis.

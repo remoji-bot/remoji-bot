@@ -19,7 +19,7 @@
 import { Command } from "../../core/base/command";
 import { CommandContext } from "../../core/base/commandcontext";
 import { EmbedUtil } from "../../core/utils/embedutil";
-import { time } from "../../core/utils/functions";
+import { time } from "@remoji-bot/core";
 
 /**
  * `/ping` command - Tests the bot's connection to Discord.
