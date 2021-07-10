@@ -96,8 +96,10 @@ export class Bot {
       .register(new CopyCommand())
       .register(new InfoCommand());
 
+    const applicationCommands = await this.client.application?.commands.fetch();
+
     // Remove all unregistered commands
-    for (const [, command] of (await this.client.application?.commands.fetch()) ?? []) {
+    for (const [, command] of applicationCommands ?? []) {
       if (!this.commands.get(command.name)) {
         this.logger.verbose(`Unregistered command: ${command.name}`);
         await command.delete();
