@@ -133,7 +133,7 @@ export class Bot {
           }, interaction: ${interaction.id}`,
         );
         const i18n = await this.getI18N(interaction.user.id);
-        await command["_run"](new CommandContext(interaction as GuildDependentInteraction<boolean>, i18n));
+        await command["_run"](new CommandContext(this, interaction as GuildDependentInteraction<boolean>, i18n));
       }
     } else if (interaction.isButton()) {
       // TODO : Handle buttons using button commands for interactions

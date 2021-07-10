@@ -61,7 +61,6 @@ export type GuildDependentInteraction<GUILD extends boolean> = CommandInteractio
 export class CommandContext<GUILD extends boolean = boolean> {
   readonly interaction: GuildDependentInteraction<GUILD>;
   readonly options: CommandOptionResolver;
-  readonly i18n: I18N;
 
   /**
    * Alias for `i18n`
@@ -72,10 +71,9 @@ export class CommandContext<GUILD extends boolean = boolean> {
     return this.i18n;
   }
 
-  constructor(interaction: GuildDependentInteraction<GUILD>, i18n: I18N) {
+  constructor(readonly bot: Bot, interaction: GuildDependentInteraction<GUILD>, readonly i18n: I18N) {
     this.interaction = interaction;
     this.options = new CommandOptionResolver(interaction.options);
-    this.i18n = i18n;
   }
 
   /**

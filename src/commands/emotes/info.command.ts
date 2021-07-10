@@ -19,7 +19,6 @@
 import { Command } from "../../core/base/command";
 import { CommandContext } from "../../core/base/commandcontext";
 import { EmbedUtil } from "../../core/utils/embedutil";
-import { Bot } from "../../core/bot";
 
 /**
  * `/info` command - Get info about Remoji.
@@ -43,7 +42,7 @@ export class InfoCommand extends Command<true> {
    * @param ctx - The context for the command.
    */
   async run(ctx: CommandContext<true>): Promise<void> {
-    const bot = Bot.getInstance();
+    const bot = ctx.bot;
 
     const infoEmbed = EmbedUtil.info(ctx.s, ctx.s.info_remoji_description)
       .setThumbnail(bot.client.user?.avatarURL() ?? "") // TODO: Fix this mess
