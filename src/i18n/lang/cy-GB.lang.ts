@@ -71,4 +71,20 @@ export class Lang_cy_GB extends Lang_en_US {
   emote_copy_unknown_upload_error = "Digwyddodd gawll anhysbys tra'n uwchlwythio'r emoji yna i Discord.";
   emote_copy_success = (name: string, newEmoji: string): string =>
     `:tada:  Wedi copio \`:${name}:\` i eich gweinydd! ${newEmoji}`;
+
+  info_remoji_description =
+    "Mae Remoji yn rheolwy emoji syml ond pwerys iawn. Ymhlith defnyddiau eraill, mae Remoji yn caniatâu iidych chi ~~dwyn~~ *copio* new lanlwythion emojis i eich gweinydd chi, yn syth yn Discord, hyd yn oed ar eich ffôn!";
+  info_remoji_server_field =
+    "Ymunwch â'r gweinydd cefnogaeth Remoji i gael y wybodaeth ddiweddaraf am nodweddion newydd!";
+  info_remoji_server_invite = (invite: string): string => `**[YMUNWCH â DISCORD REMOJI](${invite})**`;
+  info_remoji_bot_field = "Gwahodd Remoji!";
+  info_remoji_bot_invite = (appId: string, permissionBits: string): string =>
+    `**[GWAHODD](https://discord.com/oauth2/authorize?client_id=${appId}&permissions=${permissionBits}&scope=applications.commands%20bot)**`;
+  info_remoji_vote_field = "Pleidleisiwch am Remoji!";
+  info_remoji_vote_value = (url: string): string => `**[PLEIDLEISIWCH AR TOP.GG](${url})**`;
+  info_remoji_created = "Wedi creu gan Shino.";
+  info_remoji_created_value =
+    "[GitHub](https://github.com/shinotheshino)  |  [Patreon](https://patreon.com/shinotheshino)  |  [Twitch](https://twitch.tv/shinotheshino)";
+  info_remoji_version = (version: string, gitBranch: string, gitCommit: string): string =>
+    `Fersiwn Remoji ${version} ${gitBranch}-${gitCommit} - GNU AGPL 3.0`;
 }

@@ -65,4 +65,19 @@ export class Lang_en_US extends I18N {
   emote_copy_unknown_upload_error = "An unknown error occurred while uploading your emoji to Discord.";
   emote_copy_success = (name: string, newEmoji: string): string =>
     `:tada:  Copied \`:${name}:\` to your server! ${newEmoji}`;
+
+  info_remoji_description =
+    "Remoji is a super-simple but super-powerful emote manager bot for Discord. Among other features, Remoji allows you to ~~steal~~ *copy* or upload emotes to your server from directly in Discord, even on mobile!";
+  info_remoji_server_field = "Join Remoji's Discord server to stay up-to-date with new features!";
+  info_remoji_server_invite = (invite: string): string => `**[JOIN REMOJI'S DISCORD](${invite})**`;
+  info_remoji_bot_field = "Invite Remoji!";
+  info_remoji_bot_invite = (appId: string, permissionBits: string): string =>
+    `**[INVITE](https://discord.com/oauth2/authorize?client_id=${appId}&permissions=${permissionBits}&scope=applications.commands%20bot)**`;
+  info_remoji_vote_field = "Vote for Remoji!";
+  info_remoji_vote_value = (url: string): string => `**[VOTE ON TOP.GG](${url})**`;
+  info_remoji_created = "Created by Shino.";
+  info_remoji_created_value =
+    "[GitHub](https://github.com/shinotheshino)  |  [Patreon](https://patreon.com/shinotheshino)  |  [Twitch](https://twitch.tv/shinotheshino)";
+  info_remoji_version = (version: string, gitBranch: string, gitCommit: string): string =>
+    `Remoji version ${version} ${gitBranch}-${gitCommit} - GNU AGPL 3.0`;
 }

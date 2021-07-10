@@ -63,4 +63,15 @@ export abstract class I18N {
   abstract emote_copy_unknown_download_error: I18NValue;
   abstract emote_copy_unknown_upload_error: I18NValue;
   abstract emote_copy_success: I18NValue<[name: string, new_emoji: string]>;
+
+  abstract info_remoji_description: I18NValue;
+  abstract info_remoji_server_field: I18NValue;
+  abstract info_remoji_server_invite: I18NValue<[invite: string]>;
+  abstract info_remoji_bot_field: I18NValue;
+  abstract info_remoji_bot_invite: I18NValue<[appId: string, permissionBits: string]>;
+  abstract info_remoji_vote_field: I18NValue;
+  abstract info_remoji_vote_value: I18NValue<[url: string]>;
+  abstract info_remoji_created: I18NValue;
+  abstract info_remoji_created_value: I18NValue;
+  abstract info_remoji_version: I18NValue<[version: string, gitBranch: string, gitCommit: string]>;
 }

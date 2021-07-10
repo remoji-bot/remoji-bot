@@ -33,6 +33,8 @@ import { RedisConnection } from "./data/redis/redisconnection";
 import { RedisStore } from "./data/redis/redisstore";
 import { TopGGInterface } from "./third-party/topgginterface";
 import { Logger, getenv } from "@remoji-bot/core";
+import Constants from "./utils/constants";
+import { InfoCommand } from "../commands/emotes/info.command";
 
 /**
  * The Bot singleton class.
@@ -55,6 +57,8 @@ export class Bot {
   readonly client: discord.Client;
   readonly topgg = TopGGInterface.getInstance();
   readonly commands = new CommandManager();
+
+  readonly constants = Constants;
 
   readonly i18n: Readonly<Record<I18NLanguage, I18N>> = Object.freeze({
     "cy-GB": new Lang_cy_GB(),
@@ -89,7 +93,8 @@ export class Bot {
       .register(new PingCommand())
       .register(new UploadCommand())
       .register(new LanguageCommand())
-      .register(new CopyCommand());
+      .register(new CopyCommand())
+      .register(new InfoCommand());
 
     // Remove all unregistered commands
     for (const [, command] of (await this.client.application?.commands.fetch()) ?? []) {
