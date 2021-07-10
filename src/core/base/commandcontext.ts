@@ -79,6 +79,15 @@ export class CommandContext<GUILD extends boolean = boolean> {
   }
 
   /**
+   * Checks if the context is from a guild interaction.
+   *
+   * @returns whether this is a guild interaction
+   */
+  isGuild(): this is CommandContext<true> {
+    return this.interaction.guild !== null;
+  }
+
+  /**
    * Returns whether the interaction user has voted on top.gg.
    *
    * @returns whether the interaction user has voted
