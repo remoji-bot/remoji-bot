@@ -8,16 +8,16 @@ A Discord **Slash Command** bot that re-uploads and provides tools for managing 
 
 # [Support Server](https://discord.gg/WhbncjXPXN)
 
-To run your own instance of the bot:
+# Requirements
+- Node.JS
+- Yarn
+- Git
 
-0.  Install Node.js, Yarn and Git
-1.  Clone this repository using Git
-2.  Run `yarn`
-3.  Fill-in `.env` based on `.env.example`
-4.  Run `yarn build`
-5.  Run `yarn start:prod` whenever you want to start the bot
-
-Optionally, you can use a tool such as `pm2` or `forever`, to monitor and restart the bot in the event of a crash.
+# Development
+```sh
+yarn
+yarn npm login --scope remoji-bot   # use a GitHub auth token with packages access
+```
 
 This project is licensed under the [GNU AGPLv3](https://www.gnu.org/licenses/).
 

@@ -17,11 +17,7 @@
 */
 
 import { Collection, CommandInteractionOption, GuildChannel, GuildMember, Role, User } from "discord.js";
-import {
-  APIInteractionDataResolvedChannel,
-  APIInteractionDataResolvedGuildMember,
-  APIRole,
-} from "discord-api-types/v8";
+import { APIInteractionDataResolvedGuildMember, APIRole } from "discord-api-types/v8";
 
 import { Nullable } from "@remoji-bot/core";
 
@@ -110,8 +106,8 @@ export class CommandOptionResolver {
     return (option?.value as T) ?? null;
   }
 
-  channel(name: string, required?: true): GuildChannel | APIInteractionDataResolvedChannel;
-  channel(name: string, required: boolean): Nullable<GuildChannel | APIInteractionDataResolvedChannel>;
+  channel(name: string, required?: true): GuildChannel;
+  channel(name: string, required: boolean): Nullable<GuildChannel>;
   /**
    * Gets `name` as a channel option.
    *
@@ -119,10 +115,12 @@ export class CommandOptionResolver {
    * @param required - Whether to assert the option's presence
    * @returns - The value, or null if absent and not required
    */
-  channel(name: string, required = true): Nullable<GuildChannel | APIInteractionDataResolvedChannel> {
+  channel(name: string, required = true): Nullable<GuildChannel> {
     const option = this.get(name, required);
     if (option && !option.channel) throw new TypeError(`Non-channel value in channel option: ${name}`);
-    return option?.channel ?? null;
+    const channel = option?.channel;
+    if (option?.channel instanceof GuildChannel) return channel as GuildChannel;
+    return null;
   }
 
   member(name: string, required?: true): GuildMember | APIInteractionDataResolvedGuildMember;
