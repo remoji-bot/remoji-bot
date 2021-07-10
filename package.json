@@ -5,9 +5,8 @@
     "start": "ts-node src/main.ts",
     "watch": "ts-node-dev src/main.ts",
     "prepare": "husky install",
-    "test:jest": "jest",
-    "test:dry": "tsc --noEmit",
-    "test": "npm-run-all --parallel lint test:jest test:dry"
+    "test:ts": "tsc --noEmit",
+    "test": "npm-run-all --parallel lint test:ts"
   },
   "devDependencies": {
     "@commitlint/cli": "^12.1.4",
@@ -15,7 +14,6 @@
     "@types/common-tags": "^1.8.1",
     "@types/dotenv-safe": "^8.1.2",
     "@types/ioredis": "^4.26.5",
-    "@types/jest": "^26.0.24",
     "@types/luxon": "^1.27.1",
     "@types/node": "^16.3.1",
     "@types/node-7z": "^2.1.3",
@@ -30,9 +28,7 @@
     "eslint-plugin-license-header": "^0.2.0",
     "eslint-plugin-prettier": "^3.4.0",
     "husky": "^7.0.1",
-    "jest": "^27.0.6",
     "prettier": "^2.3.2",
-    "ts-jest": "^27.0.3",
     "ts-node": "^10.1.0",
     "ts-node-dev": "^1.1.8",
     "typescript": "^4.3.5"
