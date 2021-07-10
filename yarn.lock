@@ -5895,6 +5895,7 @@ __metadata:
     npm-run-all: ^4.1.5
     prettier: ^2.3.2
     reflect-metadata: ^0.1.13
+    src: "link:./src"
     ts-jest: ^27.0.3
     ts-node: ^10.1.0
     ts-node-dev: ^1.1.8
@@ -6163,6 +6164,12 @@ __metadata:
   checksum: 51df1bce9e577287f56822d79ac5bd94f6c634fccf193895f2a1d2db2e975b6aa7bc97afae9cf11d49b7c37fe4afc188ff5c4878be91f2c86eabd11c5df8b62c
   languageName: node
   linkType: hard
+
+"src@link:./src::locator=root-workspace-0b6124%40workspace%3A.":
+  version: 0.0.0-use.local
+  resolution: "src@link:./src::locator=root-workspace-0b6124%40workspace%3A."
+  languageName: node
+  linkType: soft
 
 "ssri@npm:^8.0.0, ssri@npm:^8.0.1":
   version: 8.0.1
