@@ -19,6 +19,7 @@
 import { Command } from "../../core/base/Command";
 import { CommandContext } from "../../core/base/CommandContext";
 import { EmbedUtil } from "../../core/utils/EmbedUtil";
+import environment from "../../environment";
 
 /**
  * `/info` command - Get info about Remoji.
@@ -46,12 +47,12 @@ export class InfoCommand extends Command<true> {
 
     const infoEmbed = EmbedUtil.info(ctx.s, ctx.s.info_remoji_description)
       .setThumbnail(bot.client.user?.avatarURL() ?? "") // TODO: Fix this mess
-      .addField(ctx.s.info_remoji_server_field, ctx.s.info_remoji_server_invite(bot.constants.supportServerInvite))
+      .addField(ctx.s.info_remoji_server_field, ctx.s.info_remoji_server_invite(environment.SUPPORT_INVITE))
       .addField(
         ctx.s.info_remoji_bot_field,
         ctx.s.info_remoji_bot_invite(bot.client.user?.id ?? "", bot.constants.requiredPermissions),
       ) // TODO: Fis this mess too
-      .addField(ctx.s.info_remoji_vote_field, ctx.s.info_remoji_vote_value(bot.constants.topGG))
+      .addField(ctx.s.info_remoji_vote_field, ctx.s.info_remoji_vote_value(environment.TOPGG_VOTE_URL))
       .addField(ctx.s.info_remoji_created, ctx.s.info_remoji_created_value)
       .setFooter(ctx.s.info_remoji_version(bot.constants.version, bot.constants.git.branch, bot.constants.git.commit));
     await ctx.interaction.reply({ embeds: [infoEmbed] });

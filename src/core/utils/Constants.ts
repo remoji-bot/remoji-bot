@@ -20,8 +20,6 @@ import { Permissions } from "discord.js";
 import { execSync } from "child_process";
 
 const Constants = Object.freeze({
-  supportServerInvite: "https://discord.gg/WhbncjXPXN",
-  topGG: "https://top.gg/bot/781606551349231667",
   requiredPermissions: Permissions.resolve([
     "MANAGE_EMOJIS",
     "VIEW_CHANNEL",
