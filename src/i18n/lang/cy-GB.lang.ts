@@ -32,6 +32,8 @@ export class Lang_cy_GB extends Lang_en_US {
   NAME_DEFAULT = "Welsh";
   NAME_LOCAL = "Cymraeg";
 
+  unknown_command = (): string => "Gorchymyn anhysbys!";
+
   ping_success = (delay: number): string => `Pong! Hwyrni: ${delay}ms`;
 
   image_download_error_with_reason = (reason: Error): string => `Methu lawrlwyddio'r llun: \`${reason}\``;
