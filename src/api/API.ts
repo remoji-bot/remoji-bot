@@ -21,6 +21,7 @@ import * as express from "express";
 import environment from "../environment";
 import { RedisStore } from "../core/data/redis/RedisStore";
 import { Bot } from "../core/Bot";
+import * as discord from "discord.js";
 
 /**
  * The API wrapper.
@@ -110,7 +111,7 @@ export class API {
     if (req.headers["authorization"]) {
       const token = req.headers["authorization"].split(" ")[1];
       const user = await this.authStore.get(token);
-      if (!user) {
+      if (!user || !Bot.getInstance().isDeveloper(user as discord.Snowflake)) {
         res.status(401).json({ error: "Unauthorized" });
         res.end();
         return;
@@ -142,7 +143,6 @@ export class API {
    * @param res the response
    */
   private status(req: express.Request, res: express.Response): void {
-    // TODO: secure this behind devloper keys
     const bot = Bot.getInstance();
     res.json({
       status: "ok",
