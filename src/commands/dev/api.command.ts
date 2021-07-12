@@ -63,17 +63,11 @@ export class APICommand extends Command<true> {
    * @param ctx - The context for the command.
    */
   async run(ctx: CommandContext<true>): Promise<void> {
-    this.logger.verbose("/api command run");
     const key = ctx.options.subcommand("key");
-
-    this.logger.verbose(key);
 
     if (key) {
       const get = key.subcommand("get");
       const revoke = key.subcommand("revoke");
-
-      this.logger.verbose(get);
-      this.logger.verbose(revoke);
 
       if (get) {
         let apiKey = await this.bot.api.authStore.get(ctx.interaction.user.id);
