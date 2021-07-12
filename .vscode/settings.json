@@ -14,7 +14,20 @@
     "**/.hg": true,
     "**/CVS": true,
     "**/.DS_Store": true,
-    "**/node_modules": true
+    // Comment out the following lines if you want to view dotfiles in the editor.
+    // Do not commit changes to the following lines.
+    "**/.husky": true,
+    "**/.yarn": true,
+    "**/.pnp.js": true,
+    "**/yarn.lock": true,
+    "**/.yarnrc.yml": true,
+    "**/license-header.txt": true,
+    "**/.commitlintrc.json": true,
+    "**/.eslintrc": true,
+    "**/.prettierrc": true,
+    "**/.vsls.json": true,
+    "**/tsconfig.json": true
+    // End of dotfile exclusion.
   },
   "typescript.enablePromptUseWorkspaceTsdk": true,
   "typescript.tsdk": ".yarn/sdks/typescript/lib",
