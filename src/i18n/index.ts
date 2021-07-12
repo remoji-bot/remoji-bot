@@ -94,9 +94,7 @@ export abstract class I18N {
   abstract NAME_LOCAL: I18NValue;
   abstract NAME_DEFAULT: I18NValue;
 
-  abstract commands: {
-    unknown: I18NValue<[name: string]>;
-  };
+  abstract unknown_command: I18NValue<[name: string]>;
 
   abstract ping_success: I18NValue<[latency: number]>;
   abstract image_invalid_name: I18NValue;

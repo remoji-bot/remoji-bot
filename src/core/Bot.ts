@@ -164,7 +164,7 @@ export class Bot {
       } else {
         // Remove the command as it is not registered
         await interaction.command?.delete();
-        await interaction.reply({ content: i18n.commands.unknown(interaction.commandName), ephemeral: true });
+        await interaction.reply({ content: i18n.unknown_command(interaction.commandName), ephemeral: true });
       }
     } else if (interaction.isButton()) {
       // TODO : Handle buttons using button commands for interactions

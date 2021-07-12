@@ -28,9 +28,7 @@ export class Lang_en_US extends I18N {
   NAME_DEFAULT = "English";
   NAME_LOCAL = "English";
 
-  commands = {
-    unknown: (): string => "Unknown command!",
-  };
+  unknown_command = (): string => "Unknown command!";
 
   ping_success = (delay: number): string => `Pong! Latency: ${delay}ms`;
 
