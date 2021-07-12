@@ -4152,6 +4152,7 @@ fsevents@~2.3.2:
     prettier: ^2.3.2
     reflect-metadata: ^0.1.13
     src: "link:./src"
+    superstruct: ^0.15.2
     ts-node: ^10.1.0
     ts-node-dev: ^1.1.8
     typescript: ^4.3.5
@@ -4578,6 +4579,13 @@ fsevents@~2.3.2:
   version: 3.1.1
   resolution: "strip-json-comments@npm:3.1.1"
   checksum: f16719ce25abc58a55ef82b1c27f541dcfa5d544f17158f62d10be21ff9bd22fde45a53c592b29d80ad3c97ccb67b7451c4833913fdaeadb508a40f5e0a9c206
+  languageName: node
+  linkType: hard
+
+"superstruct@npm:^0.15.2":
+  version: 0.15.2
+  resolution: "superstruct@npm:0.15.2"
+  checksum: 8803e65c0dd0e0f502a057b6106a88f2f9dccfe00b242206adb0c77aa804736dce66c8d57ffefea6ead64acef2bcd97728afa92baa73a12cbe0d290f9c4e3354
   languageName: node
   linkType: hard
 

@@ -16,26 +16,14 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Logger } from "@remoji-bot/core";
+import { pattern, string, Struct } from "superstruct";
+import * as discord from "discord.js";
 
-import { Bot } from "./core/Bot";
-import environment from "./environment";
+export const Snowflake = (): Struct<discord.Snowflake> =>
+  pattern(string(), /^[1-9]\d{17,19}$/) as Struct<discord.Snowflake>;
 
-const logger = Logger.getDefault();
+export const SnowflakeList = (): Struct<string> =>
+  pattern(string(), /^([1-9]\d{17,19},)*([1-9]\d{17,19})$/) as Struct<string>;
 
-process.on("uncaughtException", error => {
-  logger.error(error);
-  if (environment.NODE_ENV === "development") process.exit(1);
-});
-
-process.on("unhandledRejection", rejection => {
-  logger.error(rejection);
-  if (environment.NODE_ENV === "development") process.exit(1);
-});
-
-process.on("SIGINT", () => {
-  logger.info("Exiting...");
-  process.exit(0);
-});
-
-void Bot.getInstance().connect();
+export const URL = (): Struct<string> =>
+  pattern(string(), /^(https?:\/\/)([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/) as Struct<string>;

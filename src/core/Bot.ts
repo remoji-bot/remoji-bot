@@ -146,6 +146,9 @@ export class Bot {
     }
 
     this.logger.info("Registered commands!");
+
+    // Fetch application info for isDeveloper checks
+    await this.client.application?.fetch();
   }
 
   /**
@@ -200,7 +203,8 @@ export class Bot {
         throw new Error("Owner is not a User or Team");
       }
     } else {
-      this.logger.warn("isDeveloper: Application and/or owner is null");
+      if (!application) this.logger.warn("isDeveloper() called with no application");
+      if (!owner) this.logger.warn("isDeveloper() called with no application owner");
       return false;
     }
   }

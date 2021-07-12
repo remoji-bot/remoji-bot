@@ -19,6 +19,9 @@
 import dotenv = require("dotenv");
 import { getenv } from "@remoji-bot/core";
 import * as assert from "assert";
+import { assert as assertType } from "superstruct";
+
+import * as structs from "./core/utils/structs";
 
 dotenv.config();
 
@@ -51,6 +54,16 @@ if (environment.NODE_ENV === "production") {
 
   assert(!environment.TESTING_GUILD_ID, "TESTING_GUILD_ID should not be set for production");
   assert(!environment.DEVELOPER_ID, "DEVELOPER_ID should not be set for production");
+} else {
+  assert(environment.TESTING_GUILD_ID, "TESTING_GUILD_ID is required for development");
+  assertType(environment.TESTING_GUILD_ID, structs.Snowflake());
+
+  if (environment.DEVELOPER_ID) assertType(environment.DEVELOPER_ID, structs.SnowflakeList());
 }
+
+// Check against structs
+assertType(environment.DISCORD_APPLICATION_ID, structs.Snowflake());
+assertType(environment.SUPPORT_INVITE, structs.URL());
+assertType(environment.TOPGG_VOTE_URL, structs.URL());
 
 export default environment;
