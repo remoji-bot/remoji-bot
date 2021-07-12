@@ -20,7 +20,8 @@ import * as topgg from "@top-gg/sdk";
 import { Snowflake } from "discord.js";
 
 import { RedisCacheManager } from "../data/redis/rediscachemanager";
-import { Logger, Nullable, getenv } from "@remoji-bot/core";
+import { Logger, Nullable } from "@remoji-bot/core";
+import environment from "../../environment";
 
 /**
  * A high level caching interface to the topgg API.
@@ -40,7 +41,7 @@ export class TopGGInterface {
 
   readonly logger = Logger.getLogger("topgg");
 
-  readonly apiKey = getenv("TOPGG_API_KEY");
+  readonly apiKey = environment.TOPGG_TOKEN;
   readonly api: Nullable<topgg.Api>;
   readonly cache = new RedisCacheManager("topgg");
 

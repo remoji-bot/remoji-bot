@@ -22,14 +22,12 @@ import { execSync } from "child_process";
 const Constants = Object.freeze({
   supportServerInvite: "https://discord.gg/WhbncjXPXN",
   topGG: "https://top.gg/bot/781606551349231667",
-  requiredPermissions: new Permissions([
+  requiredPermissions: Permissions.resolve([
     "MANAGE_EMOJIS",
     "VIEW_CHANNEL",
     "READ_MESSAGE_HISTORY",
     "USE_EXTERNAL_EMOJIS",
-  ]).bitfield
-    .valueOf()
-    .toString(),
+  ]).toString(),
   version: "2.2.0",
   git: Object.freeze({
     branch: execSync("git rev-parse --abbrev-ref HEAD").toString("utf8").trim(),

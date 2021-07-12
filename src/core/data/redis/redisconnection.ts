@@ -17,7 +17,7 @@
 */
 
 import * as ioredis from "ioredis";
-import { getenv } from "@remoji-bot/core";
+import environment from "../../../environment";
 
 /**
  * Represents a connection to Redis.
@@ -39,8 +39,8 @@ export class RedisConnection {
 
   private constructor() {
     this.redis = new ioredis({
-      host: getenv("REDIS_HOST") ?? "redis",
-      port: getenv("REDIS_PORT", true) ?? 6379,
+      host: environment.REDIS_HOST ?? "redis",
+      port: environment.REDIS_PORT ?? 6379,
       showFriendlyErrorStack: true,
     });
   }

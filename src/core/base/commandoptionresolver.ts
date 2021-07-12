@@ -54,10 +54,10 @@ export class CommandOptionResolver {
    */
   subcommand(name: string): CommandOptionResolver | null {
     const option = this.get(name, false);
-    if (option && option.type !== "SUB_COMMAND")
+    if (option && !(option.type === "SUB_COMMAND" || option.type === "SUB_COMMAND_GROUP"))
       throw new TypeError(`Non-subcommand value in subcommand option: ${name}`);
-    if (!option?.options) return null;
-    return new CommandOptionResolver(option.options);
+    if (!option) return null;
+    return new CommandOptionResolver(option.options ?? new Collection<string, CommandInteractionOption>());
   }
 
   string<T extends string = string>(name: string, required?: true): T;

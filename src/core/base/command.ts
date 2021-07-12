@@ -19,8 +19,9 @@
 import * as assert from "assert";
 import * as discord from "discord.js";
 import { Bot } from "../bot";
-import { Logger, Nullable, getenv } from "@remoji-bot/core";
+import { Logger, Nullable } from "@remoji-bot/core";
 import { CommandContext } from "./commandcontext";
+import environment from "../../environment";
 
 export interface CommandOptions<GUILD extends boolean> {
   guildOnly: GUILD;
@@ -112,7 +113,7 @@ export abstract class Command<GUILD extends boolean = boolean> {
     }
 
     if (this.options.voterOnly && !(await ctx.isVoter())) {
-      const url = getenv("TOPGG_URL", false, true);
+      const url = environment.TOPGG_VOTE_URL;
       await ctx.error(`:lock: To unlock the \`/${this.data.name}\` command, [vote for Remoji on top.gg](${url})!`);
       return;
     }

@@ -18,8 +18,8 @@
 
 import { Command } from "../../core/base/command";
 import { CommandContext } from "../../core/base/commandcontext";
-import { getenv } from "@remoji-bot/core";
 import { ImageUtil } from "../../core/utils/imageutil";
+import environment from "../../environment";
 
 /**
  * `/copy` command - Copy one or more emotes to your server.
@@ -116,7 +116,7 @@ export class CopyCommand extends Command<true> {
       }
     } else if (multiple) {
       if (!(await this.bot.topgg.hasVoted(ctx.interaction.user.id))) {
-        await ctx.error(ctx.s.command_error_vote_locked("copy multiple", getenv("TOPGG_URL", false, true)));
+        await ctx.error(ctx.s.command_error_vote_locked("copy multiple", environment.TOPGG_VOTE_URL));
         return;
       }
 

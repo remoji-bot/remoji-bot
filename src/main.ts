@@ -16,8 +16,6 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import dotenv = require("dotenv-safe");
-
 import { Logger } from "@remoji-bot/core";
 
 import { Bot } from "./core/bot";
@@ -34,5 +32,4 @@ process.on("unhandledRejection", rejection => {
   process.exit(1);
 });
 
-dotenv.config({ allowEmptyValues: process.env.NODE_ENV === "development" });
 void Bot.getInstance().connect();

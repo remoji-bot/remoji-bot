@@ -32,9 +32,12 @@ import { CommandManager } from "./base/commandmanager";
 import { RedisConnection } from "./data/redis/redisconnection";
 import { RedisStore } from "./data/redis/redisstore";
 import { TopGGInterface } from "./third-party/topgginterface";
-import { Logger, getenv } from "@remoji-bot/core";
+import { Logger } from "@remoji-bot/core";
 import Constants from "./utils/constants";
 import { InfoCommand } from "../commands/emotes/info.command";
+import { API } from "../api/api";
+import environment from "../environment";
+import { APICommand } from "../commands/dev/api.command";
 
 /**
  * The Bot singleton class.
@@ -57,6 +60,7 @@ export class Bot {
   readonly client: discord.Client;
   readonly topgg = TopGGInterface.getInstance();
   readonly commands = new CommandManager();
+  readonly api = API.getInstance();
 
   readonly constants = Constants;
 
@@ -86,10 +90,12 @@ export class Bot {
     this.logger.info("Connecting to Redis...");
     await RedisConnection.getInstance().redis.ping();
     this.logger.info("Connecting to Discord...");
-    await this.client.login(getenv("DISCORD_TOKEN", false, true));
+    await this.client.login(environment.DISCORD_TOKEN);
     this.logger.info(`Connected as ${this.client.user?.tag} with ${this.client.shard?.count ?? 1} shard(s)`);
+    await this.api.start();
 
     this.commands
+      .register(new APICommand())
       .register(new PingCommand())
       .register(new UploadCommand())
       .register(new LanguageCommand())
@@ -106,15 +112,26 @@ export class Bot {
       }
     }
 
-    await Promise.all(
-      this.commands.commands.mapValues(command => this.client.application?.commands.create(command.data)),
-    );
-    await Promise.all(
-      this.commands.commands.mapValues(async command => {
-        const guild = await this.client.guilds.fetch(getenv("COMMAND_TESTING_GUILD", false, true) as discord.Snowflake);
-        await guild.commands.create(command.data);
-      }),
-    );
+    if (environment.NODE_ENV === "development") {
+      this.logger.info("Removing production commands from testing bot");
+      for (const [, command] of applicationCommands ?? []) {
+        this.logger.verbose(`Remoing command: ${command.name}...`);
+        await command.delete();
+      }
+      this.logger.info("Registering commands in testing guild...");
+      await Promise.all(
+        this.commands.commands.mapValues(async command => {
+          const guild = await this.client.guilds.fetch(environment.TESTING_GUILD_ID as discord.Snowflake);
+          await guild.commands.create(command.data);
+        }),
+      );
+    } else {
+      this.logger.info("Deploying commands in production...");
+      await Promise.all(
+        this.commands.commands.mapValues(command => this.client.application?.commands.create(command.data)),
+      );
+    }
+
     this.logger.info("Registered commands!");
   }
 

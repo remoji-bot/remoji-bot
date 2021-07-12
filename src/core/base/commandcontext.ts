@@ -96,6 +96,16 @@ export class CommandContext<GUILD extends boolean = boolean> {
   }
 
   /**
+   * Sends a base embed.
+   *
+   * @param message - The content of the embed
+   * @param ephemeral - Whether to send an ephemeral message
+   */
+  async send(message: string, ephemeral = false): Promise<void> {
+    await this.interaction.reply({ embeds: [EmbedUtil.base(this.i18n).setDescription(message)], ephemeral });
+  }
+
+  /**
    * Sends an error embed using `EmbedBuilder`.
    *
    * @param message - The content of the error message

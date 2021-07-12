@@ -19,7 +19,7 @@
 import { MessageEmbed } from "discord.js";
 import { I18N } from "../../i18n";
 import { Bot } from "../bot";
-import { getenv } from "@remoji-bot/core";
+import environment from "../../environment";
 
 /**
  *An embed builder.
@@ -37,7 +37,7 @@ export class EmbedUtil {
       .setAuthor(
         i18n.embed_remoji_author_name,
         Bot.getInstance().client.user?.displayAvatarURL(),
-        getenv("TOPGG_URL", false, true),
+        environment.TOPGG_VOTE_URL,
       );
   }
 
@@ -54,7 +54,7 @@ export class EmbedUtil {
       .setDescription(description)
       .addField(
         i18n.embed_help_callout_title,
-        `[${i18n.embed_join_support_server_link}](${getenv("SUPPORT_INVITE", false, true)})`,
+        `[${i18n.embed_join_support_server_link}](${environment.SUPPORT_INVITE})`,
       );
   }
 
@@ -71,7 +71,7 @@ export class EmbedUtil {
       .setAuthor(
         i18n.embed_vote_callout_link,
         "https://i.imgur.com/1wLOFn2.png", // Star
-        getenv("TOPGG_URL", false, true),
+        environment.TOPGG_VOTE_URL,
       )
       .setDescription(description)
       .setFooter(i18n.embed_footer_tagline);
