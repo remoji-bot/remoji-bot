@@ -86,8 +86,6 @@ export class Lang_cy_GB extends Lang_en_US {
   info_remoji_vote_field = "Pleidleisiwch am Remoji!";
   info_remoji_vote_value = (url: string): string => `**[PLEIDLEISIWCH AR TOP.GG](${url})**`;
   info_remoji_created = "Wedi creu gan Shino.";
-  info_remoji_created_value =
-    "[GitHub](https://github.com/shinotheshino)  |  [Patreon](https://patreon.com/shinotheshino)  |  [Twitch](https://twitch.tv/shinotheshino)";
   info_remoji_version = (version: string, gitBranch: string, gitCommit: string): string =>
     `Fersiwn Remoji ${version} ${gitBranch}-${gitCommit} - GNU AGPL 3.0`;
 }

@@ -131,6 +131,5 @@ export abstract class I18N {
   abstract info_remoji_vote_field: I18NValue;
   abstract info_remoji_vote_value: I18NValue<[url: string]>;
   abstract info_remoji_created: I18NValue;
-  abstract info_remoji_created_value: I18NValue;
   abstract info_remoji_version: I18NValue<[version: string, gitBranch: string, gitCommit: string]>;
 }

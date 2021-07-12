@@ -81,8 +81,6 @@ export class Lang_en_US extends I18N {
   info_remoji_vote_field = "Vote for Remoji!";
   info_remoji_vote_value = (url: string): string => `**[VOTE ON TOP.GG](${url})**`;
   info_remoji_created = "Created by Shino.";
-  info_remoji_created_value =
-    "[GitHub](https://github.com/shinotheshino)  |  [Patreon](https://patreon.com/shinotheshino)  |  [Twitch](https://twitch.tv/shinotheshino)";
   info_remoji_version = (version: string, gitBranch: string, gitCommit: string): string =>
     `Remoji version ${version} ${gitBranch}-${gitCommit} - GNU AGPL 3.0`;
 }
