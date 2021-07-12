@@ -45,6 +45,9 @@ export class I18NCovCommand extends Command<true> {
    */
   async run(ctx: CommandContext<true>): Promise<void> {
     const embed = new MessageEmbed().setTitle("I18N Coverage Report");
+    let overallCovered = 0;
+    let overallTotal = 0;
+
     for (const language of LANGUAGES) {
       const coverage = I18N.getLanguageCoverage(language);
       const coveragePercent = I18N.getLanguageCoveragePercent(language);
@@ -57,7 +60,12 @@ export class I18NCovCommand extends Command<true> {
         `${language} ${Math.floor(coveragePercent * 100)}%`,
         missing.length ? `Missing (${coverage[1].length}): ${missing}` : "✅ Complete",
       );
+      overallCovered += coverage[0].length;
+      overallTotal += coverage[0].length + coverage[1].length;
     }
+    embed.setFooter(
+      `${overallCovered}/${overallTotal} strings covered (${Math.floor((overallCovered / overallTotal) * 100)}%)`,
+    );
     await ctx.interaction.reply({ embeds: [embed] });
   }
 }
