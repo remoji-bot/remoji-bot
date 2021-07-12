@@ -46,7 +46,7 @@ export class InfoCommand extends Command<true> {
     const bot = ctx.bot;
 
     const infoEmbed = EmbedUtil.info(ctx.s, ctx.s.info_remoji_description)
-      .setThumbnail(bot.client.user?.avatarURL() ?? "") // TODO: Fix this mess
+      .setThumbnail(bot.client.user?.displayAvatarURL() ?? "") // TODO: Fix this mess
       .addField(ctx.s.info_remoji_server_field, ctx.s.info_remoji_server_invite(environment.SUPPORT_INVITE))
       .addField(
         ctx.s.info_remoji_bot_field,
