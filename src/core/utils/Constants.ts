@@ -25,7 +25,7 @@ const Constants = Object.freeze({
     "VIEW_CHANNEL",
     "READ_MESSAGE_HISTORY",
     "USE_EXTERNAL_EMOJIS",
-  ]).toString(),
+  ]),
   version: "2.2.0",
   git: Object.freeze({
     branch: execSync("git rev-parse --abbrev-ref HEAD").toString("utf8").trim(),
