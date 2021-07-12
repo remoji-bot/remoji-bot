@@ -20,6 +20,7 @@ import { Logger } from "@remoji-bot/core";
 import * as express from "express";
 import environment from "../environment";
 import { RedisStore } from "../core/data/redis/redisstore";
+import { Bot } from "../core/bot";
 
 /**
  * The API wrapper.
@@ -55,6 +56,7 @@ export class API {
     this.app.use(this.router);
 
     this.router.get("/ping", this.ping.bind(this));
+    this.router.get("/status", this.status.bind(this));
   }
 
   /**
@@ -130,6 +132,31 @@ export class API {
    */
   private ping(req: express.Request, res: express.Response): void {
     res.send("pong");
+    res.end();
+  }
+
+  /**
+   * Checks the status of the service.
+   *
+   * @param req the request
+   * @param res the response
+   */
+  private status(req: express.Request, res: express.Response): void {
+    // TODO: secure this behind devloper keys
+    const bot = Bot.getInstance();
+    res.json({
+      status: "ok",
+      environment: environment.NODE_ENV,
+      uptime: process.uptime(),
+      memory: process.memoryUsage(),
+      pid: process.pid,
+      discord: {
+        id: bot.client.user?.id,
+        guildCount: bot.client.guilds.cache.size,
+        userCount: bot.client.users.cache.size,
+        channels: bot.client.channels.cache.size,
+      },
+    });
     res.end();
   }
 }
