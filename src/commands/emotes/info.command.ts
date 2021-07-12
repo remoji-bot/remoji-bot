@@ -50,8 +50,8 @@ export class InfoCommand extends Command<true> {
       .addField(ctx.s.info_remoji_server_field, ctx.s.info_remoji_server_invite(environment.SUPPORT_INVITE))
       .addField(
         ctx.s.info_remoji_bot_field,
-        ctx.s.info_remoji_bot_invite(bot.client.user?.id ?? "", bot.constants.requiredPermissions.toString()),
-      ) // TODO: Fis this mess too
+        ctx.s.info_remoji_bot_invite(environment.DISCORD_APPLICATION_ID, bot.constants.requiredPermissions.toString()),
+      )
       .addField(ctx.s.info_remoji_vote_field, ctx.s.info_remoji_vote_value(environment.TOPGG_VOTE_URL))
       .addField(ctx.s.info_remoji_created, ctx.s.info_remoji_created_value)
       .setFooter(ctx.s.info_remoji_version(bot.constants.version, bot.constants.git.branch, bot.constants.git.commit));
