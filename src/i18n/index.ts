@@ -29,12 +29,70 @@ export type I18NValue<T extends unknown[] | false = false> = ExtendConditional<
 
 export type I18NLanguage = "en-US" | "cy-GB" | "nl-NL" | "de-DE";
 
+export const LANGUAGES: I18NLanguage[] = ["en-US", "cy-GB", "nl-NL", "de-DE"];
+
 /**
  * An abstract base class for i18n translations
  */
 export abstract class I18N {
-  // abstract LANGUAGE_NAME_LOCAL: I18NValue;
-  // abstract LANGUAGE_NAME_ENGLISH: I18NValue;
+  static readonly defaultLanguage: I18NLanguage = "en-US";
+  static readonly languages: Readonly<Record<I18NLanguage, I18N>>;
+
+  /**
+   * Initializes the language classes.
+   */
+  static async init(): Promise<void> {
+    Reflect.defineProperty(I18N, "languages", {
+      value: Object.freeze({
+        "cy-GB": new (await import("./lang/cy-GB.lang")).Lang_cy_GB(),
+        "de-DE": new (await import("./lang/de-DE.lang")).Lang_de_DE(),
+        "en-US": new (await import("./lang/en-US.lang")).Lang_en_US(),
+        "nl-NL": new (await import("./lang/nl-NL.lang")).Lang_nl_NL(),
+      }),
+    });
+  }
+
+  /**
+   * Calculate the coverage of a language
+   *
+   * @param languageId - The language to check coverage for.
+   * @returns The coverage against the default language.
+   */
+  static getLanguageCoverage(
+    languageId: I18NLanguage,
+  ): readonly [covered: readonly string[], uncovered: readonly string[]] {
+    const language = I18N.languages[languageId];
+    const covered: string[] = [];
+    const uncovered: string[] = [];
+
+    for (const key in language) {
+      if (!Object.prototype.hasOwnProperty.call(language, key)) continue;
+      if (
+        languageId === I18N.defaultLanguage ||
+        Reflect.get(language, key) !== Reflect.get(I18N.languages[I18N.defaultLanguage], key)
+      ) {
+        covered.push(key);
+      } else {
+        uncovered.push(key);
+      }
+    }
+
+    return [covered, uncovered];
+  }
+
+  /**
+   * Gets the language coverage percentage between 0 and 1.
+   *
+   * @param languageId - The language to check coverage for.
+   * @returns The coverage percentage against the default language.
+   */
+  static getLanguageCoveragePercent(languageId: I18NLanguage): number {
+    const [covered, uncovered] = I18N.getLanguageCoverage(languageId);
+    return covered.length / (covered.length + uncovered.length);
+  }
+
+  abstract NAME_LOCAL: I18NValue;
+  abstract NAME_DEFAULT: I18NValue;
 
   abstract commands: {
     unknown: I18NValue<[name: string]>;

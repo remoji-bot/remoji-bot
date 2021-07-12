@@ -23,10 +23,6 @@ import { PingCommand } from "../commands/core/ping.command";
 import { CopyCommand } from "../commands/emotes/copy.command";
 import { UploadCommand } from "../commands/emotes/upload.command";
 import { I18N, I18NLanguage } from "../i18n";
-import { Lang_cy_GB } from "../i18n/lang/cy-GB.lang";
-import { Lang_de_DE } from "../i18n/lang/de-DE.lang";
-import { Lang_en_US } from "../i18n/lang/en-US.lang";
-import { Lang_nl_NL } from "../i18n/lang/nl-NL.lang";
 import { CommandContext, GuildDependentInteraction } from "./base/CommandContext";
 import { CommandManager } from "./base/CommandManager";
 import { RedisConnection } from "./data/redis/RedisConnection";
@@ -38,6 +34,7 @@ import { InfoCommand } from "../commands/emotes/info.command";
 import { API } from "../api/API";
 import environment from "../environment";
 import { APICommand } from "../commands/dev/api.command";
+import { I18NCovCommand } from "../commands/dev/i18ncov.command";
 
 /**
  * The Bot singleton class.
@@ -64,12 +61,6 @@ export class Bot {
 
   readonly constants = Constants;
 
-  readonly i18n: Readonly<Record<I18NLanguage, I18N>> = Object.freeze({
-    "cy-GB": new Lang_cy_GB(),
-    "en-US": new Lang_en_US(),
-    "nl-NL": new Lang_nl_NL(),
-    "de-DE": new Lang_de_DE(),
-  });
   readonly i18nUserStore = new RedisStore<discord.Snowflake, I18NLanguage>("i18nUser");
 
   private constructor() {
@@ -96,6 +87,7 @@ export class Bot {
 
     this.commands
       .register(new APICommand())
+      .register(new I18NCovCommand())
       .register(new PingCommand())
       .register(new UploadCommand())
       .register(new LanguageCommand())
@@ -217,7 +209,10 @@ export class Bot {
    */
   async getI18N(user?: discord.Snowflake): Promise<I18N> {
     const userLanguage = user && (await this.i18nUserStore.get(user));
-    const i18n = userLanguage && userLanguage in this.i18n ? this.i18n[userLanguage] : this.i18n["en-US"];
+    const i18n =
+      userLanguage && userLanguage in I18N.languages
+        ? I18N.languages[userLanguage]
+        : I18N.languages[I18N.defaultLanguage];
     return i18n;
   }
 }

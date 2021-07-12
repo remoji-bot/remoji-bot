@@ -25,6 +25,9 @@ import { Nullable } from "@remoji-bot/core";
  * US English
  */
 export class Lang_en_US extends I18N {
+  NAME_DEFAULT = "English";
+  NAME_LOCAL = "English";
+
   commands = {
     unknown: (): string => "Unknown command!",
   };

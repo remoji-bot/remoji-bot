@@ -28,6 +28,9 @@ import { Lang_en_US } from "./en-US.lang";
  * Translated by: cyarox
  */
 export class Lang_nl_NL extends Lang_en_US {
+  NAME_DEFAULT = "Dutch";
+  NAME_LOCAL = "Nederlands";
+
   ping_success = (delay: number): string => `Pong! Vertraging: ${delay}ms`;
 
   image_download_error_with_reason = (reason: Error): string => `Kon afbeelding niet downloaden: \`${reason}\``;

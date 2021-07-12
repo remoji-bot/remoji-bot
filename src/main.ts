@@ -20,6 +20,7 @@ import { Logger } from "@remoji-bot/core";
 
 import { Bot } from "./core/Bot";
 import environment from "./environment";
+import { I18N } from "./i18n/index";
 
 const logger = Logger.getDefault();
 
@@ -38,4 +39,12 @@ process.on("SIGINT", () => {
   process.exit(0);
 });
 
-void Bot.getInstance().connect();
+/**
+ * Async entrypoint.
+ */
+async function main() {
+  await I18N.init();
+  await Bot.getInstance().connect();
+}
+
+void main();

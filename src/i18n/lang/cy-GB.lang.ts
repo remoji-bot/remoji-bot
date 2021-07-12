@@ -29,6 +29,9 @@ import { Lang_en_US } from "./en-US.lang";
  * Translated by: vcokltfre
  */
 export class Lang_cy_GB extends Lang_en_US {
+  NAME_DEFAULT = "Welsh";
+  NAME_LOCAL = "Cymraeg";
+
   ping_success = (delay: number): string => `Pong! Hwyrni: ${delay}ms`;
 
   image_download_error_with_reason = (reason: Error): string => `Methu lawrlwyddio'r llun: \`${reason}\``;

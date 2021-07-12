@@ -28,6 +28,9 @@ import { Lang_en_US } from "./en-US.lang";
  * Translated by: cyarox
  */
 export class Lang_de_DE extends Lang_en_US {
+  NAME_DEFAULT = "German";
+  NAME_LOCAL = "Deutsch";
+
   ping_success = (delay: number): string => `Pong! Latenz: ${delay}ms`;
 
   image_download_error_with_reason = (reason: Error): string => `Bild kann nicht heruntergeladen werden: \`${reason}\``;
