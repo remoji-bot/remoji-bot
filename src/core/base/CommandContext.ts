@@ -100,8 +100,8 @@ export class CommandContext<GUILD extends boolean = boolean> {
    *
    * @returns whether the interaction user is a bot developer.
    */
-  async isDeveloper(): Promise<boolean> {
-    return await this.bot.isDeveloper(this.interaction.user.id);
+  isDeveloper(): boolean {
+    return this.bot.isDeveloper(this.interaction.user.id);
   }
 
   /**

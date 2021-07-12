@@ -184,8 +184,8 @@ export class Bot {
    * @param userId - The user ID to check.
    * @returns Whether the given user is a bot developer.
    */
-  async isDeveloper(userId: discord.Snowflake): Promise<boolean> {
-    const application = await this.client.application?.fetch();
+  isDeveloper(userId: discord.Snowflake): boolean {
+    const application = this.client.application;
     const owner = application?.owner;
     if (application && owner) {
       if (owner instanceof discord.User) {

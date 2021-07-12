@@ -74,7 +74,7 @@ export abstract class Command<GUILD extends boolean = boolean> {
    * @returns void
    */
   private async _run(ctx: CommandContext<boolean>): Promise<void> {
-    if (this.options.developerOnly && !(await ctx.isDeveloper())) {
+    if (this.options.developerOnly && !ctx.isDeveloper()) {
       await ctx.error(":x: You must be a developer to run this command.");
       return;
     }
