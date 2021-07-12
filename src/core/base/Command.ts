@@ -42,7 +42,7 @@ export abstract class Command<GUILD extends boolean = boolean> {
   readonly bot = Bot.getInstance();
   readonly logger: Logger;
 
-  private readonly options: Readonly<CommandOptions<GUILD>>;
+  readonly options: Readonly<CommandOptions<GUILD>>;
 
   constructor(data: discord.ApplicationCommandData, options: CommandOptions<GUILD>) {
     this.logger = Logger.getLogger(`command/${data.name}`);
@@ -74,7 +74,10 @@ export abstract class Command<GUILD extends boolean = boolean> {
    * @returns void
    */
   private async _run(ctx: CommandContext<boolean>): Promise<void> {
-    // TODO: check this.options.developerOnly
+    if (this.options.developerOnly && !(await ctx.isDeveloper())) {
+      await ctx.error(":x: You must be a developer to run this command.");
+      return;
+    }
 
     if (this.options.guildOnly && !ctx.interaction.guild) {
       this.logger.error(`guildOnly command ${this.data.name} was run outside of a guild`);

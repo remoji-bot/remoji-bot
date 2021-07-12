@@ -35,6 +35,11 @@ export type I18NLanguage = "en-US" | "cy-GB" | "nl-NL" | "de-DE";
 export abstract class I18N {
   // abstract LANGUAGE_NAME_LOCAL: I18NValue;
   // abstract LANGUAGE_NAME_ENGLISH: I18NValue;
+
+  abstract commands: {
+    unknown: I18NValue<[name: string]>;
+  };
+
   abstract ping_success: I18NValue<[latency: number]>;
   abstract image_invalid_name: I18NValue;
   abstract image_download_error_with_reason: I18NValue<[reason: Error]>;

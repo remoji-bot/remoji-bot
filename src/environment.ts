@@ -35,6 +35,7 @@ const environment = Object.freeze({
   DISCORD_APPLICATION_ID: getenv("DISCORD_APPLICATION_ID", false, true),
   DISCORD_PUBLIC_KEY: getenv("DISCORD_PUBLIC_KEY", false, true),
   TESTING_GUILD_ID: getenv("TESTING_GUILD_ID", false, false),
+  DEVELOPER_ID: getenv("DEVELOPER_ID", false, false),
 
   TOPGG_TOKEN: getenv("TOPGG_TOKEN", false, true),
   TOPGG_VOTE_URL: getenv("TOPGG_VOTE_URL", false, true),

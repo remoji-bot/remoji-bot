@@ -126,9 +126,22 @@ export class Bot {
         }),
       );
     } else {
-      this.logger.info("Deploying commands in production...");
+      this.logger.info("Registering developer commands...");
       await Promise.all(
-        this.commands.commands.mapValues(command => this.client.application?.commands.create(command.data)),
+        this.commands.commands
+          .filter(command => !!command.options.developerOnly)
+          .mapValues(async command => {
+            const guild = await this.client.guilds.fetch(environment.TESTING_GUILD_ID as discord.Snowflake);
+            await guild.commands.create(command.data);
+          }),
+      );
+      this.logger.info("Registering global commands...");
+      await Promise.all(
+        this.commands.commands
+          .filter(command => !command.options.developerOnly)
+          .mapValues(async command => {
+            await this.client.application?.commands.create(command.data);
+          }),
       );
     }
 
@@ -141,6 +154,7 @@ export class Bot {
    * @param interaction - The interaction to handle.
    */
   private async handleInteraction(interaction: discord.Interaction): Promise<void> {
+    const i18n = await this.getI18N(interaction.user.id);
     if (interaction.isCommand()) {
       const command = this.commands.get(interaction.commandName);
       if (command) {
@@ -151,13 +165,42 @@ export class Bot {
             interaction.channelId
           }, interaction: ${interaction.id}`,
         );
-        const i18n = await this.getI18N(interaction.user.id);
         await command["_run"](new CommandContext(this, interaction as GuildDependentInteraction<boolean>, i18n));
+      } else {
+        // Remove the command as it is not registered
+        await interaction.command?.delete();
+        await interaction.reply({ content: i18n.commands.unknown(interaction.commandName), ephemeral: true });
       }
     } else if (interaction.isButton()) {
       // TODO : Handle buttons using button commands for interactions
     } else if (interaction.isSelectMenu()) {
       // TODO : Handle select menus using select menu commands for interactions
+    }
+  }
+
+  /**
+   * Returns whether the given user is a bot developer.
+   *
+   * @param userId - The user ID to check.
+   * @returns Whether the given user is a bot developer.
+   */
+  async isDeveloper(userId: discord.Snowflake): Promise<boolean> {
+    const application = await this.client.application?.fetch();
+    const owner = application?.owner;
+    if (application && owner) {
+      if (owner instanceof discord.User) {
+        return userId === owner.id;
+      } else if (owner instanceof discord.Team) {
+        return owner.members.has(userId);
+      } else {
+        // This should never happen
+        throw new Error("Owner is not a User or Team");
+      }
+    } else if (environment.DEVELOPER_ID) {
+      return userId === environment.DEVELOPER_ID;
+    } else {
+      this.logger.warn("isDeveloper: Application owner or DEVELOPER_ID not set, assuming non-developer");
+      return false;
     }
   }
 

@@ -25,6 +25,10 @@ import { Nullable } from "@remoji-bot/core";
  * US English
  */
 export class Lang_en_US extends I18N {
+  commands = {
+    unknown: (): string => "Unknown command!",
+  };
+
   ping_success = (delay: number): string => `Pong! Latency: ${delay}ms`;
 
   image_download_error_with_reason = (reason: Error): string => `Could not download the image: \`${reason}\``;

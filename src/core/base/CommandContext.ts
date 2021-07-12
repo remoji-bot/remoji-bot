@@ -96,6 +96,15 @@ export class CommandContext<GUILD extends boolean = boolean> {
   }
 
   /**
+   * Returns whether the interaction user is a bot developer.
+   *
+   * @returns whether the interaction user is a bot developer.
+   */
+  async isDeveloper(): Promise<boolean> {
+    return await this.bot.isDeveloper(this.interaction.user.id);
+  }
+
+  /**
    * Sends a base embed.
    *
    * @param message - The content of the embed

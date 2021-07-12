@@ -30,7 +30,6 @@ export class APICommand extends Command<true> {
         name: "api",
         description: "API commands",
         // defaultPermission: false,
-        // TODO: handle developerOnly commands
         options: [
           {
             name: "key",
