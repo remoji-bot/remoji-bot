@@ -77,15 +77,15 @@ export class APICommand extends Command<true> {
           await this.bot.api.authStore.set(apiKey, ctx.interaction.user.id);
         }
 
-        await ctx.send(`Your API key is: \`${apiKey}\``, true);
+        await ctx.base(`Your API key is: \`${apiKey}\``, true);
       } else if (revoke) {
         const key = await this.bot.api.authStore.get(ctx.interaction.user.id);
         if (key) {
           await this.bot.api.authStore.delete(ctx.interaction.user.id);
           await this.bot.api.authStore.delete(key);
-          await ctx.send("Your API key has been revoked.", true);
+          await ctx.base("Your API key has been revoked.", true);
         } else {
-          await ctx.send("You don't have an API key.", true);
+          await ctx.base("You don't have an API key.", true);
         }
       }
     }

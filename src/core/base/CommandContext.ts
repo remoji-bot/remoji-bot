@@ -105,12 +105,22 @@ export class CommandContext<GUILD extends boolean = boolean> {
   }
 
   /**
+   * Sends a plain text reply.
+   *
+   * @param message - The content of the message
+   * @param ephemeral - Whether to send an ephemeral message
+   */
+  async send(message: string, ephemeral = false): Promise<void> {
+    await this.interaction.reply({ content: message, ephemeral });
+  }
+
+  /**
    * Sends a base embed.
    *
    * @param message - The content of the embed
    * @param ephemeral - Whether to send an ephemeral message
    */
-  async send(message: string, ephemeral = false): Promise<void> {
+  async base(message: string, ephemeral = false): Promise<void> {
     await this.interaction.reply({ embeds: [EmbedUtil.base(this.i18n).setDescription(message)], ephemeral });
   }
 
@@ -118,18 +128,20 @@ export class CommandContext<GUILD extends boolean = boolean> {
    * Sends an error embed using `EmbedBuilder`.
    *
    * @param message - The content of the error message
+   * @param ephemeral - Whether to send an ephemeral message
    */
-  async error(message: string): Promise<void> {
-    await this.interaction.reply({ embeds: [EmbedUtil.error(this.i18n, message)] });
+  async error(message: string, ephemeral = false): Promise<void> {
+    await this.interaction.reply({ embeds: [EmbedUtil.error(this.i18n, message)], ephemeral });
   }
 
   /**
    * Sends a success embed using `EmbedBuilder`.
    *
    * @param message - The content of the success message
+   * @param ephemeral - Whether to send an ephemeral message
    */
-  async success(message: string): Promise<void> {
-    await this.interaction.reply({ embeds: [EmbedUtil.success(this.i18n, message)] });
+  async success(message: string, ephemeral = false): Promise<void> {
+    await this.interaction.reply({ embeds: [EmbedUtil.success(this.i18n, message)], ephemeral });
   }
 
   /**
