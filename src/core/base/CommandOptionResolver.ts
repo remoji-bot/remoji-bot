@@ -17,7 +17,7 @@
 */
 
 import { Collection, CommandInteractionOption, GuildChannel, GuildMember, Role, User } from "discord.js";
-import { APIInteractionDataResolvedGuildMember, APIRole } from "discord-api-types/v8";
+import { APIInteractionDataResolvedGuildMember, APIRole } from "discord-api-types";
 
 import { Nullable } from "@remoji-bot/core";
 

@@ -16,7 +16,7 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { APIInteractionGuildMember } from "discord-api-types/v8";
+import { APIInteractionGuildMember } from "discord-api-types";
 import {
   CommandInteraction,
   DMChannel,
