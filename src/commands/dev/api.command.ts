@@ -21,7 +21,9 @@ import { Command } from "../../core/base/Command";
 import { CommandContext } from "../../core/base/CommandContext";
 
 /**
- * The /api command
+ * `/api` command - gets and revokes API keys.
+ *
+ * For developers only.
  */
 export class APICommand extends Command<true> {
   constructor() {
