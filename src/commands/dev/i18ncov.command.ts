@@ -55,7 +55,7 @@ export class I18NCovCommand extends Command<true> {
         .join(", ");
       embed.addField(
         `${language} ${Math.floor(coveragePercent * 100)}%`,
-        missing.length ? `Missing (${missing.length}): ${missing}` : "✅ Complete",
+        missing.length ? `Missing (${coverage[1].length}): ${missing}` : "✅ Complete",
       );
     }
     await ctx.interaction.reply({ embeds: [embed] });

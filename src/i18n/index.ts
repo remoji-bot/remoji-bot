@@ -65,12 +65,10 @@ export abstract class I18N {
     const covered: string[] = [];
     const uncovered: string[] = [];
 
-    for (const key in language) {
-      if (!Object.prototype.hasOwnProperty.call(language, key)) continue;
-      if (
-        languageId === I18N.defaultLanguage ||
-        Reflect.get(language, key) !== Reflect.get(I18N.languages[I18N.defaultLanguage], key)
-      ) {
+    const defaultLanguage = I18N.languages[I18N.defaultLanguage];
+    for (const key in defaultLanguage) {
+      if (!Object.prototype.hasOwnProperty.call(defaultLanguage, key)) continue;
+      if (languageId === I18N.defaultLanguage || Reflect.get(language, key) !== Reflect.get(defaultLanguage, key)) {
         covered.push(key);
       } else {
         uncovered.push(key);
