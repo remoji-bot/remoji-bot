@@ -17,7 +17,7 @@
 */
 
 import { Nullable } from "@remoji-bot/core";
-import { RedisConnection } from "./redisconnection";
+import { RedisConnection } from "./RedisConnection";
 
 /**
  * Represents a redis store namespace.

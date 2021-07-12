@@ -18,7 +18,7 @@
 
 import { Collection } from "discord.js";
 import { Logger, Nullable } from "@remoji-bot/core";
-import { Command } from "./command";
+import { Command } from "./Command";
 
 /**
  * A manager of commands.

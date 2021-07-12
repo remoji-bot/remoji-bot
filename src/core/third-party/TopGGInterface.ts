@@ -19,7 +19,7 @@
 import * as topgg from "@top-gg/sdk";
 import { Snowflake } from "discord.js";
 
-import { RedisCacheManager } from "../data/redis/rediscachemanager";
+import { RedisCacheManager } from "../data/redis/RedisCacheManager";
 import { Logger, Nullable } from "@remoji-bot/core";
 import environment from "../../environment";
 

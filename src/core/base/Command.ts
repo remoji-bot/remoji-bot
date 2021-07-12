@@ -18,9 +18,9 @@
 
 import * as assert from "assert";
 import * as discord from "discord.js";
-import { Bot } from "../bot";
+import { Bot } from "../Bot";
 import { Logger, Nullable } from "@remoji-bot/core";
-import { CommandContext } from "./commandcontext";
+import { CommandContext } from "./CommandContext";
 import environment from "../../environment";
 
 export interface CommandOptions<GUILD extends boolean> {

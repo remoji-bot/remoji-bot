@@ -19,8 +19,8 @@
 import { Logger } from "@remoji-bot/core";
 import * as express from "express";
 import environment from "../environment";
-import { RedisStore } from "../core/data/redis/redisstore";
-import { Bot } from "../core/bot";
+import { RedisStore } from "../core/data/redis/RedisStore";
+import { Bot } from "../core/Bot";
 
 /**
  * The API wrapper.

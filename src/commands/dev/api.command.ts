@@ -17,8 +17,8 @@
 */
 
 import * as crypto from "crypto";
-import { Command } from "../../core/base/command";
-import { CommandContext } from "../../core/base/commandcontext";
+import { Command } from "../../core/base/Command";
+import { CommandContext } from "../../core/base/CommandContext";
 
 /**
  * The /api command

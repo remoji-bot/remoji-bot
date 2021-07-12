@@ -16,9 +16,9 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Command } from "../../core/base/command";
-import { CommandContext } from "../../core/base/commandcontext";
-import { ImageUtil } from "../../core/utils/imageutil";
+import { Command } from "../../core/base/Command";
+import { CommandContext } from "../../core/base/CommandContext";
+import { ImageUtil } from "../../core/utils/ImageUtil";
 import environment from "../../environment";
 
 /**

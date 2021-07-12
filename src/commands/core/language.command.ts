@@ -16,8 +16,8 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Command } from "../../core/base/command";
-import { CommandContext } from "../../core/base/commandcontext";
+import { Command } from "../../core/base/Command";
+import { CommandContext } from "../../core/base/CommandContext";
 import { I18NLanguage } from "../../i18n";
 
 /**

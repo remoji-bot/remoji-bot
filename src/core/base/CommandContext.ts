@@ -30,10 +30,10 @@ import {
 } from "discord.js";
 import { inspect } from "util";
 import { I18N } from "../../i18n";
-import { EmbedUtil } from "../utils/embedutil";
+import { EmbedUtil } from "../utils/EmbedUtil";
 import { Ternary } from "@remoji-bot/core";
-import { CommandOptionResolver } from "./commandoptionresolver";
-import { Bot } from "../bot";
+import { CommandOptionResolver } from "./CommandOptionResolver";
+import { Bot } from "../Bot";
 
 /**
  * Typing utility for guild interactions.

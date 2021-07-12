@@ -16,9 +16,9 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Command } from "../../core/base/command";
-import { CommandContext } from "../../core/base/commandcontext";
-import { EmbedUtil } from "../../core/utils/embedutil";
+import { Command } from "../../core/base/Command";
+import { CommandContext } from "../../core/base/CommandContext";
+import { EmbedUtil } from "../../core/utils/EmbedUtil";
 import { time } from "@remoji-bot/core";
 
 /**

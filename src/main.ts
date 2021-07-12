@@ -18,7 +18,7 @@
 
 import { Logger } from "@remoji-bot/core";
 
-import { Bot } from "./core/bot";
+import { Bot } from "./core/Bot";
 
 const logger = Logger.getDefault();
 

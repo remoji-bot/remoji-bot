@@ -18,7 +18,7 @@
 
 import { MessageEmbed } from "discord.js";
 import { I18N } from "../../i18n";
-import { Bot } from "../bot";
+import { Bot } from "../Bot";
 import environment from "../../environment";
 
 /**
