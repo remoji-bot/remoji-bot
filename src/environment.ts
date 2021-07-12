@@ -23,22 +23,22 @@ dotenv.config();
 
 const environment = Object.freeze({
   NODE_ENV: getenv("NODE_ENV", false, true),
-  //
+
   API_PORT: getenv("API_PORT", true, true),
   API_HOST: getenv("API_HOST", false, true),
   API_TIMEOUT: getenv("API_TIMEOUT", true, true),
-  //
+
   REDIS_PORT: getenv("REDIS_PORT", true, false),
   REDIS_HOST: getenv("REDIS_HOST", false, false),
-  //
+
   DISCORD_TOKEN: getenv("DISCORD_TOKEN", false, true),
   DISCORD_APPLICATION_ID: getenv("DISCORD_APPLICATION_ID", false, true),
   DISCORD_PUBLIC_KEY: getenv("DISCORD_PUBLIC_KEY", false, true),
   TESTING_GUILD_ID: getenv("TESTING_GUILD_ID", false, false),
-  //
+
   TOPGG_TOKEN: getenv("TOPGG_TOKEN", false, true),
   TOPGG_VOTE_URL: getenv("TOPGG_VOTE_URL", false, true),
-  //
+
   SUPPORT_INVITE: getenv("SUPPORT_INVITE", false, true),
 });
 
