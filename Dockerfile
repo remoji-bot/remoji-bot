@@ -2,10 +2,11 @@ FROM node:14-alpine
 RUN apk add git
 
 WORKDIR /srv/bot
+EXPOSE 8000
+ENV API_PORT=8000
+ENV API_HOST=0.0.0.0
 
-COPY package.json yarn.lock ./
-COPY .git ./.git
-RUN yarn --frozen-lockfile
 COPY . .
+RUN yarn --immutable
 
 CMD ["yarn", "start"]

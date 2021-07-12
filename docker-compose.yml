@@ -9,8 +9,9 @@ services:
     volumes:
       - ./_volumes/logs:/srv/bot/logs
     env_file: .env
-    # ports:
-    # - 8080:127.0.0.1:8080
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
   redis:
     image: redis:6.2.4-alpine
     restart: always
