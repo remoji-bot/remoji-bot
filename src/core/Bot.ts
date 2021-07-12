@@ -185,21 +185,22 @@ export class Bot {
    * @returns Whether the given user is a bot developer.
    */
   isDeveloper(userId: discord.Snowflake): boolean {
+    // Allow override in development environment
+    if (environment.NODE_ENV === "development" && environment.DEVELOPER_ID?.split(",").includes(userId)) return true;
+
     const application = this.client.application;
     const owner = application?.owner;
+
     if (application && owner) {
       if (owner instanceof discord.User) {
         return userId === owner.id;
       } else if (owner instanceof discord.Team) {
         return owner.members.has(userId);
       } else {
-        // This should never happen
         throw new Error("Owner is not a User or Team");
       }
-    } else if (environment.DEVELOPER_ID) {
-      return userId === environment.DEVELOPER_ID;
     } else {
-      this.logger.warn("isDeveloper: Application owner or DEVELOPER_ID not set, assuming non-developer");
+      this.logger.warn("isDeveloper: Application and/or owner is null");
       return false;
     }
   }

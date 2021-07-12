@@ -18,6 +18,7 @@
 
 import dotenv = require("dotenv");
 import { getenv } from "@remoji-bot/core";
+import * as assert from "assert";
 
 dotenv.config();
 
@@ -42,5 +43,14 @@ const environment = Object.freeze({
 
   SUPPORT_INVITE: getenv("SUPPORT_INVITE", false, true),
 });
+
+// Conditional assertions
+if (environment.NODE_ENV === "production") {
+  assert(environment.REDIS_HOST, "REDIS_HOST is required for production");
+  assert(environment.REDIS_PORT, "REDIS_PORT is required for production");
+
+  assert(!environment.TESTING_GUILD_ID, "TESTING_GUILD_ID should not be set for production");
+  assert(!environment.DEVELOPER_ID, "DEVELOPER_ID should not be set for production");
+}
 
 export default environment;
