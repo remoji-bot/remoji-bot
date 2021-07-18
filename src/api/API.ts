@@ -108,7 +108,7 @@ export class API {
     this.logger.info(`${req.method} ${req.url} from ${req.ip}${cfIP ? `(cf: ${cfIP})` : ""}`);
 
     // Authenticate the request using the bearer token
-    if (req.headers["authorization"]) {
+    if (req.headers["authorization"]?.startsWith("Bearer ")) {
       const token = req.headers["authorization"].split(" ")[1];
       const user = await this.authStore.get(token);
       if (!user || !Bot.getInstance().isDeveloper(user as discord.Snowflake)) {
