@@ -1,9 +1,19 @@
 {
 	"extends": "marine/prettier/node",
+	"plugins": ["import"],
 	"parserOptions": {
 		"project": "./tsconfig.json"
 	},
 	"rules": {
+		"import/order": [
+			"error",
+			{
+				"groups": ["builtin", "external", "internal", "sibling", "parent"],
+				"alphabetize": {
+					"order": "asc"
+				}
+			}
+		],
 		"@typescript-eslint/naming-convention": 0,
 		"no-redeclare": 0,
 		"no-console": 2

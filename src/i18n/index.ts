@@ -1,23 +1,5 @@
-/*
-  Remoji - Discord emoji manager bot
-  Copyright (C) 2021 Shino <shinotheshino@gmail.com>.
-
-  This program is free software: you can redistribute it and/or modify
-  it under the terms of the GNU Affero General Public License as published
-  by the Free Software Foundation, either version 3 of the License, or
-  (at your option) any later version.
-
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU Affero General Public License for more details.
-
-  You should have received a copy of the GNU Affero General Public License
-  along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
-
-import { PermissionString } from 'discord.js';
 import { ExtendConditional, Nullable } from '@remoji-bot/core';
+import { PermissionString } from 'discord.js';
 
 export type I18NValue<T extends unknown[] | false = false> = ExtendConditional<
 	T,
@@ -35,13 +17,13 @@ export const LANGUAGES: I18NLanguage[] = ['en-US', 'cy-GB', 'nl-NL', 'de-DE'];
  * An abstract base class for i18n translations
  */
 export abstract class I18N {
-	static readonly defaultLanguage: I18NLanguage = 'en-US';
-	static readonly languages: Readonly<Record<I18NLanguage, I18N>>;
+	public static readonly defaultLanguage: I18NLanguage = 'en-US';
+	public static readonly languages: Readonly<Record<I18NLanguage, I18N>>;
 
 	/**
 	 * Initializes the language classes.
 	 */
-	static async init(): Promise<void> {
+	public static async init(): Promise<void> {
 		Reflect.defineProperty(I18N, 'languages', {
 			value: Object.freeze({
 				'cy-GB': new (await import('./lang/cy-GB.lang')).Lang_cy_GB(),
@@ -58,7 +40,7 @@ export abstract class I18N {
 	 * @param languageId - The language to check coverage for.
 	 * @returns The coverage against the default language.
 	 */
-	static getLanguageCoverage(
+	public static getLanguageCoverage(
 		languageId: I18NLanguage,
 	): readonly [covered: readonly string[], uncovered: readonly string[]] {
 		const language = I18N.languages[languageId];
@@ -86,7 +68,7 @@ export abstract class I18N {
 	 * @param languageId - The language to check coverage for.
 	 * @returns The coverage percentage against the default language.
 	 */
-	static getLanguageCoveragePercent(languageId: I18NLanguage): number {
+	public static getLanguageCoveragePercent(languageId: I18NLanguage): number {
 		const [covered, uncovered] = I18N.getLanguageCoverage(languageId);
 		return covered.length / (covered.length + uncovered.length);
 	}

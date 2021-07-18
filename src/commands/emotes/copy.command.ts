@@ -1,21 +1,3 @@
-/*
-  Remoji - Discord emoji manager bot
-  Copyright (C) 2021 Shino <shinotheshino@gmail.com>.
-
-  This program is free software: you can redistribute it and/or modify
-  it under the terms of the GNU Affero General Public License as published
-  by the Free Software Foundation, either version 3 of the License, or
-  (at your option) any later version.
-
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU Affero General Public License for more details.
-
-  You should have received a copy of the GNU Affero General Public License
-  along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
-
 import { Command } from '../../core/base/Command';
 import { CommandContext } from '../../core/base/CommandContext';
 import { ImageUtil } from '../../core/utils/ImageUtil';
@@ -25,7 +7,7 @@ import environment from '../../environment';
  * `/copy` command - Copy one or more emotes to your server.
  */
 export class CopyCommand extends Command<true> {
-	constructor() {
+	public constructor() {
 		super(
 			{
 				name: 'copy',
@@ -78,7 +60,7 @@ export class CopyCommand extends Command<true> {
 	 *
 	 * @param ctx - The context for the command.
 	 */
-	async run(ctx: CommandContext<true>): Promise<void> {
+	public async run(ctx: CommandContext<true>): Promise<void> {
 		const single = ctx.options.subcommand('single');
 		const multiple = ctx.options.subcommand('multiple');
 
@@ -89,6 +71,7 @@ export class CopyCommand extends Command<true> {
 			const emote = ImageUtil.extractEmojis(single.string('emote'))[0];
 			const name = single.string('name', false);
 
+			// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 			if (!emote) {
 				await ctx.error(ctx.s.emote_copy_invalid_emote);
 				return;
@@ -104,6 +87,7 @@ export class CopyCommand extends Command<true> {
 			if (!image.success) {
 				if (image.error) await ctx.error(ctx.s.image_download_error_with_reason(image.error));
 				else if (!image.validURL) await ctx.error(ctx.s.emote_copy_invalid_url);
+				// eslint-disable-next-line no-negated-condition
 				else if (!image.whitelistedURL) await ctx.error(ctx.s.emote_copy_invalid_domain);
 				else await ctx.error(ctx.s.emote_copy_unknown_download_error);
 				return;
@@ -123,6 +107,7 @@ export class CopyCommand extends Command<true> {
 			}
 
 			const emotes = ImageUtil.extractEmojis(multiple.string('emotes'));
+			// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 			if (!emotes) {
 				await ctx.error(ctx.s.emote_copy_no_emotes);
 				return;

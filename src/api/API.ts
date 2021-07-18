@@ -1,34 +1,16 @@
-/*
-  Remoji - Discord emoji manager bot
-  Copyright (C) 2021 Shino <shinotheshino@gmail.com>.
-
-  This program is free software: you can redistribute it and/or modify
-  it under the terms of the GNU Affero General Public License as published
-  by the Free Software Foundation, either version 3 of the License, or
-  (at your option) any later version.
-
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU Affero General Public License for more details.
-
-  You should have received a copy of the GNU Affero General Public License
-  along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
-
-import { Logger } from '@remoji-bot/core';
-import express from 'express';
-import environment from '../environment';
-import { RedisStore } from '../core/data/redis/RedisStore';
-import { Bot } from '../core/Bot';
-import * as discord from 'discord.js';
 import * as os from 'os';
+import { Logger } from '@remoji-bot/core';
+import * as discord from 'discord.js';
+import express from 'express';
+import { Bot } from '../core/Bot';
+import { RedisStore } from '../core/data/redis/RedisStore';
+import environment from '../environment';
 
 /**
  * The API wrapper.
  */
 export class API {
-	private static instance: API;
+	private static instance: API | null = null;
 
 	/**
 	 * Gets the instance of the API.
@@ -42,11 +24,11 @@ export class API {
 		return this.instance;
 	}
 
-	logger: Logger;
-	app: express.Application;
-	router: express.Router;
+	public logger: Logger;
+	public app: express.Application;
+	public router: express.Router;
 
-	authStore = new RedisStore('api:auth');
+	public authStore = new RedisStore('api:auth');
 
 	private constructor() {
 		this.logger = Logger.getLogger('API');
@@ -64,7 +46,7 @@ export class API {
 	/**
 	 * Starts the API server.
 	 */
-	async start(): Promise<void> {
+	public async start(): Promise<void> {
 		const host = environment.API_HOST;
 		const port = environment.API_PORT;
 
@@ -81,7 +63,7 @@ export class API {
 	 * @param res the response
 	 * @param next the next callback
 	 */
-	async middleware(req: express.Request, res: express.Response, next: express.NextFunction): Promise<void> {
+	public async middleware(req: express.Request, res: express.Response, next: express.NextFunction): Promise<void> {
 		// Remove X-Powered-By header
 		res.removeHeader('X-Powered-By');
 		// Set CORS headers
@@ -106,7 +88,7 @@ export class API {
 
 		// Log the request and Cloudflare origin IP
 		const cfIP = req.headers['cf-connecting-ip'];
-		this.logger.info(`${req.method} ${req.url} from ${req.ip}${cfIP ? `(cf: ${cfIP})` : ''}`);
+		this.logger.info(`${req.method} ${req.url} from ${req.ip}${cfIP ? `(cf: ${cfIP.toString()})` : ''}`);
 
 		// Authenticate the request using the bearer token
 		if (req.headers.authorization?.startsWith('Bearer ')) {
@@ -157,7 +139,7 @@ export class API {
 			},
 			pid: process.pid,
 			discord: {
-				id: bot.client.user?.id,
+				id: bot.client.user.id,
 				guildCount: bot.client.guilds.cache.size,
 				userCount: bot.client.users.cache.size,
 				channels: bot.client.channels.cache.size,

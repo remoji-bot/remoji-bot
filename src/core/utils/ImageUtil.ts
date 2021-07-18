@@ -1,25 +1,7 @@
-/*
-  Remoji - Discord emoji manager bot
-  Copyright (C) 2021 Shino <shinotheshino@gmail.com>.
-
-  This program is free software: you can redistribute it and/or modify
-  it under the terms of the GNU Affero General Public License as published
-  by the Free Software Foundation, either version 3 of the License, or
-  (at your option) any later version.
-
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU Affero General Public License for more details.
-
-  You should have received a copy of the GNU Affero General Public License
-  along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
-
-import axios from 'axios';
-import { Snowflake } from 'discord.js';
 import { URL } from 'url';
 import { Logger } from '@remoji-bot/core';
+import axios from 'axios';
+import { Snowflake } from 'discord.js';
 
 /**
  * Whitelisted domains for downloading images.
@@ -67,14 +49,14 @@ export type DownloadImageResult =
  * Stores basic information about an emoji.
  */
 export class EmojiInfo {
-	constructor(readonly id: Snowflake, readonly name: string, readonly animated: boolean) {}
+	public constructor(public readonly id: Snowflake, public readonly name: string, public readonly animated: boolean) {}
 
 	/**
 	 * The CDN URL.
 	 *
 	 * @returns - The CDN URL.
 	 */
-	get url(): string {
+	public get url(): string {
 		const extension = this.animated ? 'gif' : 'png';
 		return `https://cdn.discordapp.com/emojis/${this.id}.${extension}`;
 	}
@@ -83,12 +65,8 @@ export class EmojiInfo {
 /**
  * Utilities for uploading/downloading images and emojis.
  */
-export class ImageUtil {
-	private constructor() {
-		// private
-	}
-
-	static logger = Logger.getLogger('imageutil');
+export class ImageUtil extends null {
+	public static logger = Logger.getLogger('imageutil');
 
 	/**
 	 * Extract all emojis from a given input string.
@@ -96,7 +74,7 @@ export class ImageUtil {
 	 * @param string - The input string.
 	 * @returns - The emojis extracted from the input string.
 	 */
-	static extractEmojis(string: string): EmojiInfo[] {
+	public static extractEmojis(string: string): EmojiInfo[] {
 		const matches = Array.from(string.matchAll(REGEXP_ALL_EMOTES));
 		return matches
 			.filter((match) => match.groups)
@@ -105,7 +83,7 @@ export class ImageUtil {
 					new EmojiInfo(
 						match.groups?.id as Snowflake,
 						match.groups?.name as string,
-						!!(match.groups?.animated as string),
+						Boolean(match.groups?.animated as string),
 					),
 			);
 	}
@@ -116,8 +94,8 @@ export class ImageUtil {
 	 * @param emoji - The emoji to get the asset URL for.
 	 * @returns - The asset URL.
 	 */
-	static getEmojiCDNImageURL(emoji: string): string | null {
-		const groups = emoji.match(REGEXP_EMOTE)?.groups;
+	public static getEmojiCDNImageURL(emoji: string): string | null {
+		const groups = REGEXP_EMOTE.exec(emoji)?.groups;
 
 		if (!groups) return null;
 
@@ -131,7 +109,7 @@ export class ImageUtil {
 	 * @param url - the url to download from - will be sanitized and checked
 	 * @returns - the result
 	 */
-	static async downloadImage(url: string): Promise<DownloadImageResult> {
+	public static async downloadImage(url: string): Promise<DownloadImageResult> {
 		try {
 			if (!REGEXP_URL.test(url)) return { success: false, validURL: false };
 			const parsedURL = new URL(url);
@@ -146,8 +124,7 @@ export class ImageUtil {
 					timeout: 2500,
 				})
 				.then((res) => {
-					if (!MIME_WHITELIST.includes(res.headers['content-type']))
-						throw new TypeError(`Unknown Content-Type: ${res.headers['content-type']}`);
+					if (!MIME_WHITELIST.includes(res.headers['content-type'])) throw new TypeError(`Unknown Content-Type`);
 					return res;
 				})
 				.catch((error: Error) => {

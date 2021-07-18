@@ -1,27 +1,9 @@
-/*
-  Remoji - Discord emoji manager bot
-  Copyright (C) 2021 Shino <shinotheshino@gmail.com>.
-
-  This program is free software: you can redistribute it and/or modify
-  it under the terms of the GNU Affero General Public License as published
-  by the Free Software Foundation, either version 3 of the License, or
-  (at your option) any later version.
-
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU Affero General Public License for more details.
-
-  You should have received a copy of the GNU Affero General Public License
-  along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
-
+import { Logger, Nullable } from '@remoji-bot/core';
 import * as topgg from '@top-gg/sdk';
 import { Snowflake } from 'discord.js';
 
-import { RedisCacheManager } from '../data/redis/RedisCacheManager';
-import { Logger, Nullable } from '@remoji-bot/core';
 import environment from '../../environment';
+import { RedisCacheManager } from '../data/redis/RedisCacheManager';
 
 /**
  * A high level caching interface to the topgg API.
@@ -39,11 +21,11 @@ export class TopGGInterface {
 		return this.instance;
 	}
 
-	readonly logger = Logger.getLogger('topgg');
+	public readonly logger = Logger.getLogger('topgg');
 
-	readonly apiKey = environment.TOPGG_TOKEN;
-	readonly api: Nullable<topgg.Api>;
-	readonly cache = new RedisCacheManager('topgg');
+	public readonly apiKey = environment.TOPGG_TOKEN;
+	public readonly api: Nullable<topgg.Api>;
+	public readonly cache = new RedisCacheManager('topgg');
 
 	private constructor() {
 		this.api = this.apiKey ? new topgg.Api(this.apiKey) : null;
@@ -55,9 +37,8 @@ export class TopGGInterface {
 	 * @param user - The user ID to check.
 	 * @returns - Whether the user has voted.
 	 */
-	async hasVoted(user: Snowflake): Promise<boolean> {
+	public async hasVoted(user: Snowflake): Promise<boolean> {
 		const result = await this._hasVoted(user);
-		this.logger.info(`hasVoted(${user}): ${result}`);
 		return result;
 	}
 

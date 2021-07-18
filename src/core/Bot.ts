@@ -1,46 +1,28 @@
-/*
-  Remoji - Discord emoji manager bot
-  Copyright (C) 2021 Shino <shinotheshino@gmail.com>.
-
-  This program is free software: you can redistribute it and/or modify
-  it under the terms of the GNU Affero General Public License as published
-  by the Free Software Foundation, either version 3 of the License, or
-  (at your option) any later version.
-
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU Affero General Public License for more details.
-
-  You should have received a copy of the GNU Affero General Public License
-  along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
-
+import { Logger } from '@remoji-bot/core';
 import * as discord from 'discord.js';
-import { LanguageCommand } from '../commands/core/language.command';
 
-import { PingCommand } from '../commands/core/ping.command';
-import { CopyCommand } from '../commands/emotes/copy.command';
-import { UploadCommand } from '../commands/emotes/upload.command';
-import { I18N, I18NLanguage } from '../i18n';
 import { CommandContext, GuildDependentInteraction } from './base/CommandContext';
 import { CommandManager } from './base/CommandManager';
 import { RedisConnection } from './data/redis/RedisConnection';
 import { RedisStore } from './data/redis/RedisStore';
 import { TopGGInterface } from './third-party/TopGGInterface';
-import { Logger } from '@remoji-bot/core';
 import Constants from './utils/Constants';
-import { InfoCommand } from '../commands/emotes/info.command';
 import { API } from '../api/API';
-import environment from '../environment';
+import { LanguageCommand } from '../commands/core/language.command';
+import { PingCommand } from '../commands/core/ping.command';
 import { APICommand } from '../commands/dev/api.command';
 import { I18NCovCommand } from '../commands/dev/i18ncov.command';
+import { CopyCommand } from '../commands/emotes/copy.command';
+import { InfoCommand } from '../commands/emotes/info.command';
+import { UploadCommand } from '../commands/emotes/upload.command';
+import environment from '../environment';
+import { I18N, I18NLanguage } from '../i18n';
 
 /**
  * The Bot singleton class.
  */
 export class Bot {
-	private static instance: Bot;
+	private static instance: Bot | null = null;
 
 	/**
 	 * Returns the singleton instance, creating one if needed.
@@ -52,16 +34,16 @@ export class Bot {
 		return this.instance;
 	}
 
-	readonly logger = Logger.getLogger('bot');
+	public readonly logger = Logger.getLogger('bot');
 
-	readonly client: discord.Client;
-	readonly topgg = TopGGInterface.getInstance();
-	readonly commands = new CommandManager();
-	readonly api = API.getInstance();
+	public readonly client: discord.Client<true>;
+	public readonly topgg = TopGGInterface.getInstance();
+	public readonly commands = new CommandManager();
+	public readonly api = API.getInstance();
 
-	readonly constants = Constants;
+	public readonly constants = Constants;
 
-	readonly i18nUserStore = new RedisStore<discord.Snowflake, I18NLanguage>('i18nUser');
+	public readonly i18nUserStore = new RedisStore<discord.Snowflake, I18NLanguage>('i18nUser');
 
 	private constructor() {
 		this.client = new discord.Client({
@@ -77,12 +59,12 @@ export class Bot {
 	/**
 	 * Start the bot.
 	 */
-	async connect(): Promise<void> {
+	public async connect(): Promise<void> {
 		this.logger.info('Connecting to Redis...');
 		await RedisConnection.getInstance().redis.ping();
 		this.logger.info('Connecting to Discord...');
 		await this.client.login(environment.DISCORD_TOKEN);
-		this.logger.info(`Connected as ${this.client.user?.tag} with ${this.client.shard?.count ?? 1} shard(s)`);
+		this.logger.info(`Connected as ${this.client.user.tag} with ${this.client.shard?.count ?? 1} shard(s)`);
 		await this.api.start();
 
 		this.commands
@@ -94,10 +76,10 @@ export class Bot {
 			.register(new CopyCommand())
 			.register(new InfoCommand());
 
-		const applicationCommands = await this.client.application?.commands.fetch();
+		const applicationCommands = await this.client.application.commands.fetch();
 
 		// Remove all unregistered commands
-		for (const [, command] of applicationCommands ?? []) {
+		for (const [, command] of applicationCommands) {
 			if (!this.commands.get(command.name)) {
 				this.logger.verbose(`Unregistered command: ${command.name}`);
 				await command.delete();
@@ -106,7 +88,7 @@ export class Bot {
 
 		if (environment.NODE_ENV === 'development') {
 			this.logger.info('Removing production commands from testing bot');
-			for (const [, command] of applicationCommands ?? []) {
+			for (const [, command] of applicationCommands) {
 				this.logger.verbose(`Remoing command: ${command.name}...`);
 				await command.delete();
 			}
@@ -132,7 +114,7 @@ export class Bot {
 				this.commands.commands
 					.filter((command) => !command.options.developerOnly)
 					.mapValues(async (command) => {
-						await this.client.application?.commands.create(command.data);
+						await this.client.application.commands.create(command.data);
 					}),
 			);
 		}
@@ -140,7 +122,7 @@ export class Bot {
 		this.logger.info('Registered commands!');
 
 		// Fetch application info for isDeveloper checks
-		await this.client.application?.fetch();
+		await this.client.application.fetch();
 	}
 
 	/**
@@ -156,10 +138,11 @@ export class Bot {
 				this.logger.verbose(
 					`User ${interaction.user.tag} (${interaction.user.id}) ran command: /${
 						command.data.name
-					} with options: ${JSON.stringify(interaction.options.toJSON())}, guild: ${interaction.guildId}, channel: ${
-						interaction.channelId
-					}, interaction: ${interaction.id}`,
+					} with options: ${JSON.stringify(interaction.options.toJSON())}, guild: ${
+						interaction.guildId ?? 'N/A'
+					}, channel: ${interaction.channelId}, interaction: ${interaction.id}`,
 				);
+				// eslint-disable-next-line @typescript-eslint/dot-notation
 				await command['_run'](new CommandContext(this, interaction as GuildDependentInteraction<boolean>, i18n));
 			} else {
 				// Remove the command as it is not registered
@@ -179,25 +162,19 @@ export class Bot {
 	 * @param userId - The user ID to check.
 	 * @returns Whether the given user is a bot developer.
 	 */
-	isDeveloper(userId: discord.Snowflake): boolean {
+	public isDeveloper(userId: discord.Snowflake): boolean {
 		// Allow override in development environment
 		if (environment.NODE_ENV === 'development' && environment.DEVELOPER_ID?.split(',').includes(userId)) return true;
 
-		const application = this.client.application;
-		const owner = application?.owner;
+		const owner = this.client.application.owner;
 
-		if (application && owner) {
-			if (owner instanceof discord.User) {
-				return userId === owner.id;
-			} else if (owner instanceof discord.Team) {
-				return owner.members.has(userId);
-			}
-			throw new Error('Owner is not a User or Team');
-		} else {
-			if (!application) this.logger.warn('isDeveloper() called with no application');
-			if (!owner) this.logger.warn('isDeveloper() called with no application owner');
-			return false;
+		if (owner instanceof discord.User) {
+			return userId === owner.id;
+		} else if (owner instanceof discord.Team) {
+			return owner.members.has(userId);
 		}
+
+		throw new Error('Owner is not a User or Team');
 	}
 
 	/**
@@ -206,7 +183,7 @@ export class Bot {
 	 * @param user - The user ID for which to fetch preferred language
 	 * @returns The I18N object to use for translation
 	 */
-	async getI18N(user?: discord.Snowflake): Promise<I18N> {
+	public async getI18N(user?: discord.Snowflake): Promise<I18N> {
 		const userLanguage = user && (await this.i18nUserStore.get(user));
 		const i18n =
 			userLanguage && userLanguage in I18N.languages

@@ -1,27 +1,9 @@
-/*
-  Remoji - Discord emoji manager bot
-  Copyright (C) 2021 Shino <shinotheshino@gmail.com>.
-
-  This program is free software: you can redistribute it and/or modify
-  it under the terms of the GNU Affero General Public License as published
-  by the Free Software Foundation, either version 3 of the License, or
-  (at your option) any later version.
-
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU Affero General Public License for more details.
-
-  You should have received a copy of the GNU Affero General Public License
-  along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
-
 import assert from 'assert';
-import * as discord from 'discord.js';
-import { Bot } from '../Bot';
 import { Logger, Nullable } from '@remoji-bot/core';
+import * as discord from 'discord.js';
 import { CommandContext } from './CommandContext';
 import environment from '../../environment';
+import { Bot } from '../Bot';
 
 export interface CommandOptions<GUILD extends boolean> {
 	guildOnly: GUILD;
@@ -38,13 +20,13 @@ export interface CommandOptions<GUILD extends boolean> {
  * The basic abstract class for all commands.
  */
 export abstract class Command<GUILD extends boolean = boolean> {
-	readonly data: Readonly<discord.ApplicationCommandData>;
-	readonly bot = Bot.getInstance();
-	readonly logger: Logger;
+	public readonly data: Readonly<discord.ApplicationCommandData>;
+	public readonly bot = Bot.getInstance();
+	public readonly logger: Logger;
 
-	readonly options: Readonly<CommandOptions<GUILD>>;
+	public readonly options: Readonly<CommandOptions<GUILD>>;
 
-	constructor(data: discord.ApplicationCommandData, options: CommandOptions<GUILD>) {
+	public constructor(data: discord.ApplicationCommandData, options: CommandOptions<GUILD>) {
 		this.logger = Logger.getLogger(`command/${data.name}`);
 		this.data = data;
 		this.options = options;
@@ -73,7 +55,7 @@ export abstract class Command<GUILD extends boolean = boolean> {
 	 * @param ctx - The context to execute
 	 * @returns void
 	 */
-	private async _run(ctx: CommandContext<boolean>): Promise<void> {
+	private async _run(ctx: CommandContext): Promise<void> {
 		if (this.options.developerOnly && !ctx.isDeveloper()) {
 			await ctx.error(':x: You must be a developer to run this command.');
 			return;
@@ -88,9 +70,9 @@ export abstract class Command<GUILD extends boolean = boolean> {
 		// TODO: maybe use Promise.all, pass interaction and fetch members if needed in _checkPermissions
 		const [missingPermsUser, missingPermsBot] = [
 			ctx.interaction.guild &&
-				this._checkPermissions(this.options.userPermissions ?? null, ctx.interaction.member?.permissions ?? null),
+				this._checkPermissions(this.options.userPermissions ?? null, ctx.interaction.member.permissions),
 			ctx.interaction.guild &&
-				this._checkPermissions(this.options.botPermissions ?? null, ctx.interaction.guild?.me?.permissions ?? null),
+				this._checkPermissions(this.options.botPermissions ?? null, ctx.interaction.guild.me?.permissions ?? null),
 		];
 
 		if (missingPermsUser) {

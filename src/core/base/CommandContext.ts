@@ -1,21 +1,5 @@
-/*
-  Remoji - Discord emoji manager bot
-  Copyright (C) 2021 Shino <shinotheshino@gmail.com>.
-
-  This program is free software: you can redistribute it and/or modify
-  it under the terms of the GNU Affero General Public License as published
-  by the Free Software Foundation, either version 3 of the License, or
-  (at your option) any later version.
-
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU Affero General Public License for more details.
-
-  You should have received a copy of the GNU Affero General Public License
-  along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
-
+import { inspect } from 'util';
+import { Ternary } from '@remoji-bot/core';
 import { APIInteractionGuildMember } from 'discord-api-types';
 import {
 	CommandInteraction,
@@ -28,12 +12,10 @@ import {
 	TextChannel,
 	ThreadChannel,
 } from 'discord.js';
-import { inspect } from 'util';
-import { I18N } from '../../i18n';
-import { EmbedUtil } from '../utils/EmbedUtil';
-import { Ternary } from '@remoji-bot/core';
 import { CommandOptionResolver } from './CommandOptionResolver';
+import { I18N } from '../../i18n';
 import { Bot } from '../Bot';
+import { EmbedUtil } from '../utils/EmbedUtil';
 
 /**
  * Typing utility for guild interactions.
@@ -59,19 +41,23 @@ export type GuildDependentInteraction<GUILD extends boolean> = CommandInteractio
  * Wraps a Slash Command interaction, providing useful methods and utilities.
  */
 export class CommandContext<GUILD extends boolean = boolean> {
-	readonly interaction: GuildDependentInteraction<GUILD>;
-	readonly options: CommandOptionResolver;
+	public readonly interaction: GuildDependentInteraction<GUILD>;
+	public readonly options: CommandOptionResolver;
 
 	/**
 	 * Alias for `i18n`
 	 *
 	 * @returns the `I18N` instance.
 	 */
-	get s(): I18N {
+	public get s(): I18N {
 		return this.i18n;
 	}
 
-	constructor(readonly bot: Bot, interaction: GuildDependentInteraction<GUILD>, readonly i18n: I18N) {
+	public constructor(
+		public readonly bot: Bot,
+		interaction: GuildDependentInteraction<GUILD>,
+		public readonly i18n: I18N,
+	) {
 		this.interaction = interaction;
 		this.options = new CommandOptionResolver(interaction.options);
 	}
@@ -81,7 +67,7 @@ export class CommandContext<GUILD extends boolean = boolean> {
 	 *
 	 * @returns whether this is a guild interaction
 	 */
-	isGuild(): this is CommandContext<true> {
+	public isGuild(): this is CommandContext<true> {
 		return this.interaction.guild !== null;
 	}
 
@@ -90,9 +76,9 @@ export class CommandContext<GUILD extends boolean = boolean> {
 	 *
 	 * @returns whether the interaction user has voted
 	 */
-	async isVoter(): Promise<boolean> {
+	public isVoter(): Promise<boolean> {
 		const bot = Bot.getInstance();
-		return await bot.topgg.hasVoted(this.interaction.user.id);
+		return bot.topgg.hasVoted(this.interaction.user.id);
 	}
 
 	/**
@@ -100,7 +86,7 @@ export class CommandContext<GUILD extends boolean = boolean> {
 	 *
 	 * @returns whether the interaction user is a bot developer.
 	 */
-	isDeveloper(): boolean {
+	public isDeveloper(): boolean {
 		return this.bot.isDeveloper(this.interaction.user.id);
 	}
 
@@ -110,7 +96,7 @@ export class CommandContext<GUILD extends boolean = boolean> {
 	 * @param message - The content of the message
 	 * @param ephemeral - Whether to send an ephemeral message
 	 */
-	async send(message: string, ephemeral = false): Promise<void> {
+	public async send(message: string, ephemeral = false): Promise<void> {
 		await this.interaction.reply({ content: message, ephemeral });
 	}
 
@@ -120,7 +106,7 @@ export class CommandContext<GUILD extends boolean = boolean> {
 	 * @param message - The content of the embed
 	 * @param ephemeral - Whether to send an ephemeral message
 	 */
-	async base(message: string, ephemeral = false): Promise<void> {
+	public async base(message: string, ephemeral = false): Promise<void> {
 		await this.interaction.reply({ embeds: [EmbedUtil.base(this.i18n).setDescription(message)], ephemeral });
 	}
 
@@ -130,7 +116,7 @@ export class CommandContext<GUILD extends boolean = boolean> {
 	 * @param message - The content of the error message
 	 * @param ephemeral - Whether to send an ephemeral message
 	 */
-	async error(message: string, ephemeral = false): Promise<void> {
+	public async error(message: string, ephemeral = false): Promise<void> {
 		await this.interaction.reply({ embeds: [EmbedUtil.error(this.i18n, message)], ephemeral });
 	}
 
@@ -140,7 +126,7 @@ export class CommandContext<GUILD extends boolean = boolean> {
 	 * @param message - The content of the success message
 	 * @param ephemeral - Whether to send an ephemeral message
 	 */
-	async success(message: string, ephemeral = false): Promise<void> {
+	public async success(message: string, ephemeral = false): Promise<void> {
 		await this.interaction.reply({ embeds: [EmbedUtil.success(this.i18n, message)], ephemeral });
 	}
 
@@ -150,9 +136,9 @@ export class CommandContext<GUILD extends boolean = boolean> {
 	 * @deprecated
 	 * @param value - The value to send
 	 */
-	async debug(value: unknown): Promise<void> {
+	public async debug(value: unknown): Promise<void> {
 		await this.interaction.reply({
-			embeds: [EmbedUtil.base(this.i18n).setDescription('```js\n' + inspect(value).slice(0, 4000) + '\n```')],
+			embeds: [EmbedUtil.base(this.i18n).setDescription(`\`\`\`js\n${inspect(value).slice(0, 4000)}\n\`\`\``)],
 		});
 	}
 }
