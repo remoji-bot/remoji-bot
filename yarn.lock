@@ -1485,15 +1485,15 @@ __metadata:
   linkType: hard
 
 "discord-api-types@npm:next":
-  version: 0.19.0-next.4a83629.1626093261
-  resolution: "discord-api-types@npm:0.19.0-next.4a83629.1626093261"
-  checksum: b6afee807cda3d27df4a5a9fea015488e934dbed1d2e5c1385b2304f9089352499489dc326ee97772811294d1fd2307081ac4e355d64d62d1fc1011a35af90cd
+  version: 0.19.0-next.4a83629.1626570047
+  resolution: "discord-api-types@npm:0.19.0-next.4a83629.1626570047"
+  checksum: d44114f822d2a8f30803109f375cefb949b52281c839bdf0f78776475e4b528c751e0bb1817d56c25333336a9d028ed84d41e2cab8ca21b222f6561266632840
   languageName: node
   linkType: hard
 
 "discord.js@npm:dev":
-  version: 13.0.0-dev.1dcad05.1626091387
-  resolution: "discord.js@npm:13.0.0-dev.1dcad05.1626091387"
+  version: 13.0.0-dev.4d53d0f.1626566655
+  resolution: "discord.js@npm:13.0.0-dev.4d53d0f.1626566655"
   dependencies:
     "@discordjs/builders": ^0.2.0
     "@discordjs/collection": ^0.1.6
@@ -1504,7 +1504,7 @@ __metadata:
     discord-api-types: ^0.19.0-next.f393ba520d7d6d2aacaca7b3ca5d355fab614f6e
     node-fetch: ^2.6.1
     ws: ^7.5.1
-  checksum: 0f3e4243ee056036074cf62901c5f47aba6ceac7dffe016170a4e7cd08103874d2abf3223850df35ffe32652c43bb4817a13bc6bb29fc486df854801c51077c5
+  checksum: afe4ec5b7bde42b2bd43c399291df868be06b339abb9c776f1b410cf46fd76909748f2b16e8f7135b2299c812d5ae9e124f01fd06b2b0a2cab76cf560e22754e
   languageName: node
   linkType: hard
 
