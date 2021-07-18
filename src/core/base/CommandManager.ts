@@ -16,40 +16,40 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Collection } from "discord.js";
-import { Logger, Nullable } from "@remoji-bot/core";
-import { Command } from "./Command";
+import { Collection } from 'discord.js';
+import { Logger, Nullable } from '@remoji-bot/core';
+import { Command } from './Command';
 
 /**
  * A manager of commands.
  */
 export class CommandManager {
-  readonly commands = new Collection<string, Command>();
+	readonly commands = new Collection<string, Command>();
 
-  readonly logger = Logger.getLogger("CommandManager");
+	readonly logger = Logger.getLogger('CommandManager');
 
-  /**
-   * Get a command by name.
-   *
-   * @param name - The name of the command to get.
-   * @returns - The command.
-   */
-  get(name: string): Nullable<Command> {
-    const command = this.commands.get(name);
-    if (command) return command;
-    this.logger.warn(`Could not find command: ${name}`);
-    return null;
-  }
+	/**
+	 * Get a command by name.
+	 *
+	 * @param name - The name of the command to get.
+	 * @returns - The command.
+	 */
+	get(name: string): Nullable<Command> {
+		const command = this.commands.get(name);
+		if (command) return command;
+		this.logger.warn(`Could not find command: ${name}`);
+		return null;
+	}
 
-  /**
-   * Register a 🆕 command.
-   *
-   * @param command - The command to register.
-   * @returns - The class, for chaining, but only if you want to, :chains: :flushed:
-   * @see https://www.amazon.com/dp/B00TJYYKD6
-   */
-  register(command: Command): this {
-    if (!this.commands.has(command.data.name)) this.commands.set(command.data.name, command);
-    return this;
-  }
+	/**
+	 * Register a 🆕 command.
+	 *
+	 * @param command - The command to register.
+	 * @returns - The class, for chaining, but only if you want to, :chains: :flushed:
+	 * @see https://www.amazon.com/dp/B00TJYYKD6
+	 */
+	register(command: Command): this {
+		if (!this.commands.has(command.data.name)) this.commands.set(command.data.name, command);
+		return this;
+	}
 }

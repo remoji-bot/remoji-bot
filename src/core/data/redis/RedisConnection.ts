@@ -16,32 +16,32 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import * as ioredis from "ioredis";
-import environment from "../../../environment";
+import ioredis from 'ioredis';
+import environment from '../../../environment';
 
 /**
  * Represents a connection to Redis.
  */
 export class RedisConnection {
-  private static instance?: RedisConnection;
+	private static instance?: RedisConnection;
 
-  /**
-   * Gets the singleton instance, creating one if it does not exist.
-   *
-   * @returns - the singleton instance
-   */
-  public static getInstance(): RedisConnection {
-    if (!this.instance) this.instance = new this();
-    return this.instance;
-  }
+	/**
+	 * Gets the singleton instance, creating one if it does not exist.
+	 *
+	 * @returns - the singleton instance
+	 */
+	public static getInstance(): RedisConnection {
+		if (!this.instance) this.instance = new this();
+		return this.instance;
+	}
 
-  readonly redis: ioredis.Redis;
+	readonly redis: ioredis.Redis;
 
-  private constructor() {
-    this.redis = new ioredis({
-      host: environment.REDIS_HOST ?? "redis",
-      port: environment.REDIS_PORT ?? 6379,
-      showFriendlyErrorStack: true,
-    });
-  }
+	private constructor() {
+		this.redis = new ioredis({
+			host: environment.REDIS_HOST ?? 'redis',
+			port: environment.REDIS_PORT ?? 6379,
+			showFriendlyErrorStack: true,
+		});
+	}
 }

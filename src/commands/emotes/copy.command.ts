@@ -16,116 +16,142 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Command } from "../../core/base/Command";
-import { CommandContext } from "../../core/base/CommandContext";
-import { ImageUtil } from "../../core/utils/ImageUtil";
-import environment from "../../environment";
+import { Command } from '../../core/base/Command';
+import { CommandContext } from '../../core/base/CommandContext';
+import { ImageUtil } from '../../core/utils/ImageUtil';
+import environment from '../../environment';
 
 /**
  * `/copy` command - Copy one or more emotes to your server.
  */
 export class CopyCommand extends Command<true> {
-  constructor() {
-    super(
-      {
-        name: "copy",
-        description: "Copy one or more emotes to your server",
-        options: [
-          {
-            name: "single",
-            type: "SUB_COMMAND",
-            description: "Copy a single emote",
-            options: [
-              {
-                name: "emote",
-                type: "STRING",
-                description: "The emote to copy",
-                required: true,
-              },
-              {
-                name: "name",
-                type: "STRING",
-                description: "The new name for the emote",
-                required: false,
-              },
-            ],
-          },
-          {
-            name: "multiple",
-            type: "SUB_COMMAND",
-            description: "Copy multiple emotes at once",
-            options: [
-              {
-                name: "emotes",
-                type: "STRING",
-                description: "The emotes to copy (up to 30!)",
-                required: true,
-              },
-            ],
-          },
-        ],
-      },
-      {
-        guildOnly: true,
-      },
-    );
-  }
+	constructor() {
+		super(
+			{
+				name: 'copy',
+				description: 'Copy one or more emotes to your server',
+				options: [
+					{
+						name: 'single',
+						type: 'SUB_COMMAND',
+						description: 'Copy a single emote',
+						options: [
+							{
+								name: 'emote',
+								type: 'STRING',
+								description: 'The emote to copy',
+								required: true,
+							},
+							{
+								name: 'name',
+								type: 'STRING',
+								description: 'The new name for the emote',
+								required: false,
+							},
+						],
+					},
+					{
+						name: 'multiple',
+						type: 'SUB_COMMAND',
+						description: 'Copy multiple emotes at once',
+						options: [
+							{
+								name: 'emotes',
+								type: 'STRING',
+								description: 'The emotes to copy (up to 30!)',
+								required: true,
+							},
+						],
+					},
+				],
+			},
+			{
+				guildOnly: true,
+				userPermissions: ['MANAGE_EMOJIS'],
+				botPermissions: ['MANAGE_EMOJIS'],
+			},
+		);
+	}
 
-  /**
-   * Run the command.
-   *
-   * @param ctx - The context for the command.
-   */
-  async run(ctx: CommandContext<true>): Promise<void> {
-    const single = ctx.options.subcommand("single");
-    const multiple = ctx.options.subcommand("multiple");
+	/**
+	 * Run the command.
+	 *
+	 * @param ctx - The context for the command.
+	 */
+	async run(ctx: CommandContext<true>): Promise<void> {
+		const single = ctx.options.subcommand('single');
+		const multiple = ctx.options.subcommand('multiple');
 
-    // TODO: check remaining emote slots/animated status
+		// TODO: check remaining emote slots/animated status
 
-    if (single) {
-      // Upload single emote
-      const emote = ImageUtil.extractEmojis(single.string("emote"))[0];
-      const name = single.string("name", false);
+		if (single) {
+			// Upload single emote
+			const emote = ImageUtil.extractEmojis(single.string('emote'))[0];
+			const name = single.string('name', false);
 
-      if (!emote) {
-        await ctx.error(ctx.s.emote_copy_invalid_emote);
-        return;
-      }
+			if (!emote) {
+				await ctx.error(ctx.s.emote_copy_invalid_emote);
+				return;
+			}
 
-      if (name && !/^[a-z0-9_]{2,32}$/i.test(name)) {
-        await ctx.error(ctx.s.emote_copy_invalid_name);
-        return;
-      }
+			if (name && !/^[a-z0-9_]{2,32}$/i.test(name)) {
+				await ctx.error(ctx.s.emote_copy_invalid_name);
+				return;
+			}
 
-      const image = await ImageUtil.downloadImage(emote.url);
+			const image = await ImageUtil.downloadImage(emote.url);
 
-      if (!image.success) {
-        if (image.error) await ctx.error(ctx.s.image_download_error_with_reason(image.error));
-        else if (!image.validURL) await ctx.error(ctx.s.emote_copy_invalid_url);
-        else if (!image.whitelistedURL) await ctx.error(ctx.s.emote_copy_invalid_domain);
-        else await ctx.error(ctx.s.emote_copy_unknown_download_error);
-        return;
-      }
+			if (!image.success) {
+				if (image.error) await ctx.error(ctx.s.image_download_error_with_reason(image.error));
+				else if (!image.validURL) await ctx.error(ctx.s.emote_copy_invalid_url);
+				else if (!image.whitelistedURL) await ctx.error(ctx.s.emote_copy_invalid_domain);
+				else await ctx.error(ctx.s.emote_copy_unknown_download_error);
+				return;
+			}
 
-      try {
-        const newEmoji = await ctx.interaction.guild.emojis.create(Buffer.from(image.data), name ?? emote.name);
-        await ctx.success(ctx.s.emote_copy_success(name ?? emote.name, newEmoji.toString()));
-      } catch (error) {
-        this.logger.error(error);
-        await ctx.error(ctx.s.emote_copy_unknown_upload_error);
-      }
-    } else if (multiple) {
-      if (!(await this.bot.topgg.hasVoted(ctx.interaction.user.id))) {
-        await ctx.error(ctx.s.command_error_vote_locked("copy multiple", environment.TOPGG_VOTE_URL));
-        return;
-      }
+			try {
+				const newEmoji = await ctx.interaction.guild.emojis.create(Buffer.from(image.data), name ?? emote.name);
+				await ctx.success(ctx.s.emote_copy_success(name ?? emote.name, newEmoji.toString()));
+			} catch (error) {
+				this.logger.error(error);
+				await ctx.error(ctx.s.emote_copy_unknown_upload_error);
+			}
+		} else if (multiple) {
+			if (!(await ctx.isVoter())) {
+				await ctx.error(ctx.s.command_error_vote_locked('copy multiple', environment.TOPGG_VOTE_URL));
+				return;
+			}
 
-      // TODO
-      await ctx.error("TODO");
+			const emotes = ImageUtil.extractEmojis(multiple.string('emotes'));
+			if (!emotes) {
+				await ctx.error(ctx.s.emote_copy_no_emotes);
+				return;
+			}
 
-      // TODO: Copying progress
-      // TODO: Graceful error handling
-      // TODO: Handle Discord upload ratelimit
-    }
-  }
+			let failed = 0;
+
+			for (const emote of emotes) {
+				const image = await ImageUtil.downloadImage(emote.url);
+
+				if (!image.success) {
+					failed++;
+					continue;
+				}
+
+				try {
+					await ctx.interaction.guild.emojis.create(Buffer.from(image.data), emote.name);
+				} catch (error) {
+					this.logger.error(error);
+					await ctx.error(ctx.s.emote_copy_unknown_upload_error);
+					return;
+				}
+			}
+
+			await ctx.success(ctx.s.emote_copy_multiple_success(failed, emotes.length - failed));
+
+			// TODO: Copying progress
+			// TODO: Graceful error handling
+			// TODO: Handle Discord upload ratelimit
+		}
+	}
 }

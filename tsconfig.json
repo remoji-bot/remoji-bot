@@ -1,14 +1,30 @@
 {
-  "compilerOptions": {
-    "target": "ES2020",
-    "lib": ["ESNext"],
-    "strict": true,
-    "noEmit": true,
-    "module": "CommonJS",
-    "moduleResolution": "Node",
-    "skipLibCheck": true,
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true
-  },
-  "include": ["src/**/*.ts"]
+	"compilerOptions": {
+		"alwaysStrict": true,
+		"allowUnreachableCode": false,
+		"allowUnusedLabels": false,
+		"noFallthroughCasesInSwitch": true,
+		"noImplicitOverride": true,
+		"noImplicitReturns": true,
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"strict": true,
+		// "useUnknownInCatchVariables": true,
+
+		"module": "CommonJS",
+		"moduleResolution": "node",
+		"resolveJsonModule": true,
+		"importHelpers": true,
+
+		"noEmit": true,
+		"esModuleInterop": true,
+		"forceConsistentCasingInFileNames": true,
+		"emitDecoratorMetadata": true,
+		"experimentalDecorators": true,
+		"lib": ["ESNext"],
+		"target": "ES2020",
+		"useDefineForClassFields": true,
+		"skipLibCheck": true
+	},
+	"include": ["src/**/*.ts"]
 }
