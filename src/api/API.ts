@@ -22,6 +22,7 @@ import environment from "../environment";
 import { RedisStore } from "../core/data/redis/RedisStore";
 import { Bot } from "../core/Bot";
 import * as discord from "discord.js";
+import * as os from "os";
 
 /**
  * The API wrapper.
@@ -149,6 +150,11 @@ export class API {
       environment: environment.NODE_ENV,
       uptime: process.uptime(),
       memory: process.memoryUsage(),
+      cpu: {
+        load: os.loadavg()[0],
+        total: os.loadavg()[1],
+        used: os.loadavg()[2],
+      },
       pid: process.pid,
       discord: {
         id: bot.client.user?.id,
