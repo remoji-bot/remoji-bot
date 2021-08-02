@@ -9,9 +9,9 @@ export type I18NValue<T extends unknown[] | false = false> = ExtendConditional<
 	string
 >;
 
-export type I18NLanguage = 'en-US' | 'cy-GB' | 'nl-NL' | 'de-DE';
+export type I18NLanguage = 'en-US' | 'cy-GB' | 'nl-NL' | 'de-DE' | 'pl-PL';
 
-export const LANGUAGES: I18NLanguage[] = ['en-US', 'cy-GB', 'nl-NL', 'de-DE'];
+export const LANGUAGES: I18NLanguage[] = ['en-US', 'cy-GB', 'nl-NL', 'de-DE', 'pl-PL'];
 
 /**
  * An abstract base class for i18n translations
@@ -30,6 +30,7 @@ export abstract class I18N {
 				'de-DE': new (await import('./lang/de-DE.lang')).Lang_de_DE(),
 				'en-US': new (await import('./lang/en-US.lang')).Lang_en_US(),
 				'nl-NL': new (await import('./lang/nl-NL.lang')).Lang_nl_NL(),
+				'pl-PL': new (await import('./lang/pl-PL.lang')).Lang_pl_PL(),
 			}),
 		});
 	}
