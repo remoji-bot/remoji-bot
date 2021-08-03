@@ -1,6 +1,5 @@
 import * as os from 'os';
 import { Logger } from '@remoji-bot/core';
-import * as discord from 'discord.js';
 import express from 'express';
 import { Bot } from '../core/Bot';
 import { RedisStore } from '../core/data/redis/RedisStore';
@@ -94,7 +93,7 @@ export class API {
 		if (req.headers.authorization?.startsWith('Bearer ')) {
 			const token = req.headers.authorization.split(' ')[1];
 			const user = await this.authStore.get(token);
-			if (!user || !Bot.getInstance().isDeveloper(user as discord.Snowflake)) {
+			if (!user || !Bot.getInstance().isDeveloper(user)) {
 				res.status(401).json({ error: 'Unauthorized' });
 				res.end();
 				return;
