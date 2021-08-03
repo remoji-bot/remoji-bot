@@ -20,7 +20,6 @@ const environment = Object.freeze({
 
 	DISCORD_TOKEN: getenv('DISCORD_TOKEN', false, true),
 	DISCORD_APPLICATION_ID: getenv('DISCORD_APPLICATION_ID', false, true),
-	DISCORD_PUBLIC_KEY: getenv('DISCORD_PUBLIC_KEY', false, true),
 	TESTING_GUILD_ID: getenv('TESTING_GUILD_ID', false, false) as discord.Snowflake,
 	DEVELOPER_ID: getenv('DEVELOPER_ID', false, false),
 
