@@ -88,10 +88,7 @@ export class Bot {
 
 		if (environment.NODE_ENV === 'development') {
 			this.logger.info('Removing production commands from testing bot');
-			for (const [, command] of applicationCommands) {
-				this.logger.verbose(`Remoing command: ${command.name}...`);
-				await command.delete();
-			}
+			await this.client.application.commands.set([]);
 			this.logger.info('Registering commands in testing guild...');
 			await this.client.guilds
 				.fetch(environment.TESTING_GUILD_ID)
