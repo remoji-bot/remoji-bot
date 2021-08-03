@@ -61,7 +61,7 @@ export class CommandContext<GUILD extends boolean = boolean> {
 
 	public getSubCommandIdentifier(): string | null {
 		const group = this.interaction.options.getSubcommandGroup(false);
-		const subCommand = this.interaction.options.getSubcommandGroup(false);
+		const subCommand = this.interaction.options.getSubcommand(false);
 		if (!subCommand) {
 			return null;
 		}
