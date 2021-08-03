@@ -12,7 +12,6 @@ import {
 	TextChannel,
 	ThreadChannel,
 } from 'discord.js';
-import { CommandOptionResolver } from './CommandOptionResolver';
 import { I18N } from '../../i18n';
 import { Bot } from '../Bot';
 import { EmbedUtil } from '../utils/EmbedUtil';
@@ -42,7 +41,6 @@ export type GuildDependentInteraction<GUILD extends boolean> = CommandInteractio
  */
 export class CommandContext<GUILD extends boolean = boolean> {
 	public readonly interaction: GuildDependentInteraction<GUILD>;
-	public readonly options: CommandOptionResolver;
 
 	/**
 	 * Alias for `i18n`
@@ -59,7 +57,6 @@ export class CommandContext<GUILD extends boolean = boolean> {
 		public readonly i18n: I18N,
 	) {
 		this.interaction = interaction;
-		this.options = new CommandOptionResolver(interaction.options);
 	}
 
 	/**

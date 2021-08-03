@@ -48,7 +48,7 @@ export class Bot {
 	private constructor() {
 		this.client = new discord.Client({
 			allowedMentions: { parse: [] },
-			intents: ['GUILDS', 'GUILD_EMOJIS'],
+			intents: ['GUILDS', 'GUILD_EMOJIS_AND_STICKERS'],
 			shards: 'auto',
 			rejectOnRateLimit: (data) => data.global,
 		});
@@ -93,29 +93,23 @@ export class Bot {
 				await command.delete();
 			}
 			this.logger.info('Registering commands in testing guild...');
-			await Promise.all(
-				this.commands.commands.mapValues(async (command) => {
-					const guild = await this.client.guilds.fetch(environment.TESTING_GUILD_ID as discord.Snowflake);
-					await guild.commands.create(command.data);
-				}),
-			);
+			await this.client.guilds
+				.fetch(environment.TESTING_GUILD_ID)
+				.then((guild) => guild.commands.set(this.commands.commands.map((command) => command.data)));
 		} else {
 			this.logger.info('Registering developer commands...');
-			await Promise.all(
-				this.commands.commands
-					.filter((command) => Boolean(command.options.developerOnly))
-					.mapValues(async (command) => {
-						const guild = await this.client.guilds.fetch(environment.TESTING_GUILD_ID as discord.Snowflake);
-						await guild.commands.create(command.data);
-					}),
-			);
+			await this.client.guilds
+				.fetch(environment.TESTING_GUILD_ID)
+				.then((guild) =>
+					guild.commands.set(
+						this.commands.commands
+							.filter((command) => command.options.developerOnly ?? false)
+							.map((command) => command.data),
+					),
+				);
 			this.logger.info('Registering global commands...');
-			await Promise.all(
-				this.commands.commands
-					.filter((command) => !command.options.developerOnly)
-					.mapValues(async (command) => {
-						await this.client.application.commands.create(command.data);
-					}),
+			await this.client.application.commands.set(
+				this.commands.commands.filter((command) => !command.options.developerOnly).map((command) => command.data),
 			);
 		}
 
@@ -138,7 +132,7 @@ export class Bot {
 				this.logger.verbose(
 					`User ${interaction.user.tag} (${interaction.user.id}) ran command: /${
 						command.data.name
-					} with options: ${JSON.stringify(interaction.options.toJSON())}, guild: ${
+					} with options: ${JSON.stringify(interaction.options.data)}, guild: ${
 						interaction.guildId ?? 'N/A'
 					}, channel: ${interaction.channelId}, interaction: ${interaction.id}`,
 				);

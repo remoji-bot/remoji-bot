@@ -39,8 +39,8 @@ export class UploadCommand extends Command<true> {
 	 * @returns - void
 	 */
 	public async run(ctx: CommandContext<true>): Promise<void> {
-		const url = ctx.options.string('url');
-		const name = ctx.options.string('name');
+		const url = ctx.interaction.options.getString('url', true);
+		const name = ctx.interaction.options.getString('name', true);
 
 		if (name.length < 3 || !/^[\w_]+$/.test(name)) return ctx.error(ctx.s.image_invalid_name);
 
