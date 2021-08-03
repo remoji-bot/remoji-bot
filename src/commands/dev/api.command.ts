@@ -47,13 +47,8 @@ export class APICommand extends Command<true> {
 	 * @param ctx - The context for the command.
 	 */
 	public async run(ctx: CommandContext<true>): Promise<void> {
-		const key = ctx.options.subcommand('key');
-
-		if (key) {
-			const get = key.subcommand('get');
-			const revoke = key.subcommand('revoke');
-
-			if (get) {
+		switch (ctx.getSubCommandIdentifier()) {
+			case 'key:get': {
 				let apiKey = await this.bot.api.authStore.get(ctx.interaction.user.id);
 				if (!apiKey) {
 					apiKey = crypto.randomBytes(32).toString('hex');
@@ -62,7 +57,9 @@ export class APICommand extends Command<true> {
 				}
 
 				await ctx.base(`Your API key is: \`${apiKey}\``, true);
-			} else if (revoke) {
+				break;
+			}
+			case 'key:revoke': {
 				const key = await this.bot.api.authStore.get(ctx.interaction.user.id);
 				if (key) {
 					await this.bot.api.authStore.delete(ctx.interaction.user.id);
@@ -71,6 +68,10 @@ export class APICommand extends Command<true> {
 				} else {
 					await ctx.base("You don't have an API key.", true);
 				}
+				break;
+			}
+			default: {
+				break;
 			}
 		}
 	}

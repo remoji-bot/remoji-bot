@@ -59,6 +59,18 @@ export class CommandContext<GUILD extends boolean = boolean> {
 		this.interaction = interaction;
 	}
 
+	public getSubCommandIdentifier(): string | null {
+		const group = this.interaction.options.getSubcommandGroup(false);
+		const subCommand = this.interaction.options.getSubcommandGroup(false);
+		if (!subCommand) {
+			return null;
+		}
+		if (group) {
+			return `${group}:${subCommand}`;
+		}
+		return subCommand;
+	}
+
 	/**
 	 * Checks if the context is from a guild interaction.
 	 *

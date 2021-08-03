@@ -45,7 +45,7 @@ export class LanguageCommand extends Command<false> {
 	 * @param ctx - The context for the command.
 	 */
 	public async run(ctx: CommandContext<false>): Promise<void> {
-		const language = ctx.options.string('language');
+		const language = ctx.interaction.options.getString('language');
 
 		const oldI18N = await this.bot.i18nUserStore.get(ctx.interaction.user.id);
 

@@ -3,7 +3,7 @@ import { Permissions } from 'discord.js';
 
 const Constants = Object.freeze({
 	requiredPermissions: Permissions.resolve([
-		'MANAGE_EMOJIS',
+		'MANAGE_EMOJIS_AND_STICKERS',
 		'VIEW_CHANNEL',
 		'READ_MESSAGE_HISTORY',
 		'USE_EXTERNAL_EMOJIS',

@@ -63,7 +63,7 @@ export class CopyCommand extends Command<true> {
 	public async run(ctx: CommandContext<true>): Promise<void> {
 		// TODO: check remaining emote slots/animated status
 
-		switch (ctx.interaction.options.getSubcommand(true)) {
+		switch (ctx.getSubCommandIdentifier()) {
 			case 'multiple': {
 				if (!(await ctx.isVoter())) {
 					await ctx.error(ctx.s.command_error_vote_locked('copy multiple', environment.TOPGG_VOTE_URL));
@@ -137,6 +137,9 @@ export class CopyCommand extends Command<true> {
 					this.logger.error(error);
 					await ctx.error(ctx.s.emote_copy_unknown_upload_error);
 				}
+				break;
+			}
+			default: {
 				break;
 			}
 		}
