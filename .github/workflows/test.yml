@@ -14,10 +14,13 @@ jobs:
           node-version: 16
 
       - name: Install dependencies
-        run: npm ci
+        run: yarn --immutable
 
       - name: Run Linter
-        run: npm run lint
+        run: yarn lint
 
       - name: Run Tests
         run: npm run test
+
+      - name: Check Dependencies
+        run: yarn outdated
