@@ -20,10 +20,8 @@ export class Lang_pl_PL extends I18N {
 
 	public override image_download_error_with_reason = (reason: Error): string =>
 		`Nie udało się pobrać obrazka: \`${reason.message}\``;
-	// TODO: usage? this name doesn't look valid / this doens't look like valid name
-	public override image_invalid_name = 'Ta nazwa nie wygląda na poprawną...';
-	// TODO: same as above
-	public override image_invalid_url = 'Ten adres URL nie wygląda na poprawny...';
+	public override image_invalid_name = 'To nie wygląda jak poprawna nazwa...';
+	public override image_invalid_url = 'To nie wygląda jak poprawny adres URL...';
 	public override image_invalid_domain =
 		'Ten obrazek nie jest umieszczony na dozwolonej stronie. Spróbuj użyć imgur.com albo wysłać jako załącznik na Discordzie!';
 	public override image_unknown_error = 'Nie udało się pobrać obrazka z powodu nieznanego błędu.';
@@ -61,12 +59,12 @@ export class Lang_pl_PL extends I18N {
 	public override emote_copy_unknown_upload_error = 'Podczas przesyłania emoji na serwer wystąpił nieznany błąd.';
 	public override emote_copy_success = (name: string, newEmoji: string): string =>
 		`:tada:  Skopiowano \`:${name}:\` na Twój serwer! ${newEmoji}`;
-	public override emote_copy_no_emotes = 'Musisz podać przyynajmniej 1 emoji do skopiowania.';
+	public override emote_copy_no_emotes = 'Musisz podać przynajmniej 1 emoji do skopiowania.';
 	public override emote_copy_multiple_success = (failed: number, success: number): string =>
 		`Pomyślnie przesłano ${success} emoji! (Niepomyślne: ${failed})`;
 
 	public override info_remoji_description =
-		'Remoji to bardzo prosty lecz bardzo potężny bot do zarządzania emoji na Discordzie. Potrafi między innymi ~~kraść~~ *kopiować* lub przesyłać emoji na Twój serwer bezpośrednio w Discordzie, nawet będąc na telefonie!';
+		'Remoji to bardzo prosty, ale też bardzo potężny bot do zarządzania emoji na Discordzie. Potrafi między innymi ~~kraść~~ *kopiować* i przesyłać emoji na Twój serwer bezpośrednio w Discordzie, nawet będąc na telefonie!';
 	public override info_remoji_server_field = 'Dołącz do serwera Remoji aby być na bieżąco z nowymi funkcjami!';
 	public override info_remoji_server_invite = (invite: string): string => `**[DOŁĄCZ DO SERWERA REMOJI](${invite})**`;
 	public override info_remoji_bot_field = 'Dodaj Remoji!';
@@ -75,8 +73,7 @@ export class Lang_pl_PL extends I18N {
 		`**[ADRES](https://discord.com/oauth2/authorize?client_id=${appId}&permissions=${permissionBits}&scope=applications.commands%20bot)**`;
 	public override info_remoji_vote_field = 'Głosuj na Remoji!';
 	public override info_remoji_vote_value = (url: string): string => `**[GŁOSUJ NA TOP.GG](${url})**`;
-	// TODO: e? y? a?
-	public override info_remoji_created = 'Stworzone przez Shino.';
+	public override info_remoji_created = 'Stworzony przez Shino.';
 	public override info_remoji_version = (version: string, gitBranch: string, gitCommit: string): string =>
 		`Remoji wersja ${version} ${gitBranch}-${gitCommit} - GNU AGPL 3.0`;
 }
