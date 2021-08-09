@@ -19,16 +19,16 @@ export class Lang_pl_PL extends I18N {
 	public override ping_success = (delay: number): string => `Pong! Opóźnienie: ${delay}ms`;
 
 	public override image_download_error_with_reason = (reason: Error): string =>
-		`Nie udało się pobrać obrazka: \`${reason.message}\``;
+		`Nie udało się pobrać załącznika: \`${reason.message}\``;
 	public override image_invalid_name = 'To nie wygląda jak poprawna nazwa...';
 	public override image_invalid_url = 'To nie wygląda jak poprawny adres URL...';
 	public override image_invalid_domain =
-		'Ten obrazek nie jest umieszczony na dozwolonej stronie. Spróbuj użyć imgur.com albo wysłać jako załącznik na Discordzie!';
-	public override image_unknown_error = 'Nie udało się pobrać obrazka z powodu nieznanego błędu.';
+		'Ten załącznik nie jest umieszczony na dozwolonej stronie. Spróbuj użyć imgur.com albo wysłać jako załącznik na Discordzie!';
+	public override image_unknown_error = 'Nie udało się pobrać załącznika z powodu nieznanego błędu.';
 	public override image_upload_success = (name: string, emoji: string): string =>
 		`:tada:  Przesłano \`:${name}:\` na Twój serwer! ${emoji}`;
 	public override image_upload_failed_unknown_error =
-		'Nie udało się przesłać emoji z powodu nieznanego błędu. Spróbuj użyć innego obrazka lub wysłać obrazek jako załącznik na Discordzie.';
+		'Nie udało się przesłać emoji z powodu nieznanego błędu. Spróbuj użyć innego linku lub wysłać jako załącznik na Discordzie.';
 	public override language_change_success = (oldLocale: Nullable<I18NLanguage>, newLocale: I18NLanguage): string =>
 		`Pomyślnie zmieniono język${oldLocale ? ` z \`${oldLocale}` : ''} na \`${newLocale}\``;
 
@@ -38,15 +38,13 @@ export class Lang_pl_PL extends I18N {
 	public override embed_join_support_server_link = 'Dołącz do serwera';
 	public override embed_vote_callout_link = 'Kliknij tutaj aby głosować na Remoji!';
 
-	// TODO: guild only or maybe not in DMs?
-	public override command_error_guild_only = ':x: Ta komenda może być użyta jedynie na serwerach.';
+	public override command_error_guild_only = ':x: Ta komenda nie może być użyta w wiadomościach prywatnych.';
 	public override command_error_user_missing_permission = (permissions: PermissionString[]): string =>
 		`Aby użyć tej komendy, potrzebujesz tych uprawnień: ${permissions.map((perm) => `\`${perm}\``).join(', ')}`;
 	public override command_error_bot_missing_permission = (permissions: PermissionString[]): string =>
 		`Aby użyć tej komendy, Remoji potrzebuje tych uprawnień: ${permissions.map((perm) => `\`${perm}\``).join(', ')}`;
-	// TODO: unlock? use?
 	public override command_error_vote_locked = (commandName: string, topggURL: string): string =>
-		`:lock: aby odblokować komendę \`/${commandName}\`, [zagłosuj na Remoji na top.gg](${topggURL})!`;
+		`:lock: aby użyć komendy \`/${commandName}\`, [zagłosuj na Remoji na top.gg](${topggURL})!`;
 
 	public override emote_copy_invalid_emote =
 		'Nie znaleziono emoji do skopiowania. Można kopiować tylko **niestandardowe** emoji.';
@@ -68,9 +66,8 @@ export class Lang_pl_PL extends I18N {
 	public override info_remoji_server_field = 'Dołącz do serwera Remoji aby być na bieżąco z nowymi funkcjami!';
 	public override info_remoji_server_invite = (invite: string): string => `**[DOŁĄCZ DO SERWERA REMOJI](${invite})**`;
 	public override info_remoji_bot_field = 'Dodaj Remoji!';
-	// TODO: Zaproszenie sounds bad, maybe address or like "click (here)"
 	public override info_remoji_bot_invite = (appId: string, permissionBits: string): string =>
-		`**[ADRES](https://discord.com/oauth2/authorize?client_id=${appId}&permissions=${permissionBits}&scope=applications.commands%20bot)**`;
+		`**[LINK](https://discord.com/oauth2/authorize?client_id=${appId}&permissions=${permissionBits}&scope=applications.commands%20bot)**`;
 	public override info_remoji_vote_field = 'Głosuj na Remoji!';
 	public override info_remoji_vote_value = (url: string): string => `**[GŁOSUJ NA TOP.GG](${url})**`;
 	public override info_remoji_created = 'Stworzony przez Shino.';
