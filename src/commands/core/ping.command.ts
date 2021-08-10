@@ -25,7 +25,7 @@ export class PingCommand extends Command<false> {
 	 * @param ctx - The context for the command.
 	 */
 	public async run(ctx: CommandContext<false>): Promise<void> {
-		const [delay] = await time(() => ctx.interaction.defer());
+		const [delay] = await time(() => ctx.interaction.deferReply());
 		await ctx.interaction.editReply({
 			embeds: [EmbedUtil.success(ctx.i18n, ctx.s.ping_success(Math.floor(delay)))],
 		});
