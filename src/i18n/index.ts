@@ -14,7 +14,7 @@ export type I18NLanguage = 'en-US' | 'cy-GB' | 'nl-NL' | 'de-DE' | 'pl-PL';
 export const LANGUAGES: I18NLanguage[] = ['en-US', 'cy-GB', 'nl-NL', 'de-DE', 'pl-PL'];
 
 /**
- * An abstract base class for i18n translations
+ * An public abstract base class for i18n translations
  */
 export abstract class I18N {
 	public static readonly defaultLanguage: I18NLanguage = 'en-US';
@@ -74,49 +74,49 @@ export abstract class I18N {
 		return covered.length / (covered.length + uncovered.length);
 	}
 
-	abstract NAME_LOCAL: I18NValue;
-	abstract NAME_DEFAULT: I18NValue;
+	public abstract NAME_LOCAL: I18NValue;
+	public abstract NAME_DEFAULT: I18NValue;
 
-	abstract unknown_command: I18NValue<[name: string]>;
+	public abstract unknown_command: I18NValue<[name: string]>;
 
-	abstract ping_success: I18NValue<[latency: number]>;
-	abstract image_invalid_name: I18NValue;
-	abstract image_download_error_with_reason: I18NValue<[reason: Error]>;
-	abstract image_invalid_url: I18NValue;
-	abstract image_invalid_domain: I18NValue;
-	abstract image_unknown_error: I18NValue;
-	abstract image_upload_success: I18NValue<[emoji_name: string, emoji: string]>;
-	abstract image_upload_failed_unknown_error: I18NValue;
-	abstract language_change_success: I18NValue<[old_locale: Nullable<I18NLanguage>, new_locale: I18NLanguage]>;
+	public abstract ping_success: I18NValue<[latency: number]>;
+	public abstract image_invalid_name: I18NValue;
+	public abstract image_download_error_with_reason: I18NValue<[reason: Error]>;
+	public abstract image_invalid_url: I18NValue;
+	public abstract image_invalid_domain: I18NValue;
+	public abstract image_unknown_error: I18NValue;
+	public abstract image_upload_success: I18NValue<[emoji_name: string, emoji: string]>;
+	public abstract image_upload_failed_unknown_error: I18NValue;
+	public abstract language_change_success: I18NValue<[old_locale: Nullable<I18NLanguage>, new_locale: I18NLanguage]>;
 
-	abstract embed_remoji_author_name: I18NValue;
-	abstract embed_help_callout_title: I18NValue;
-	abstract embed_join_support_server_link: I18NValue;
-	abstract embed_vote_callout_link: I18NValue;
-	abstract embed_footer_tagline: I18NValue;
+	public abstract embed_remoji_author_name: I18NValue;
+	public abstract embed_help_callout_title: I18NValue;
+	public abstract embed_join_support_server_link: I18NValue;
+	public abstract embed_vote_callout_link: I18NValue;
+	public abstract embed_footer_tagline: I18NValue;
 
-	abstract command_error_guild_only: I18NValue;
-	abstract command_error_user_missing_permission: I18NValue<[missing: PermissionString[]]>;
-	abstract command_error_bot_missing_permission: I18NValue<[missing: PermissionString[]]>;
-	abstract command_error_vote_locked: I18NValue<[command_name: string, topgg_vote_url: string]>;
+	public abstract command_error_guild_only: I18NValue;
+	public abstract command_error_user_missing_permission: I18NValue<[missing: PermissionString[]]>;
+	public abstract command_error_bot_missing_permission: I18NValue<[missing: PermissionString[]]>;
+	public abstract command_error_vote_locked: I18NValue<[command_name: string, topgg_vote_url: string]>;
 
-	abstract emote_copy_invalid_emote: I18NValue;
-	abstract emote_copy_invalid_name: I18NValue;
-	abstract emote_copy_invalid_url: I18NValue;
-	abstract emote_copy_invalid_domain: I18NValue;
-	abstract emote_copy_unknown_download_error: I18NValue;
-	abstract emote_copy_unknown_upload_error: I18NValue;
-	abstract emote_copy_success: I18NValue<[name: string, new_emoji: string]>;
-	abstract emote_copy_no_emotes: I18NValue;
-	abstract emote_copy_multiple_success: I18NValue<[failed: number, success: number]>;
+	public abstract emote_copy_invalid_emote: I18NValue;
+	public abstract emote_copy_invalid_name: I18NValue;
+	public abstract emote_copy_invalid_url: I18NValue;
+	public abstract emote_copy_invalid_domain: I18NValue;
+	public abstract emote_copy_unknown_download_error: I18NValue;
+	public abstract emote_copy_unknown_upload_error: I18NValue;
+	public abstract emote_copy_success: I18NValue<[name: string, new_emoji: string]>;
+	public abstract emote_copy_no_emotes: I18NValue;
+	public abstract emote_copy_multiple_success: I18NValue<[failed: number, success: number]>;
 
-	abstract info_remoji_description: I18NValue;
-	abstract info_remoji_server_field: I18NValue;
-	abstract info_remoji_server_invite: I18NValue<[invite: string]>;
-	abstract info_remoji_bot_field: I18NValue;
-	abstract info_remoji_bot_invite: I18NValue<[appId: string, permissionBits: string]>;
-	abstract info_remoji_vote_field: I18NValue;
-	abstract info_remoji_vote_value: I18NValue<[url: string]>;
-	abstract info_remoji_created: I18NValue;
-	abstract info_remoji_version: I18NValue<[version: string, gitBranch: string, gitCommit: string]>;
+	public abstract info_remoji_description: I18NValue;
+	public abstract info_remoji_server_field: I18NValue;
+	public abstract info_remoji_server_invite: I18NValue<[invite: string]>;
+	public abstract info_remoji_bot_field: I18NValue;
+	public abstract info_remoji_bot_invite: I18NValue<[appId: string, permissionBits: string]>;
+	public abstract info_remoji_vote_field: I18NValue;
+	public abstract info_remoji_vote_value: I18NValue<[url: string]>;
+	public abstract info_remoji_created: I18NValue;
+	public abstract info_remoji_version: I18NValue<[version: string, gitBranch: string, gitCommit: string]>;
 }
