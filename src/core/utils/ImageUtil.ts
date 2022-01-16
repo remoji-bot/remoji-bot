@@ -1,4 +1,5 @@
 import { URL } from 'url';
+import { inspect } from 'util';
 import { Logger } from '@remoji-bot/core';
 import axios from 'axios';
 import { Snowflake } from 'discord.js';
@@ -76,16 +77,12 @@ export class ImageUtil extends null {
 	 */
 	public static extractEmojis(string: string): EmojiInfo[] {
 		const matches = Array.from(string.matchAll(REGEXP_ALL_EMOTES));
-		return matches
-			.filter((match) => match.groups)
-			.map(
-				(match) =>
-					new EmojiInfo(
-						match.groups?.id as Snowflake,
-						match.groups?.name as string,
-						Boolean(match.groups?.animated as string),
-					),
-			);
+		return (
+			matches
+				.filter((match) => match.groups)
+				// eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
+				.map((match) => new EmojiInfo(match.groups?.id!, match.groups?.name!, Boolean(match.groups?.animated)))
+		);
 	}
 
 	/**
@@ -124,6 +121,7 @@ export class ImageUtil extends null {
 					timeout: 2500,
 				})
 				.then((res) => {
+					// eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
 					if (!MIME_WHITELIST.includes(res.headers['content-type'])) throw new TypeError(`Unknown Content-Type`);
 					return res;
 				})
@@ -135,11 +133,12 @@ export class ImageUtil extends null {
 
 			return {
 				success: true,
+				// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
 				type: image.headers['content-type'],
 				data: image.data,
 			};
 		} catch (error) {
-			return { success: false, error };
+			return { success: false, error: error instanceof Error ? error : new Error(inspect(error)) };
 		}
 	}
 }
