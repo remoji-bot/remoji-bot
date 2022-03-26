@@ -41,6 +41,6 @@ export class RedisCacheManager {
 	 * @param expiryMilliseconds - After how many milliseconds the key should expire.
 	 */
 	public async set(key: string, value: string, expiryMilliseconds: number): Promise<void> {
-		await this.connection.redis.set(this.keyName(key), value, 'px', expiryMilliseconds);
+		await this.connection.redis.set(this.keyName(key), value, "PX", expiryMilliseconds);
 	}
 }

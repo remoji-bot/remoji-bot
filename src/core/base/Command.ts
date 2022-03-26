@@ -70,7 +70,7 @@ export abstract class Command<GUILD extends boolean = boolean> {
 		// TODO: maybe use Promise.all, pass interaction and fetch members if needed in _checkPermissions
 		const [missingPermsUser, missingPermsBot] = [
 			ctx.interaction.guild &&
-				this._checkPermissions(this.options.userPermissions ?? null, ctx.interaction.member.permissions as `${bigint}`),
+				this._checkPermissions(this.options.userPermissions ?? null, ctx.interaction.memberPermissions?.bitfield ?? null),
 			ctx.interaction.guild &&
 				this._checkPermissions(this.options.botPermissions ?? null, ctx.interaction.guild.me?.permissions ?? null),
 		];
@@ -108,5 +108,5 @@ export abstract class Command<GUILD extends boolean = boolean> {
 		await this.run(ctx);
 	}
 
-	abstract run(ctx: CommandContext<GUILD>): Promise<void>;
+	public abstract run(ctx: CommandContext<GUILD>): Promise<void>;
 }

@@ -35,7 +35,7 @@ export class I18NCovCommand extends Command<true> {
 			const coveragePercent = I18N.getLanguageCoveragePercent(language);
 			const missing = coverage[1]
 				.slice()
-				.sort()
+				.sort((a, b) => a.localeCompare(b))
 				.map((key) => `\`${key}\``)
 				.join(', ');
 			embed.addField(

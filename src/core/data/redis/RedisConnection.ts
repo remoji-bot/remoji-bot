@@ -1,4 +1,4 @@
-import ioredis from 'ioredis';
+import Redis from 'ioredis';
 import environment from '../../../environment';
 
 /**
@@ -17,10 +17,10 @@ export class RedisConnection {
 		return this.instance;
 	}
 
-	public readonly redis: ioredis.Redis;
+	public readonly redis: Redis;
 
 	private constructor() {
-		this.redis = new ioredis({
+		this.redis = new Redis({
 			host: environment.REDIS_HOST ?? 'redis',
 			port: environment.REDIS_PORT ?? 6379,
 			showFriendlyErrorStack: true,

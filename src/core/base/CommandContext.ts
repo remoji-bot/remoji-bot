@@ -1,6 +1,6 @@
 import { inspect } from 'util';
 import { Ternary } from '@remoji-bot/core';
-import { APIInteractionGuildMember } from 'discord-api-types';
+import { APIInteractionGuildMember } from 'discord-api-types/v10';
 import {
 	CommandInteraction,
 	DMChannel,

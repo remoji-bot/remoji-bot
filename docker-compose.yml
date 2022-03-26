@@ -12,6 +12,8 @@ services:
     environment:
       - REDIS_HOST=redis
       - REDIS_PORT=6379
+    ports:
+      - "8000:8000"
   redis:
     image: redis:6.2.4-alpine
     restart: always

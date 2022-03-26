@@ -16,11 +16,11 @@ export class EmbedUtil extends null {
 	public static base(i18n: I18N): MessageEmbed {
 		return new MessageEmbed()
 			.setColor(0xfffffe)
-			.setAuthor(
-				i18n.embed_remoji_author_name,
-				Bot.getInstance().client.user.displayAvatarURL(),
-				environment.TOPGG_VOTE_URL,
-			);
+			.setAuthor({
+				name: i18n.embed_remoji_author_name,
+				iconURL: Bot.getInstance().client.user.displayAvatarURL(),
+				url: environment.TOPGG_VOTE_URL,
+			});
 	}
 
 	/**
@@ -50,13 +50,13 @@ export class EmbedUtil extends null {
 	public static success(i18n: I18N, description: string): MessageEmbed {
 		return this.base(i18n)
 			.setColor(0x55ff55)
-			.setAuthor(
-				i18n.embed_vote_callout_link,
-				'https://i.imgur.com/1wLOFn2.png', // Star
-				environment.TOPGG_VOTE_URL,
-			)
+			.setAuthor({
+				name: i18n.embed_vote_callout_link,
+				iconURL: 'https://i.imgur.com/1wLOFn2.png', // Star
+				url: environment.TOPGG_VOTE_URL,
+			})
 			.setDescription(description)
-			.setFooter(i18n.embed_footer_tagline);
+			.setFooter({ text: i18n.embed_footer_tagline });
 	}
 
 	/**

@@ -1,21 +1,49 @@
 {
-	"extends": "marine/prettier/node",
-	"plugins": ["import"],
-	"parserOptions": {
-		"project": "./tsconfig.json"
-	},
+	"root": true,
+	"parser": "@typescript-eslint/parser",
+	"plugins": ["@typescript-eslint", "prettier", "jsdoc", "license-header"],
+	"extends": [
+	  "eslint:recommended",
+	  "plugin:@typescript-eslint/recommended",
+	  "plugin:prettier/recommended",
+	  "plugin:eslint-comments/recommended",
+	  "plugin:jsdoc/recommended",
+	  "plugin:import/recommended",
+	  "plugin:import/typescript"
+	],
 	"rules": {
-		"import/order": [
-			"error",
-			{
-				"groups": ["builtin", "external", "internal", "sibling", "parent"],
-				"alphabetize": {
-					"order": "asc"
-				}
-			}
-		],
-		"@typescript-eslint/naming-convention": 0,
-		"no-redeclare": 0,
-		"no-console": 2
+	  "require-await": "error",
+	  "@typescript-eslint/no-floating-promises": "error",
+	  "@typescript-eslint/no-explicit-any": "error",
+	  "@typescript-eslint/no-this-alias": "off",
+	  "@typescript-eslint/no-non-null-assertion": "error",
+	  "no-console": "error",
+	  "eslint-comments/no-use": ["warn", { "allow": [] }],
+	  "jsdoc/require-jsdoc": [
+		"warn",
+		{
+		  "require": {
+			"ClassDeclaration": true,
+			"MethodDefinition": true
+		  },
+		  "checkConstructors": false,
+		  "enableFixer": true
+		}
+	  ],
+	  "jsdoc/require-param-type": "off",
+	  "jsdoc/require-returns-type": "off",
+	  "license-header/header": ["error", "./license-header.txt"]
+	},
+	"settings": {
+	  "jsdoc": {
+		"mode": "typescript"
+	  },
+	  "import/parsers": {
+		"@typescript-eslint/parser": [".ts", ".tsx"]
+	  }
+	},
+	"parserOptions": {
+	  "project": "./tsconfig.json"
 	}
-}
+  }
+  
