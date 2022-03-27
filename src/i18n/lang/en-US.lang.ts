@@ -32,7 +32,7 @@ export class Lang_en_US extends I18N {
 
 	public embed_help_callout_title = 'Need help?';
 	public embed_remoji_author_name = 'Remoji - Discord emoji manager';
-	public embed_footer_tagline = 'Remoji - Discord emoji manager - Created by Shino';
+	public embed_footer_tagline = 'Remoji - Discord emoji manager - Created by Memikri';
 	public embed_join_support_server_link = 'Join the support server';
 	public embed_vote_callout_link = 'Click here to vote for Remoji!';
 
@@ -71,7 +71,7 @@ export class Lang_en_US extends I18N {
 		`**[INVITE](https://discord.com/oauth2/authorize?client_id=${appId}&permissions=${permissionBits}&scope=applications.commands%20bot)**`;
 	public info_remoji_vote_field = 'Vote for Remoji!';
 	public info_remoji_vote_value = (url: string): string => `**[VOTE ON TOP.GG](${url})**`;
-	public info_remoji_created = 'Created by Shino.';
+	public info_remoji_created = 'Created by Memikri.';
 	public info_remoji_version = (version: string, gitBranch: string, gitCommit: string): string =>
 		`Remoji version ${version} ${gitBranch}-${gitCommit} - GNU AGPL 3.0`;
 }

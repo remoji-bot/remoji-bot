@@ -18,7 +18,7 @@ export const REGEXP_URL =
 /**
  * List of allowed image mime-types.
  */
-export const MIME_WHITELIST: readonly string[] = ['image/jpeg', 'image/png', 'image/gif'];
+export const MIME_WHITELIST: readonly string[] = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
 
 /**
  * Regular expression to match a single emote.

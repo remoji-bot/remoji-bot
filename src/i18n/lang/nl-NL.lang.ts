@@ -32,7 +32,7 @@ export class Lang_nl_NL extends Lang_en_US {
 
 	public override embed_help_callout_title = 'Hulp nodig?';
 	public override embed_remoji_author_name = 'Remoji - Discord emoji manager.';
-	public override embed_footer_tagline = 'Remoji - Discord emoji manager - Gemaakt door Shino';
+	public override embed_footer_tagline = 'Remoji - Discord emoji manager - Gemaakt door Memikri';
 	public override embed_join_support_server_link = 'Join de support server';
 	public override embed_vote_callout_link = 'Klik hier om op Remoji te stemmen!';
 

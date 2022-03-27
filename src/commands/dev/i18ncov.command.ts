@@ -45,9 +45,9 @@ export class I18NCovCommand extends Command<true> {
 			overallCovered += coverage[0].length;
 			overallTotal += coverage[0].length + coverage[1].length;
 		}
-		embed.setFooter(
-			`${overallCovered}/${overallTotal} strings covered (${Math.floor((overallCovered / overallTotal) * 100)}%)`,
-		);
+		embed.setFooter({
+			text: `Overall: ${overallCovered}/${overallTotal} strings covered (${Math.floor((overallCovered / overallTotal) * 100)}%)`,
+		});
 		await ctx.interaction.reply({ embeds: [embed] });
 	}
 }

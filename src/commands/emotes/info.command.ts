@@ -37,9 +37,11 @@ export class InfoCommand extends Command<true> {
 			.addField(ctx.s.info_remoji_vote_field, ctx.s.info_remoji_vote_value(environment.TOPGG_VOTE_URL))
 			.addField(
 				ctx.s.info_remoji_created,
-				'[GitHub](https://github.com/shinotheshino)  |  [Patreon](https://patreon.com/shinotheshino)  |  [Twitch](https://twitch.tv/shinotheshino)',
+				'[GitHub](https://github.com/memikri)  |  [Twitch](https://twitch.tv/memikri)',
 			)
-			.setFooter(ctx.s.info_remoji_version(bot.constants.version, bot.constants.git.branch, bot.constants.git.commit));
+			.setFooter({
+				text: ctx.s.info_remoji_version(bot.constants.version, bot.constants.git.branch, bot.constants.git.commit)
+			});
 		await ctx.interaction.reply({ embeds: [infoEmbed] });
 	}
 }

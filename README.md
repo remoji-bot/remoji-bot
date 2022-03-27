@@ -1,7 +1,5 @@
 # Remoji
 
-![Travis CI](https://travis-ci.org/shinotheshino/remoji-bot.svg?branch=master)
-
 A Discord **Slash Command** bot that re-uploads and provides tools for managing emojis in Discord.
 
 # [Add to Discord](https://discord.com/oauth2/authorize?client_id=781606551349231667&permissions=1074070528&scope=applications.commands%20bot)

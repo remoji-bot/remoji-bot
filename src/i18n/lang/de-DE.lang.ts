@@ -34,7 +34,7 @@ export class Lang_de_DE extends Lang_en_US {
 
 	public override embed_help_callout_title = 'brauchen Sie Hilfe?';
 	public override embed_remoji_author_name = 'Remoji - Discord emoji manager';
-	public override embed_footer_tagline = 'Remoji - Discord emoji manager - erstellt von Shino';
+	public override embed_footer_tagline = 'Remoji - Discord emoji manager - erstellt von Memikri';
 	public override embed_join_support_server_link = 'Treten Sie dem Support-Server bei';
 	public override embed_vote_callout_link = 'Klicken Sie hier, um für Remoji abzustimmen!';
 

@@ -34,7 +34,7 @@ export class Lang_pl_PL extends I18N {
 
 	public override embed_help_callout_title = 'Potrzebujesz pomocy?';
 	public override embed_remoji_author_name = 'Remoji - Menedżer dla Discord emoji';
-	public override embed_footer_tagline = 'Remoji - Menedżer dla Discord emoji - Stworzony przez Shino';
+	public override embed_footer_tagline = 'Remoji - Menedżer dla Discord emoji - Stworzony przez Memikri';
 	public override embed_join_support_server_link = 'Dołącz do serwera';
 	public override embed_vote_callout_link = 'Kliknij tutaj aby głosować na Remoji!';
 
@@ -70,7 +70,7 @@ export class Lang_pl_PL extends I18N {
 		`**[LINK](https://discord.com/oauth2/authorize?client_id=${appId}&permissions=${permissionBits}&scope=applications.commands%20bot)**`;
 	public override info_remoji_vote_field = 'Głosuj na Remoji!';
 	public override info_remoji_vote_value = (url: string): string => `**[GŁOSUJ NA TOP.GG](${url})**`;
-	public override info_remoji_created = 'Stworzony przez Shino.';
+	public override info_remoji_created = 'Stworzony przez Memikri.';
 	public override info_remoji_version = (version: string, gitBranch: string, gitCommit: string): string =>
 		`Remoji wersja ${version} ${gitBranch}-${gitCommit} - GNU AGPL 3.0`;
 }

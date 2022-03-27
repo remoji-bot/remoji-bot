@@ -35,7 +35,7 @@ export class Lang_cy_GB extends Lang_en_US {
 
 	public override embed_help_callout_title = 'Angen help?';
 	public override embed_remoji_author_name = 'Remoji - Rheolwr emoji Discord.';
-	public override embed_footer_tagline = 'Remoji - Rheolwr emoji Discord. - Wedi creu gan Shino';
+	public override embed_footer_tagline = 'Remoji - Rheolwr emoji Discord. - Wedi creu gan Memikri';
 	public override embed_join_support_server_link = "Ymuno'r gweinydd cyfnogaeth!";
 	public override embed_vote_callout_link = 'Cliciwch yma i bleidleisio am Remoji!';
 
@@ -77,7 +77,7 @@ export class Lang_cy_GB extends Lang_en_US {
 		`**[GWAHODD](https://discord.com/oauth2/authorize?client_id=${appId}&permissions=${permissionBits}&scope=applications.commands%20bot)**`;
 	public override info_remoji_vote_field = 'Pleidleisiwch am Remoji!';
 	public override info_remoji_vote_value = (url: string): string => `**[PLEIDLEISIWCH AR TOP.GG](${url})**`;
-	public override info_remoji_created = 'Wedi creu gan Shino.';
+	public override info_remoji_created = 'Wedi creu gan Memikri.';
 	public override info_remoji_version = (version: string, gitBranch: string, gitCommit: string): string =>
 		`Fersiwn Remoji ${version} ${gitBranch}-${gitCommit} - GNU AGPL 3.0`;
 }

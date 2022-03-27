@@ -1,5 +1,5 @@
-FROM node:17-alpine
-RUN apk add git
+FROM node:17-slim
+RUN apt-get update && apt-get install git -y
 
 WORKDIR /srv/bot
 EXPOSE 8000
